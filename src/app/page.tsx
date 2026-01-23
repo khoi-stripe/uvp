@@ -83,7 +83,7 @@ function Tooltip({ children, content }: { children: React.ReactNode; content: st
   
   return (
     <span 
-      className="relative inline-flex items-center"
+      className="relative"
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
     >

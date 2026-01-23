@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import { ChevronDown, MoreHorizontal } from "lucide-react";
 
 // Custom SVG Icons
@@ -80,16 +80,33 @@ import {
 // Tooltip component
 function Tooltip({ children, content }: { children: React.ReactNode; content: string }) {
   const [isVisible, setIsVisible] = useState(false);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const triggerRef = useRef<HTMLSpanElement>(null);
+  
+  const handleMouseEnter = () => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + 8,
+        left: rect.left + rect.width / 2,
+      });
+    }
+    setIsVisible(true);
+  };
   
   return (
     <span 
-      className="relative"
-      onMouseEnter={() => setIsVisible(true)}
+      ref={triggerRef}
+      className="inline-flex items-center"
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setIsVisible(false)}
     >
       {children}
       {isVisible && (
-        <div className="absolute z-50 top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 bg-white border border-[#D8DEE4] rounded-lg shadow-[0px_2px_5px_rgba(64,68,82,0.08),0px_3px_9px_rgba(64,68,82,0.08)] whitespace-nowrap">
+        <div 
+          className="fixed z-[9999] px-4 py-3 bg-white border border-[#D8DEE4] rounded-lg shadow-[0px_2px_5px_rgba(64,68,82,0.08),0px_3px_9px_rgba(64,68,82,0.08)] whitespace-nowrap -translate-x-1/2"
+          style={{ top: position.top, left: position.left }}
+        >
           <p className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
             {content}
           </p>

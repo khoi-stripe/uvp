@@ -39,11 +39,19 @@ function ShieldCheckIcon() {
   );
 }
 
-function ArrowUpDownIcon() {
+function ArrowUpDownIcon({ size = 12 }: { size?: number }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fillRule="evenodd" clipRule="evenodd" d="M2.34975 9.91465C2.67304 9.55546 3.22629 9.52634 3.58548 9.84962L8.00003 13.8228L12.4149 9.84961C12.7741 9.52634 13.3273 9.55547 13.6506 9.91467C13.9739 10.2739 13.9448 10.8271 13.5856 11.1504L8.58534 15.6504C8.41896 15.8001 8.20949 15.875 8.00003 15.875C7.79054 15.875 7.58105 15.8001 7.41466 15.6504L2.41478 11.1504C2.05559 10.8271 2.02647 10.2738 2.34975 9.91465Z" fill="#474E5A"/>
       <path fillRule="evenodd" clipRule="evenodd" d="M7.41466 0.349625C7.58105 0.199871 7.79054 0.124995 8.00003 0.125C8.20949 0.125005 8.41896 0.199873 8.58534 0.349605L13.5856 4.84961C13.9448 5.17287 13.9739 5.72613 13.6506 6.08533C13.3273 6.44453 12.7741 6.47366 12.4149 6.15039L8.00003 2.17719L3.58548 6.15038C3.22629 6.47366 2.67304 6.44454 2.34975 6.08535C2.02647 5.72616 2.05559 5.17291 2.41478 4.84962L7.41466 0.349625Z" fill="#474E5A"/>
+    </svg>
+  );
+}
+
+function CheckCircleFilledIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" clipRule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM12.2803 6.28033C12.5732 5.98744 12.5732 5.51256 12.2803 5.21967C11.9874 4.92678 11.5126 4.92678 11.2197 5.21967L7 9.43934L5.03033 7.46967C4.73744 7.17678 4.26256 7.17678 3.96967 7.46967C3.67678 7.76256 3.67678 8.23744 3.96967 8.53033L6.46967 11.0303C6.76256 11.3232 7.23744 11.3232 7.53033 11.0303L12.2803 6.28033Z" fill="#474E5A"/>
     </svg>
   );
 }
@@ -70,6 +78,66 @@ import {
 } from "@/lib/data";
 
 type GroupByOption = "productCategory" | "taskCategory" | "actionType";
+
+const groupByOptions: { value: GroupByOption; label: string }[] = [
+  { value: "productCategory", label: "Product" },
+  { value: "taskCategory", label: "Task" },
+  { value: "actionType", label: "Action" },
+];
+
+// Custom dropdown component matching Figma design
+function GroupByDropdown({
+  value,
+  onChange,
+}: {
+  value: GroupByOption;
+  onChange: (value: GroupByOption) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectedLabel = groupByOptions.find((o) => o.value === value)?.label || "Product";
+
+  return (
+    <div className="relative">
+      {/* Trigger button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 text-[14px] font-semibold leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white text-[#353A44] hover:bg-[#F5F6F8] transition-colors shadow-[0_1px_1px_rgba(33,37,44,0.16)]"
+      >
+        <span>{selectedLabel}</span>
+        <ArrowUpDownIcon size={12} />
+      </button>
+
+      {/* Dropdown popover */}
+      {isOpen && (
+        <>
+          {/* Backdrop to close dropdown */}
+          <div 
+            className="fixed inset-0 z-10" 
+            onClick={() => setIsOpen(false)} 
+          />
+          {/* Popover */}
+          <div className="absolute top-full left-0 mt-1 bg-white border border-[#D8DEE4] rounded-lg shadow-[0_5px_15px_rgba(0,0,0,0.12),0_15px_35px_rgba(48,49,61,0.08)] z-20 min-w-[140px] py-1">
+            {groupByOptions.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+                className="w-full flex items-center justify-between gap-3 px-3 py-2 text-[14px] leading-5 tracking-[-0.15px] text-[#353A44] hover:bg-[#F5F6F8] transition-colors"
+              >
+                <span className={value === option.value ? "font-semibold" : ""}>
+                  {option.label}
+                </span>
+                {value === option.value && <CheckCircleFilledIcon />}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 // Wireframe nav item component
 function NavItem({ hasIcon = true }: { hasIcon?: boolean }) {
@@ -341,20 +409,7 @@ export default function RolesPermissionsPage() {
             {/* Controls */}
             <div className="flex items-end gap-2">
               {/* Group by selector */}
-              <div className="relative">
-                <select
-                  value={groupBy}
-                  onChange={(e) => setGroupBy(e.target.value as GroupByOption)}
-                  className="appearance-none text-[14px] font-semibold leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md pl-2 pr-7 py-1 min-h-[28px] bg-white text-[#353A44] focus:outline-none focus:border-[#635BFF] cursor-pointer shadow-[0_1px_1px_rgba(33,37,44,0.16)]"
-                >
-                  <option value="productCategory">Product</option>
-                  <option value="taskCategory">Task</option>
-                  <option value="actionType">Action</option>
-                </select>
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <ArrowUpDownIcon />
-                </div>
-              </div>
+              <GroupByDropdown value={groupBy} onChange={setGroupBy} />
               {/* Search field */}
               <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white">
                 <SearchIcon className="text-[#818DA0]" />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, MoreHorizontal } from "lucide-react";
+import { ChevronDown, MoreHorizontal } from "lucide-react";
 
 // Custom SVG Icons
 function CheckCircleIcon() {
@@ -226,31 +226,41 @@ export default function RolesPermissionsPage() {
                     <span className="text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 text-center">
                       {category.roles.length}
                     </span>
-                    {isExpanded ? (
-                      <ChevronUp className="w-4 h-4 text-[#474E5A]" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-[#474E5A]" />
-                    )}
+                    <ChevronDown 
+                      className={`w-4 h-4 text-[#474E5A] transition-transform duration-200 ${
+                        isExpanded ? 'rotate-180' : 'rotate-0'
+                      }`}
+                    />
                   </button>
 
-                  {/* Roles in category */}
-                  {isExpanded && (
-                    <div className="flex flex-col gap-px mt-px">
-                      {category.roles.map((role) => (
-                        <button
-                          key={role.id}
-                          onClick={() => setSelectedRole(role)}
-                          className={`w-full text-left px-2 py-1 text-[14px] leading-5 tracking-[-0.15px] rounded-md transition-colors ${
-                            selectedRole.id === role.id
-                              ? "bg-[#F7F5FD] text-[#533AFD]"
-                              : "text-[#353A44] hover:bg-[#F5F6F8]"
-                          }`}
-                        >
-                          {role.name}
-                        </button>
-                      ))}
+                  {/* Roles in category - animated accordion */}
+                  <div 
+                    className="grid transition-[grid-template-rows] duration-200 ease-out"
+                    style={{ gridTemplateRows: isExpanded ? '1fr' : '0fr' }}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="flex flex-col gap-px mt-px">
+                        {category.roles.map((role, index) => (
+                          <button
+                            key={role.id}
+                            onClick={() => setSelectedRole(role)}
+                            className={`w-full text-left px-2 py-1 text-[14px] leading-5 tracking-[-0.15px] rounded-md transition-all duration-200 ${
+                              selectedRole.id === role.id
+                                ? "bg-[#F7F5FD] text-[#533AFD]"
+                                : "text-[#353A44] hover:bg-[#F5F6F8]"
+                            }`}
+                            style={{ 
+                              transitionDelay: isExpanded ? `${index * 30}ms` : '0ms',
+                              opacity: isExpanded ? 1 : 0,
+                              transform: isExpanded ? 'translateY(0)' : 'translateY(-4px)'
+                            }}
+                          >
+                            {role.name}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               );
             })}

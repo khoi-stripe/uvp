@@ -232,6 +232,7 @@ export default function RolesPermissionsPage() {
   // Only one category can be expanded at a time (accordion behavior)
   const [expandedCategory, setExpandedCategory] = useState<string | null>(roleCategories[0]?.name || null);
   const [groupBy, setGroupBy] = useState<GroupByOption>("productCategory");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const toggleCategory = (categoryName: string) => {
     // If clicking the already expanded category, collapse it; otherwise expand clicked category
@@ -239,7 +240,19 @@ export default function RolesPermissionsPage() {
   };
 
   const rolePermissions = getUniquePermissionsForRole(selectedRole.id);
-  const groupedPermissions = groupPermissions(rolePermissions, groupBy);
+  
+  // Filter permissions by search query
+  const filteredPermissions = searchQuery
+    ? rolePermissions.filter(
+        (p) =>
+          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.productCategory.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.taskCategory.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : rolePermissions;
+  
+  const groupedPermissions = groupPermissions(filteredPermissions, groupBy);
 
   return (
     <div className="h-screen flex bg-white">
@@ -320,7 +333,10 @@ export default function RolesPermissionsPage() {
                         {category.roles.map((role, index) => (
                           <button
                             key={role.id}
-                            onClick={() => setSelectedRole(role)}
+                            onClick={() => {
+                              setSelectedRole(role);
+                              setSearchQuery(""); // Clear search when switching roles
+                            }}
                             className={`w-full text-left px-2 py-1 text-[14px] leading-5 tracking-[-0.15px] rounded-md transition-all duration-200 ${
                               selectedRole.id === role.id
                                 ? "bg-[#F7F5FD] text-[#533AFD]"
@@ -402,7 +418,7 @@ export default function RolesPermissionsPage() {
               <ShieldCheckIcon />
               <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>Permissions</h2>
               <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
-                {rolePermissions.length}
+                {searchQuery ? `${filteredPermissions.length}/${rolePermissions.length}` : rolePermissions.length}
               </span>
             </div>
 
@@ -411,9 +427,23 @@ export default function RolesPermissionsPage() {
               {/* Group by selector */}
               <GroupByDropdown value={groupBy} onChange={setGroupBy} />
               {/* Search field */}
-              <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white">
+              <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
                 <SearchIcon className="text-[#818DA0]" />
-                <span className="text-[14px] text-[#818DA0] leading-5 tracking-[-0.15px]">Search</span>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search"
+                  className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="text-[#818DA0] hover:text-[#353A44] transition-colors"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
             </div>
 
@@ -438,10 +468,18 @@ export default function RolesPermissionsPage() {
                   </div>
                 ))}
 
-              {rolePermissions.length === 0 && (
+              {filteredPermissions.length === 0 && (
                 <div className="text-center py-12 text-[#596171]">
                   <div className="w-12 h-12 mx-auto mb-4 text-[#EBEEF1]"><ShieldCheckIcon /></div>
-                  <p>No permissions assigned to this role</p>
+                  <p>{searchQuery ? `No permissions matching "${searchQuery}"` : "No permissions assigned to this role"}</p>
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="mt-2 text-[14px] text-[#635BFF] hover:underline"
+                    >
+                      Clear search
+                    </button>
+                  )}
                 </div>
               )}
             </div>

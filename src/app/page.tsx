@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Shield, Users } from "lucide-react";
+import { ChevronDown, ChevronRight, Shield, Users, Building2 } from "lucide-react";
 import {
   roleCategories,
   allRoles,
@@ -12,6 +12,72 @@ import {
 } from "@/lib/data";
 
 type GroupByOption = "productCategory" | "taskCategory" | "actionType";
+
+// Wireframe nav item component
+function NavItem({ hasIcon = true }: { hasIcon?: boolean }) {
+  return (
+    <div className="flex items-center gap-2 w-full">
+      {hasIcon && (
+        <div className="w-6 h-6 rounded-full bg-[#EBEEF1] flex-shrink-0" />
+      )}
+      <div className={`h-2 bg-[#EBEEF1] rounded-full ${hasIcon ? 'w-[93px]' : 'w-[93px] ml-8'}`} />
+    </div>
+  );
+}
+
+// Side Navigation Component
+function SideNav() {
+  return (
+    <aside className="w-[240px] h-full flex flex-col justify-between px-5 py-4 bg-white border-r border-[rgba(0,39,77,0.08)] flex-shrink-0">
+      {/* Top section */}
+      <div className="flex flex-col gap-[42px]">
+        {/* Account Switcher */}
+        <div className="flex items-center gap-2 h-9">
+          <div className="w-6 h-6 bg-[#F5F6F8] rounded flex items-center justify-center">
+            <Building2 className="w-4 h-4 text-[#6C7688]" />
+          </div>
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-1">
+              <span className="text-xs font-semibold text-[#353A44] leading-4 tracking-[-0.024px]">
+                Acme, Inc.
+              </span>
+              <ChevronDown className="w-3 h-3 text-[#6C7688]" />
+            </div>
+            <span className="text-xs text-[#596171] leading-4 truncate">
+              Organization
+            </span>
+          </div>
+        </div>
+
+        {/* Nav sections */}
+        <div className="flex flex-col gap-6">
+          {/* First nav group */}
+          <div className="flex flex-col gap-1.5">
+            <NavItem />
+            <NavItem />
+            <NavItem />
+          </div>
+
+          {/* Second nav group with section header */}
+          <div className="flex flex-col gap-1.5">
+            {/* Section header (no icon) */}
+            <div className="h-6 flex items-center py-1.5">
+              <div className="h-2 bg-[#EBEEF1] rounded-full w-[93px]" />
+            </div>
+            <NavItem />
+            <NavItem />
+            <NavItem />
+            <NavItem />
+            <NavItem />
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom nav item */}
+      <NavItem />
+    </aside>
+  );
+}
 
 export default function RolesPermissionsPage() {
   const [selectedRole, setSelectedRole] = useState<Role>(allRoles[0]);
@@ -36,26 +102,31 @@ export default function RolesPermissionsPage() {
   const groupedPermissions = groupPermissions(rolePermissions, groupBy);
 
   return (
-    <div className="h-screen flex flex-col bg-white">
-      {/* Header */}
-      <header className="border-b border-gray-200 px-6 py-4 flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-gray-900">
-            Roles and permissions
-          </h1>
-          <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors">
-            New role
-          </button>
-        </div>
-        {/* Wireframe description placeholder */}
-        <div className="mt-3 space-y-2">
-          <div className="h-2 bg-gray-200 rounded w-3/4"></div>
-          <div className="h-2 bg-gray-200 rounded w-1/2"></div>
-        </div>
-      </header>
+    <div className="h-screen flex bg-white">
+      {/* Side Navigation */}
+      <SideNav />
 
-      {/* Main content - 3 panels */}
-      <div className="flex flex-1 overflow-hidden">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <header className="border-b border-gray-200 px-6 py-4 flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Roles and permissions
+            </h1>
+            <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors">
+              New role
+            </button>
+          </div>
+          {/* Wireframe description placeholder */}
+          <div className="mt-3 space-y-2">
+            <div className="h-2 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-2 bg-gray-200 rounded w-1/2"></div>
+          </div>
+        </header>
+
+        {/* Main content - 3 panels */}
+        <div className="flex flex-1 overflow-hidden">
         {/* Left Panel - Roles List */}
         <aside className="w-64 border-r border-gray-200 overflow-y-auto flex-shrink-0">
           <div className="p-4">
@@ -242,6 +313,7 @@ export default function RolesPermissionsPage() {
             )}
           </div>
         </main>
+        </div>
       </div>
     </div>
   );

@@ -39,6 +39,15 @@ function ShieldCheckIcon() {
   );
 }
 
+function ArrowUpDownIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" clipRule="evenodd" d="M2.34975 9.91465C2.67304 9.55546 3.22629 9.52634 3.58548 9.84962L8.00003 13.8228L12.4149 9.84961C12.7741 9.52634 13.3273 9.55547 13.6506 9.91467C13.9739 10.2739 13.9448 10.8271 13.5856 11.1504L8.58534 15.6504C8.41896 15.8001 8.20949 15.875 8.00003 15.875C7.79054 15.875 7.58105 15.8001 7.41466 15.6504L2.41478 11.1504C2.05559 10.8271 2.02647 10.2738 2.34975 9.91465Z" fill="#474E5A"/>
+      <path fillRule="evenodd" clipRule="evenodd" d="M7.41466 0.349625C7.58105 0.199871 7.79054 0.124995 8.00003 0.125C8.20949 0.125005 8.41896 0.199873 8.58534 0.349605L13.5856 4.84961C13.9448 5.17287 13.9739 5.72613 13.6506 6.08533C13.3273 6.44453 12.7741 6.47366 12.4149 6.15039L8.00003 2.17719L3.58548 6.15038C3.22629 6.47366 2.67304 6.44454 2.34975 6.08535C2.02647 5.72616 2.05559 5.17291 2.41478 4.84962L7.41466 0.349625Z" fill="#474E5A"/>
+    </svg>
+  );
+}
+
 // Office/Org icon SVG
 function OrgIcon() {
   return (
@@ -330,17 +339,24 @@ export default function RolesPermissionsPage() {
             </div>
 
             {/* Controls */}
-            <div className="flex items-center gap-2">
-              <select
-                value={groupBy}
-                onChange={(e) => setGroupBy(e.target.value as GroupByOption)}
-                className="text-[14px] border border-[#D8DEE4] rounded-md px-2 py-1 bg-white text-[#353A44] focus:outline-none"
-              >
-                <option value="productCategory">Product</option>
-                <option value="taskCategory">Task</option>
-                <option value="actionType">Action</option>
-              </select>
-              <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1">
+            <div className="flex items-end gap-2">
+              {/* Group by selector */}
+              <div className="relative">
+                <select
+                  value={groupBy}
+                  onChange={(e) => setGroupBy(e.target.value as GroupByOption)}
+                  className="appearance-none text-[14px] font-semibold leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md pl-2 pr-7 py-1 min-h-[28px] bg-white text-[#353A44] focus:outline-none focus:border-[#635BFF] cursor-pointer shadow-[0_1px_1px_rgba(33,37,44,0.16)]"
+                >
+                  <option value="productCategory">Product</option>
+                  <option value="taskCategory">Task</option>
+                  <option value="actionType">Action</option>
+                </select>
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <ArrowUpDownIcon />
+                </div>
+              </div>
+              {/* Search field */}
+              <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white">
                 <SearchIcon className="text-[#818DA0]" />
                 <span className="text-[14px] text-[#818DA0] leading-5 tracking-[-0.15px]">Search</span>
               </div>

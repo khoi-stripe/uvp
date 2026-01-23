@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Shield, Search } from "lucide-react";
+import { ChevronDown, ChevronUp, Shield, Search, MoreHorizontal, CheckCircle, XCircle } from "lucide-react";
 
 // Office/Org icon SVG
 function OrgIcon() {
@@ -221,139 +221,116 @@ export default function RolesPermissionsPage() {
           </div>
         </aside>
 
-        {/* Middle Panel - Role Details */}
-        <section className="w-80 border-r border-gray-200 overflow-y-auto flex-shrink-0 bg-gray-50">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-xl font-semibold text-gray-900">
-                {selectedRole.name}
-              </h2>
-              <span className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded">
-                {rolePermissions.length}
-              </span>
-            </div>
-
-            {/* Wireframe description */}
-            <div className="space-y-2 mb-6">
-              <div className="h-2 bg-gray-300 rounded w-full"></div>
-              <div className="h-2 bg-gray-300 rounded w-4/5"></div>
+        {/* Shared Container for Role Details + Permissions */}
+        <div className="flex-1 flex gap-4 p-2 bg-[#F5F6F8] rounded-xl overflow-hidden">
+          {/* Role Details Panel */}
+          <section className="flex-1 flex flex-col gap-6 p-4 overflow-y-auto">
+            {/* Header */}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]">
+                  {selectedRole.name}
+                </h2>
+                <span className="bg-white text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
+                  {rolePermissions.length}
+                </span>
+                <MoreHorizontal className="w-6 h-6 text-[#474E5A]" />
+              </div>
+              {/* Wireframe description */}
+              <div className="flex flex-col gap-2.5 py-1.5">
+                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+              </div>
             </div>
 
             {/* Can section */}
-            <div className="bg-white rounded-lg p-4 mb-4 border border-gray-200">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
-                  <svg
-                    className="w-2.5 h-2.5 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={3}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-                <span className="text-sm font-medium text-gray-700">Can</span>
+            <div className="bg-white rounded-lg p-4 h-36">
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle className="w-4 h-4 text-[#474E5A]" />
+                <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Can</span>
               </div>
-              <div className="space-y-2">
-                <div className="h-2 bg-gray-200 rounded w-full"></div>
-                <div className="h-2 bg-gray-200 rounded w-5/6"></div>
-                <div className="h-2 bg-gray-200 rounded w-4/5"></div>
-                <div className="h-2 bg-gray-200 rounded w-full"></div>
+              <div className="flex flex-col gap-2.5 py-1.5">
+                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
               </div>
             </div>
 
             {/* Cannot section */}
-            <div className="bg-white rounded-lg p-4 border border-gray-200">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-4 h-4 rounded-full bg-gray-400 flex items-center justify-center">
-                  <svg
-                    className="w-2.5 h-2.5 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={3}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </div>
-                <span className="text-sm font-medium text-gray-700">Cannot</span>
+            <div className="bg-white rounded-lg p-4 h-36">
+              <div className="flex items-center gap-2 mb-2">
+                <XCircle className="w-4 h-4 text-[#474E5A]" />
+                <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Cannot</span>
               </div>
-              <div className="space-y-2">
-                <div className="h-2 bg-gray-200 rounded w-full"></div>
-                <div className="h-2 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-2 bg-gray-200 rounded w-5/6"></div>
-                <div className="h-2 bg-gray-200 rounded w-2/3"></div>
+              <div className="flex flex-col gap-2.5 py-1.5">
+                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Right Panel - Permissions */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-gray-500" />
-                <h2 className="text-lg font-medium text-gray-900">Permissions</h2>
-                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                  {rolePermissions.length}
-                </span>
-              </div>
+          {/* Permissions Panel */}
+          <main className="flex-1 flex flex-col gap-4 p-4 bg-white rounded-lg shadow-[0px_3px_6px_rgba(0,0,0,0.12),0px_7px_14px_rgba(48,49,61,0.08)] overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-[#474E5A]" />
+              <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]">Permissions</h2>
+              <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
+                {rolePermissions.length}
+              </span>
+            </div>
 
-              {/* Group by dropdown */}
-              <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-500">Group by:</label>
-                <select
-                  value={groupBy}
-                  onChange={(e) => setGroupBy(e.target.value as GroupByOption)}
-                  className="text-sm border border-gray-300 rounded-md px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  <option value="productCategory">Product Category</option>
-                  <option value="taskCategory">Task Category</option>
-                  <option value="actionType">Action Type</option>
-                </select>
+            {/* Controls */}
+            <div className="flex items-center gap-2">
+              <select
+                value={groupBy}
+                onChange={(e) => setGroupBy(e.target.value as GroupByOption)}
+                className="text-[14px] border border-[#D8DEE4] rounded-md px-2 py-1 bg-white text-[#353A44] focus:outline-none"
+              >
+                <option value="productCategory">Product</option>
+                <option value="taskCategory">Task</option>
+                <option value="actionType">Action</option>
+              </select>
+              <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1">
+                <Search className="w-4 h-4 text-[#818DA0]" />
+                <span className="text-[14px] text-[#818DA0] leading-5 tracking-[-0.15px]">Search</span>
               </div>
             </div>
 
             {/* Grouped permissions list */}
-            <div className="space-y-6">
+            <div className="flex-1 overflow-y-auto flex flex-col gap-2">
               {Object.entries(groupedPermissions)
                 .sort(([a], [b]) => a.localeCompare(b))
                 .map(([groupName, perms]) => (
-                  <div key={groupName}>
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  <div key={groupName} className="flex flex-col gap-2">
+                    <h3 className="text-[12px] font-semibold text-[#353A44] leading-4 tracking-[-0.024px]">
                       {groupName}
                     </h3>
-                    <div className="space-y-2">
+                    <div className="flex flex-col gap-2">
                       {perms.map((permission) => (
-                        <PermissionCard
-                          key={permission.id}
-                          permission={permission}
-                          roleId={selectedRole.id}
-                        />
+                        <div key={permission.id} className="bg-[#F5F6F8] rounded px-4 py-2">
+                          <div className="flex flex-col gap-2.5 py-1.5">
+                            <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                            <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
                 ))}
-            </div>
 
-            {rolePermissions.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
-                <Shield className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                <p>No permissions assigned to this role</p>
-              </div>
-            )}
-          </div>
-        </main>
+              {rolePermissions.length === 0 && (
+                <div className="text-center py-12 text-[#596171]">
+                  <Shield className="w-12 h-12 mx-auto mb-4 text-[#EBEEF1]" />
+                  <p>No permissions assigned to this role</p>
+                </div>
+              )}
+            </div>
+          </main>
+        </div>
         </div>
         </div>
       </div>

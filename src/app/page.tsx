@@ -402,9 +402,9 @@ export default function RolesPermissionsPage() {
                 <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Can</span>
               </div>
               {selectedRole.details?.canDo && selectedRole.details.canDo.length > 0 ? (
-                <ul className="list-disc list-inside flex flex-col gap-1">
+                <ul className="list-disc pl-4 flex flex-col gap-1">
                   {selectedRole.details.canDo.map((item, index) => (
-                    <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]">{item}</li>
+                    <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
                   ))}
                 </ul>
               ) : (
@@ -422,9 +422,9 @@ export default function RolesPermissionsPage() {
                 <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Cannot</span>
               </div>
               {selectedRole.details?.cannotDo && selectedRole.details.cannotDo.length > 0 ? (
-                <ul className="list-disc list-inside flex flex-col gap-1">
+                <ul className="list-disc pl-4 flex flex-col gap-1">
                   {selectedRole.details.cannotDo.map((item, index) => (
-                    <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]">{item}</li>
+                    <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
                   ))}
                 </ul>
               ) : (

@@ -363,11 +363,11 @@ export default function RolesPermissionsPage() {
         {/* Shared Container for Role Details + Permissions */}
         <div className="flex-1 flex gap-4 p-2 bg-[#F5F6F8] rounded-xl overflow-hidden">
           {/* Role Details Panel */}
-          <section className="flex-1 flex flex-col gap-6 p-4 overflow-y-auto">
+          <section className="flex-1 flex flex-col gap-6 px-4 py-[13px] overflow-y-auto">
             {/* Header */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">
-                <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
+                <h2 className="flex-1 text-[20px] font-bold text-[#353A44] leading-7 tracking-[0.3px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                   {selectedRole.name}
                 </h2>
                 <span className="bg-white text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">

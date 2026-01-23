@@ -3,10 +3,44 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* Typography colors */
+  --text-default: #353A44;
+  --text-subdued: #596171;
+  --text-placeholder: #818DA0;
+  --icon-default: #474E5A;
+  --icon-subdued: #6C7688;
+  
+  /* Backgrounds */
+  --bg-offset: #F5F6F8;
+  --bg-surface: #FFFFFF;
+  
+  /* Neutrals */
+  --neutral-50: #EBEEF1;
+  --neutral-200: #B6C0CD;
+  
+  /* Borders */
+  --border-default: #D8DEE4;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography utilities */
+.font-display {
+  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+.font-text {
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+/* Font feature settings for numeric styling */
+.font-features-numbers {
+  font-feature-settings: 'lnum', 'pnum';
 }

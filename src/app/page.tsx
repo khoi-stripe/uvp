@@ -181,7 +181,7 @@ export default function RolesPermissionsPage() {
           <div className="flex flex-col gap-2">
             {/* Title row */}
             <div className="flex items-center gap-2">
-              <h1 className="flex-1 text-[28px] font-bold text-[#353A44] leading-9 tracking-[0.38px]">
+              <h1 className="flex-1 text-[28px] font-bold text-[#353A44] leading-9 tracking-[0.38px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                 Roles and permissions
               </h1>
               <button className="px-3 py-1.5 bg-[#635BFF] text-white text-sm font-semibold rounded-md hover:bg-[#5851DB] transition-colors shadow-[0_1px_1px_rgba(47,14,99,0.32)]">
@@ -202,7 +202,7 @@ export default function RolesPermissionsPage() {
         <aside className="w-[240px] overflow-y-auto flex-shrink-0 pt-6">
           {/* Header */}
           <div className="flex items-center gap-2.5 pb-4 border-b border-[#EBEEF1]">
-            <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]">Roles</h2>
+            <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>Roles</h2>
             <SearchIcon className="text-[#474E5A]" />
           </div>
 
@@ -264,7 +264,7 @@ export default function RolesPermissionsPage() {
             {/* Header */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">
-                <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]">
+                <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                   {selectedRole.name}
                 </h2>
                 <span className="bg-white text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
@@ -313,7 +313,7 @@ export default function RolesPermissionsPage() {
             {/* Header */}
             <div className="flex items-center gap-2">
               <ShieldCheckIcon />
-              <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]">Permissions</h2>
+              <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>Permissions</h2>
               <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
                 {rolePermissions.length}
               </span>

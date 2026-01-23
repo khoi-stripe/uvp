@@ -301,7 +301,7 @@ export default function RolesPermissionsPage() {
             </div>
 
             {/* Grouped permissions list */}
-            <div className="flex-1 overflow-y-auto flex flex-col gap-2">
+            <div className="flex-1 overflow-y-auto flex flex-col gap-4">
               {Object.entries(groupedPermissions)
                 .sort(([a], [b]) => a.localeCompare(b))
                 .map(([groupName, perms]) => (
@@ -311,12 +311,11 @@ export default function RolesPermissionsPage() {
                     </h3>
                     <div className="flex flex-col gap-2">
                       {perms.map((permission) => (
-                        <div key={permission.id} className="bg-[#F5F6F8] rounded px-4 py-2">
-                          <div className="flex flex-col gap-2.5 py-1.5">
-                            <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                            <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                          </div>
-                        </div>
+                        <PermissionItem
+                          key={permission.id}
+                          permission={permission}
+                          roleId={selectedRole.id}
+                        />
                       ))}
                     </div>
                   </div>
@@ -338,7 +337,7 @@ export default function RolesPermissionsPage() {
   );
 }
 
-function PermissionCard({
+function PermissionItem({
   permission,
   roleId,
 }: {
@@ -353,46 +352,28 @@ function PermissionCard({
       ? "Write"
       : access?.includes("read") && access?.includes("write")
       ? "Read + Write"
-      : access || "None";
-
-  const sensitivityColors: Record<string, string> = {
-    "Non-sensitive": "bg-gray-100 text-gray-600",
-    "Payment credentials": "bg-amber-100 text-amber-700",
-    "Contains PII": "bg-red-100 text-red-700",
-    "Financial data": "bg-blue-100 text-blue-700",
-    "Financial data + PII": "bg-purple-100 text-purple-700",
-  };
+      : access || "—";
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
-      <div className="flex items-start justify-between mb-2">
-        <div className="flex-1">
-          <h4 className="text-sm font-medium text-gray-900">
+    <div className="bg-[#F5F6F8] rounded px-4 py-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <h4 className="text-[14px] font-medium text-[#353A44] leading-5 tracking-[-0.15px] capitalize">
             {permission.name.replace(/_/g, " ")}
           </h4>
-          <p className="text-xs text-gray-500 mt-0.5">{permission.description}</p>
+          <p className="text-[12px] text-[#596171] leading-4 mt-0.5 truncate">
+            {permission.description}
+          </p>
         </div>
         <span
-          className={`text-xs font-medium px-2 py-1 rounded ${
+          className={`text-[12px] font-medium px-2 py-0.5 rounded flex-shrink-0 ${
             access === "write" || access?.includes("write")
-              ? "bg-green-100 text-green-700"
-              : "bg-blue-100 text-blue-700"
+              ? "bg-[#D3F8DF] text-[#1D7C4D]"
+              : "bg-[#D4E5FF] text-[#0055BC]"
           }`}
         >
           {accessLabel}
         </span>
-      </div>
-      <div className="flex items-center gap-2 mt-2">
-        <span
-          className={`text-xs px-2 py-0.5 rounded ${
-            sensitivityColors[permission.sensitivityLevel] ||
-            "bg-gray-100 text-gray-600"
-          }`}
-        >
-          {permission.sensitivityLevel}
-        </span>
-        <span className="text-xs text-gray-400">•</span>
-        <span className="text-xs text-gray-500">{permission.actionType}</span>
       </div>
     </div>
   );

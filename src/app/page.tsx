@@ -141,7 +141,7 @@ function GroupByDropdown({
       {/* Trigger button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 text-[14px] font-semibold leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white text-[#353A44] hover:bg-[#F5F6F8] transition-colors shadow-[0_1px_1px_rgba(33,37,44,0.16)]"
+        className="flex items-center justify-between gap-2 w-[120px] text-[14px] font-semibold leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white text-[#353A44] hover:bg-[#F5F6F8] transition-colors shadow-[0_1px_1px_rgba(33,37,44,0.16)]"
       >
         <span>{selectedLabel}</span>
         <ArrowUpDownIcon size={12} />

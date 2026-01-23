@@ -77,6 +77,28 @@ import {
   type Permission,
 } from "@/lib/data";
 
+// Tooltip component
+function Tooltip({ children, content }: { children: React.ReactNode; content: string }) {
+  const [isVisible, setIsVisible] = useState(false);
+  
+  return (
+    <div 
+      className="relative inline-block"
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
+      {children}
+      {isVisible && (
+        <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-3 bg-white border border-[#D8DEE4] rounded-lg shadow-[0px_2px_5px_rgba(64,68,82,0.08),0px_3px_9px_rgba(64,68,82,0.08)] whitespace-nowrap">
+          <p className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
+            {content}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 type GroupByOption = "alphabetical" | "productCategory" | "taskCategory" | "actionType";
 
 const groupByOptions: { value: GroupByOption; label: string }[] = [
@@ -377,9 +399,11 @@ export default function RolesPermissionsPage() {
                 <h2 className="flex-1 text-[20px] font-bold text-[#353A44] leading-7 tracking-[0.3px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                   {selectedRole.name}
                 </h2>
-                <span className="bg-white text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
-                  {selectedRole.userCount}
-                </span>
+                <Tooltip content={`There are ${selectedRole.userCount} users with the ${selectedRole.name} role`}>
+                  <span className="bg-white text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center cursor-default">
+                    {selectedRole.userCount}
+                  </span>
+                </Tooltip>
                 <MoreHorizontal className="w-6 h-6 text-[#474E5A]" />
               </div>
               {/* Description */}

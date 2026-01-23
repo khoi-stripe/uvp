@@ -394,7 +394,7 @@ export default function RolesPermissionsPage() {
             {selectedRole.details?.bestFor && (
               <div className="bg-white rounded-lg p-4">
                 <div className="mb-2">
-                  <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Best for</span>
+                  <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Best for:</span>
                 </div>
                 <p className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">
                   {selectedRole.details.bestFor}

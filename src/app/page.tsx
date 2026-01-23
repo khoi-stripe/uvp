@@ -386,10 +386,7 @@ export default function RolesPermissionsPage() {
             {/* Best for section */}
             {selectedRole.details?.bestFor && (
               <div className="bg-white rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M8 14.5C11.5899 14.5 14.5 11.5899 14.5 8C14.5 4.41015 11.5899 1.5 8 1.5C4.41015 1.5 1.5 4.41015 1.5 8C1.5 11.5899 4.41015 14.5 8 14.5ZM8 5.25C8.41421 5.25 8.75 5.58579 8.75 6V8C8.75 8.41421 8.41421 8.75 8 8.75C7.58579 8.75 7.25 8.41421 7.25 8V6C7.25 5.58579 7.58579 5.25 8 5.25ZM8 11C8.41421 11 8.75 10.6642 8.75 10.25C8.75 9.83579 8.41421 9.5 8 9.5C7.58579 9.5 7.25 9.83579 7.25 10.25C7.25 10.6642 7.58579 11 8 11Z" fill="#474E5A"/>
-                  </svg>
+                <div className="mb-2">
                   <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Best for</span>
                 </div>
                 <p className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">

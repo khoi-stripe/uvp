@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Shield, Users } from "lucide-react";
+import { ChevronDown, ChevronUp, Shield, Search } from "lucide-react";
 
 // Office/Org icon SVG
 function OrgIcon() {
@@ -116,21 +116,13 @@ function SideNav() {
 
 export default function RolesPermissionsPage() {
   const [selectedRole, setSelectedRole] = useState<Role>(allRoles[0]);
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    new Set(roleCategories.map((c) => c.name))
-  );
+  // Only one category can be expanded at a time (accordion behavior)
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(roleCategories[0]?.name || null);
   const [groupBy, setGroupBy] = useState<GroupByOption>("productCategory");
 
   const toggleCategory = (categoryName: string) => {
-    setExpandedCategories((prev) => {
-      const next = new Set(prev);
-      if (next.has(categoryName)) {
-        next.delete(categoryName);
-      } else {
-        next.add(categoryName);
-      }
-      return next;
-    });
+    // If clicking the already expanded category, collapse it; otherwise expand clicked category
+    setExpandedCategory((prev) => prev === categoryName ? null : categoryName);
   };
 
   const rolePermissions = getUniquePermissionsForRole(selectedRole.id);
@@ -171,45 +163,51 @@ export default function RolesPermissionsPage() {
         {/* Main content - 3 panels */}
         <div className="flex flex-1 overflow-hidden">
         {/* Left Panel - Roles List */}
-        <aside className="w-64 border-r border-gray-200 overflow-y-auto flex-shrink-0">
-          <div className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-medium text-gray-900">Roles</h2>
-              <Users className="w-4 h-4 text-gray-400" />
-            </div>
+        <aside className="w-[240px] overflow-y-auto flex-shrink-0 pt-6">
+          {/* Header */}
+          <div className="flex items-center gap-2.5 pb-4 border-b border-[#EBEEF1]">
+            <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]">Roles</h2>
+            <Search className="w-4 h-4 text-[#474E5A]" />
+          </div>
 
-            <div className="space-y-1">
-              {roleCategories.map((category) => (
-                <div key={category.name}>
+          {/* Categories */}
+          <div className="flex flex-col">
+            {roleCategories.map((category) => {
+              const isExpanded = expandedCategory === category.name;
+              return (
+                <div 
+                  key={category.name} 
+                  className={`border-b border-[#EBEEF1] ${isExpanded ? 'py-4' : 'py-1'}`}
+                >
                   {/* Category header */}
                   <button
                     onClick={() => toggleCategory(category.name)}
-                    className="w-full flex items-center justify-between px-2 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md"
+                    className="w-full flex items-center gap-2 px-2 py-1 rounded-md hover:bg-[#F5F6F8] transition-colors"
                   >
-                    <div className="flex items-center gap-2">
-                      {expandedCategories.has(category.name) ? (
-                        <ChevronDown className="w-4 h-4 text-gray-400" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4 text-gray-400" />
-                      )}
-                      <span>{category.name}</span>
-                    </div>
-                    <span className="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                    <span className="flex-1 text-left text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">
+                      {category.name}
+                    </span>
+                    <span className="text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 text-center">
                       {category.roles.length}
                     </span>
+                    {isExpanded ? (
+                      <ChevronUp className="w-4 h-4 text-[#474E5A]" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-[#474E5A]" />
+                    )}
                   </button>
 
                   {/* Roles in category */}
-                  {expandedCategories.has(category.name) && (
-                    <div className="ml-6 space-y-0.5">
+                  {isExpanded && (
+                    <div className="flex flex-col gap-px mt-px">
                       {category.roles.map((role) => (
                         <button
                           key={role.id}
                           onClick={() => setSelectedRole(role)}
-                          className={`w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors ${
+                          className={`w-full text-left px-2 py-1 text-[14px] leading-5 tracking-[-0.15px] rounded-md transition-colors ${
                             selectedRole.id === role.id
-                              ? "bg-indigo-50 text-indigo-700 font-medium"
-                              : "text-gray-600 hover:bg-gray-50"
+                              ? "bg-[#F7F5FD] text-[#533AFD]"
+                              : "text-[#353A44] hover:bg-[#F5F6F8]"
                           }`}
                         >
                           {role.name}
@@ -218,8 +216,8 @@ export default function RolesPermissionsPage() {
                     </div>
                   )}
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
         </aside>
 

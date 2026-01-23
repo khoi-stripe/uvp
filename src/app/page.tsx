@@ -333,7 +333,7 @@ export default function RolesPermissionsPage() {
         </header>
 
         {/* Main content - 3 panels */}
-        <div className="flex flex-1 gap-6 overflow-hidden">
+        <div className="flex flex-1 gap-6 overflow-hidden max-w-[1400px]">
         {/* Left Panel - Roles List */}
         <aside className="w-[240px] overflow-y-auto flex-shrink-0 pt-6">
           {/* Header */}

@@ -23,6 +23,7 @@ export interface Role {
   name: string;
   category: string;
   details?: RoleDetails;
+  userCount: number;
 }
 
 export interface RoleCategory {
@@ -268,12 +269,31 @@ const roleDetailsMap: Record<string, RoleDetails> = {
   },
 };
 
+// Fake user counts for a ~100 user account
+const userCounts: Record<string, number> = {
+  super_admin: 2,
+  admin: 4,
+  iam_admin: 1,
+  developer: 12,
+  analyst: 8,
+  dispute_analyst: 3,
+  refund_analyst: 4,
+  support: 18,
+  support_associate: 15,
+  view_only: 7,
+  issuing_support_agent: 3,
+  tax_analyst: 2,
+  identity_analyst: 2,
+  sandbox_admin: 5,
+};
+
 // Helper to add details to role
 const withDetails = (id: string, name: string, category: string): Role => ({
   id,
   name,
   category,
   details: roleDetailsMap[id],
+  userCount: userCounts[id] ?? 0,
 });
 
 // Role categories with display names

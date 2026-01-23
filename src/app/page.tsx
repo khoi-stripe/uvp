@@ -371,7 +371,7 @@ export default function RolesPermissionsPage() {
                   {selectedRole.name}
                 </h2>
                 <span className="bg-white text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
-                  {rolePermissions.length}
+                  {selectedRole.userCount}
                 </span>
                 <MoreHorizontal className="w-6 h-6 text-[#474E5A]" />
               </div>

@@ -31,9 +31,13 @@ function NavItem({ hasIcon = true }: { hasIcon?: boolean }) {
   return (
     <div className="flex items-center gap-2 w-full">
       {hasIcon && (
-        <div className="w-4 h-4 rounded-full bg-[#EBEEF1] flex-shrink-0" />
+        <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+          <div className="w-4 h-4 rounded-full bg-[#EBEEF1]" />
+        </div>
       )}
-      <div className={`h-2 bg-[#EBEEF1] rounded-full ${hasIcon ? 'w-[93px]' : 'w-[93px] ml-8'}`} />
+      <div className="py-1.5">
+        <div className="h-2 bg-[#EBEEF1] rounded-lg w-[93px]" />
+      </div>
     </div>
   );
 }

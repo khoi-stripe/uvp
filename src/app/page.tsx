@@ -77,9 +77,10 @@ import {
   type Permission,
 } from "@/lib/data";
 
-type GroupByOption = "productCategory" | "taskCategory" | "actionType";
+type GroupByOption = "alphabetical" | "productCategory" | "taskCategory" | "actionType";
 
 const groupByOptions: { value: GroupByOption; label: string }[] = [
+  { value: "alphabetical", label: "Alphabetical" },
   { value: "productCategory", label: "Product" },
   { value: "taskCategory", label: "Task" },
   { value: "actionType", label: "Action" },
@@ -231,7 +232,7 @@ export default function RolesPermissionsPage() {
   const [selectedRole, setSelectedRole] = useState<Role>(allRoles[0]);
   // Only one category can be expanded at a time (accordion behavior)
   const [expandedCategory, setExpandedCategory] = useState<string | null>(roleCategories[0]?.name || null);
-  const [groupBy, setGroupBy] = useState<GroupByOption>("productCategory");
+  const [groupBy, setGroupBy] = useState<GroupByOption>("alphabetical");
   const [searchQuery, setSearchQuery] = useState("");
 
   const toggleCategory = (categoryName: string) => {
@@ -252,7 +253,13 @@ export default function RolesPermissionsPage() {
       )
     : rolePermissions;
   
-  const groupedPermissions = groupPermissions(filteredPermissions, groupBy);
+  const groupedPermissions = groupBy !== "alphabetical" 
+    ? groupPermissions(filteredPermissions, groupBy)
+    : null;
+  
+  const alphabeticalPermissions = groupBy === "alphabetical"
+    ? [...filteredPermissions].sort((a, b) => a.name.localeCompare(b.name))
+    : null;
 
   return (
     <div className="h-screen flex bg-white">
@@ -472,9 +479,23 @@ export default function RolesPermissionsPage() {
               </div>
             </div>
 
-            {/* Grouped permissions list */}
+            {/* Permissions list */}
             <div className="flex-1 overflow-y-auto flex flex-col gap-4">
-              {Object.entries(groupedPermissions)
+              {/* Alphabetical (flat list) */}
+              {alphabeticalPermissions && (
+                <div className="flex flex-col gap-2">
+                  {alphabeticalPermissions.map((permission) => (
+                    <PermissionItem
+                      key={permission.id}
+                      permission={permission}
+                      roleId={selectedRole.id}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Grouped list */}
+              {groupedPermissions && Object.entries(groupedPermissions)
                 .sort(([a], [b]) => a.localeCompare(b))
                 .map(([groupName, perms]) => (
                   <div key={groupName} className="flex flex-col gap-2">

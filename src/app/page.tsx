@@ -132,7 +132,7 @@ export default function RolesPermissionsPage() {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="border-b border-gray-200 px-6 py-4 flex-shrink-0">
+        <header className="px-8 py-4 flex-shrink-0">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-semibold text-gray-900">
               Roles and permissions

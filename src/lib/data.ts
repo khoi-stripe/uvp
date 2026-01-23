@@ -11,10 +11,18 @@ export interface Permission {
   roleAccess: Record<string, string>;
 }
 
+export interface RoleDetails {
+  description: string;
+  canDo: string[];
+  cannotDo: string[];
+  bestFor: string;
+}
+
 export interface Role {
   id: string;
   name: string;
   category: string;
+  details?: RoleDetails;
 }
 
 export interface RoleCategory {
@@ -22,55 +30,301 @@ export interface RoleCategory {
   roles: Role[];
 }
 
+// Role details from CSV
+const roleDetailsMap: Record<string, RoleDetails> = {
+  super_admin: {
+    description: "This role is assigned to the creator of a business account and should only be assigned to users who are allowed to perform all privileged actions. Only a Super Administrator can assign the Super Administrator role to other team members.",
+    canDo: [
+      "All Administrator capabilities",
+      "Assign Super Administrator role to others",
+      "Full account control",
+      "Manage all team members and roles",
+      "Access all account data and settings"
+    ],
+    cannotDo: [
+      "Cannot change the account owner (only the owner can transfer ownership)"
+    ],
+    bestFor: "Account creator, C-level executives who need absolute control. High security risk if compromised."
+  },
+  admin: {
+    description: "Full access to the account with the ability to manage all settings and perform all actions.",
+    canDo: [
+      "Manage all aspects of the account",
+      "Invite and manage team members",
+      "View and edit all financial data",
+      "Configure account settings",
+      "Access API keys and webhooks",
+      "Manage disputes and refunds"
+    ],
+    cannotDo: [
+      "Cannot assign Super Administrator role",
+      "Cannot delete the account"
+    ],
+    bestFor: "Account owners, senior management who need complete control"
+  },
+  developer: {
+    description: "Access to view and manage technical integration settings.",
+    canDo: [
+      "View API keys and create restricted keys",
+      "Access webhooks and logs",
+      "Test in sandbox mode",
+      "View documentation",
+      "Access developer tools",
+      "View payment data"
+    ],
+    cannotDo: [
+      "Cannot manage team members",
+      "Cannot edit business settings",
+      "Cannot process refunds",
+      "Cannot access sensitive financial reports"
+    ],
+    bestFor: "Engineering teams building and maintaining integrations"
+  },
+  analyst: {
+    description: "Read-only access to reports and data across the account.",
+    canDo: [
+      "View all reports and analytics",
+      "Export data",
+      "View payment and customer information",
+      "Access financial reports",
+      "View balance and payout information"
+    ],
+    cannotDo: [
+      "Cannot make any changes",
+      "Cannot process refunds",
+      "Cannot edit customers or payments",
+      "Cannot access API keys"
+    ],
+    bestFor: "Finance teams, business analysts, executives who need visibility"
+  },
+  support: {
+    description: "This role is for people who need to refund payments, resolve disputes, and may need to update products.",
+    canDo: [
+      "View customer details",
+      "View payment information",
+      "Create and manage refunds",
+      "View and respond to disputes",
+      "Issue credit notes",
+      "View subscriptions and invoices",
+      "Update products"
+    ],
+    cannotDo: [
+      "Cannot access API keys",
+      "Cannot manage team members",
+      "Cannot change account settings",
+      "Cannot access detailed financial reports"
+    ],
+    bestFor: "Customer support teams handling day-to-day customer issues"
+  },
+  support_associate: {
+    description: "Limited support access for basic customer inquiries.",
+    canDo: [
+      "View customer information",
+      "View payment details",
+      "View subscriptions and invoices",
+      "View disputes (read-only)"
+    ],
+    cannotDo: [
+      "Cannot process refunds",
+      "Cannot manage disputes",
+      "Cannot edit customer data",
+      "Cannot access API keys"
+    ],
+    bestFor: "Junior support staff handling basic inquiries"
+  },
+  view_only: {
+    description: "Read-only access to most parts of the Dashboard.",
+    canDo: [
+      "View payments and customers",
+      "View basic reports",
+      "View product and subscription data",
+      "View disputes"
+    ],
+    cannotDo: [
+      "Cannot make any changes",
+      "Cannot process refunds",
+      "Cannot export data in bulk",
+      "Cannot access API keys",
+      "Cannot view sensitive financial data"
+    ],
+    bestFor: "Team members who need visibility without ability to make changes"
+  },
+  dispute_analyst: {
+    description: "Specialized access for managing disputes and chargebacks.",
+    canDo: [
+      "View and manage disputes",
+      "Upload evidence",
+      "Accept or challenge disputes",
+      "View dispute analytics",
+      "Access Radar for fraud prevention"
+    ],
+    cannotDo: [
+      "Cannot process refunds outside of disputes",
+      "Cannot manage customers",
+      "Cannot access API keys",
+      "Cannot manage team members"
+    ],
+    bestFor: "Fraud and risk teams focused on dispute management"
+  },
+  refund_analyst: {
+    description: "Specialized access for processing refunds.",
+    canDo: [
+      "View payments and charges",
+      "Create full and partial refunds",
+      "View customer information",
+      "View refund history"
+    ],
+    cannotDo: [
+      "Cannot manage disputes",
+      "Cannot access API keys",
+      "Cannot manage subscriptions",
+      "Cannot access financial reports",
+      "Cannot manage team members"
+    ],
+    bestFor: "Finance operations teams focused on refund processing"
+  },
+  identity_analyst: {
+    description: "Specialized access for identity verification and KYC.",
+    canDo: [
+      "View and verify identity documents",
+      "Manage KYC workflows",
+      "Review verification sessions",
+      "Access compliance data"
+    ],
+    cannotDo: [
+      "Cannot access payment information",
+      "Cannot process refunds",
+      "Cannot manage team members",
+      "Cannot access API keys"
+    ],
+    bestFor: "Compliance and KYC teams managing identity verification"
+  },
+  tax_analyst: {
+    description: "Specialized access for tax reporting and compliance.",
+    canDo: [
+      "View tax reports",
+      "Manage tax settings",
+      "Download tax documents",
+      "Configure tax automation",
+      "Access 1099 and tax ID information"
+    ],
+    cannotDo: [
+      "Cannot access general financial reports",
+      "Cannot process payments",
+      "Cannot manage team members",
+      "Cannot access API keys"
+    ],
+    bestFor: "Tax and accounting teams managing tax compliance"
+  },
+  iam_admin: {
+    description: "Specialized access for managing team access and security.",
+    canDo: [
+      "Manage team members and roles",
+      "Configure SSO and SAML",
+      "Manage security settings",
+      "Set up two-factor authentication",
+      "View audit logs"
+    ],
+    cannotDo: [
+      "Cannot access financial data",
+      "Cannot process payments",
+      "Cannot view customer PII",
+      "Cannot access API keys for integrations"
+    ],
+    bestFor: "Security and IT teams managing access control"
+  },
+  issuing_support_agent: {
+    description: "Specialized access for managing Issuing cards and cardholders.",
+    canDo: [
+      "View and manage issuing cards",
+      "View cardholder information",
+      "Manage card disputes",
+      "View card transactions",
+      "Update card status"
+    ],
+    cannotDo: [
+      "Cannot access general payment data",
+      "Cannot manage team members",
+      "Cannot access API keys",
+      "Cannot access non-Issuing products"
+    ],
+    bestFor: "Support teams focused on card issuing operations"
+  },
+  sandbox_admin: {
+    description: "Full administrative access to sandbox/test environments only.",
+    canDo: [
+      "Full access to sandbox mode",
+      "Create test data",
+      "Access sandbox API keys",
+      "Test integrations",
+      "Invite sandbox users"
+    ],
+    cannotDo: [
+      "Cannot access production data",
+      "Cannot affect live transactions",
+      "Cannot access production API keys"
+    ],
+    bestFor: "Developers and QA teams testing integrations"
+  },
+};
+
+// Helper to add details to role
+const withDetails = (id: string, name: string, category: string): Role => ({
+  id,
+  name,
+  category,
+  details: roleDetailsMap[id],
+});
+
 // Role categories with display names
 export const roleCategories: RoleCategory[] = [
   {
     name: "Admin",
     roles: [
-      { id: "super_admin", name: "Super administrator", category: "Admin" },
-      { id: "admin", name: "Administrator", category: "Admin" },
-      { id: "iam_admin", name: "IAM Admin", category: "Admin" },
+      withDetails("super_admin", "Super administrator", "Admin"),
+      withDetails("admin", "Administrator", "Admin"),
+      withDetails("iam_admin", "IAM Admin", "Admin"),
     ],
   },
   {
     name: "Developer",
     roles: [
-      { id: "developer", name: "Developer", category: "Developer" },
+      withDetails("developer", "Developer", "Developer"),
     ],
   },
   {
     name: "Payments",
     roles: [
-      { id: "analyst", name: "Analyst", category: "Payments" },
-      { id: "dispute_analyst", name: "Dispute analyst", category: "Payments" },
-      { id: "refund_analyst", name: "Refund analyst", category: "Payments" },
+      withDetails("analyst", "Analyst", "Payments"),
+      withDetails("dispute_analyst", "Dispute analyst", "Payments"),
+      withDetails("refund_analyst", "Refund analyst", "Payments"),
     ],
   },
   {
     name: "Support",
     roles: [
-      { id: "support", name: "Support", category: "Support" },
-      { id: "support_associate", name: "Support associate", category: "Support" },
+      withDetails("support", "Support specialist", "Support"),
+      withDetails("support_associate", "Support associate", "Support"),
     ],
   },
   {
     name: "Specialists",
     roles: [
-      { id: "issuing_support_agent", name: "Issuing support agent", category: "Specialists" },
-      { id: "tax_analyst", name: "Tax analyst", category: "Specialists" },
-      { id: "identity_analyst", name: "Identity analyst", category: "Specialists" },
+      withDetails("issuing_support_agent", "Issuing support agent", "Specialists"),
+      withDetails("tax_analyst", "Tax analyst", "Specialists"),
+      withDetails("identity_analyst", "Identity analyst", "Specialists"),
     ],
   },
   {
     name: "View only",
     roles: [
-      { id: "view_only", name: "View only", category: "View only" },
+      withDetails("view_only", "View only", "View only"),
     ],
   },
   {
     name: "Sandbox",
     roles: [
-      { id: "sandbox_admin", name: "Sandbox administrator", category: "Sandbox" },
+      withDetails("sandbox_admin", "Sandbox administrator", "Sandbox"),
     ],
   },
 ];

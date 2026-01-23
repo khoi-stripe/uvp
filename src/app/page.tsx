@@ -375,39 +375,73 @@ export default function RolesPermissionsPage() {
                 </span>
                 <MoreHorizontal className="w-6 h-6 text-[#474E5A]" />
               </div>
-              {/* Wireframe description */}
-              <div className="flex flex-col gap-2.5 py-1.5">
-                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-              </div>
+              {/* Description */}
+              {selectedRole.details?.description && (
+                <p className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">
+                  {selectedRole.details.description}
+                </p>
+              )}
             </div>
 
+            {/* Best for section */}
+            {selectedRole.details?.bestFor && (
+              <div className="bg-white rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M8 14.5C11.5899 14.5 14.5 11.5899 14.5 8C14.5 4.41015 11.5899 1.5 8 1.5C4.41015 1.5 1.5 4.41015 1.5 8C1.5 11.5899 4.41015 14.5 8 14.5ZM8 5.25C8.41421 5.25 8.75 5.58579 8.75 6V8C8.75 8.41421 8.41421 8.75 8 8.75C7.58579 8.75 7.25 8.41421 7.25 8V6C7.25 5.58579 7.58579 5.25 8 5.25ZM8 11C8.41421 11 8.75 10.6642 8.75 10.25C8.75 9.83579 8.41421 9.5 8 9.5C7.58579 9.5 7.25 9.83579 7.25 10.25C7.25 10.6642 7.58579 11 8 11Z" fill="#474E5A"/>
+                  </svg>
+                  <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Best for</span>
+                </div>
+                <p className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">
+                  {selectedRole.details.bestFor}
+                </p>
+              </div>
+            )}
+
             {/* Can section */}
-            <div className="bg-white rounded-lg p-4 h-36">
+            <div className="bg-white rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircleIcon />
                 <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Can</span>
               </div>
-              <div className="flex flex-col gap-2.5 py-1.5">
-                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-              </div>
+              {selectedRole.details?.canDo && selectedRole.details.canDo.length > 0 ? (
+                <ul className="flex flex-col gap-1.5">
+                  {selectedRole.details.canDo.map((item, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <CheckCircleFilledIcon className="shrink-0 mt-1" />
+                      <span className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="flex flex-col gap-2.5 py-1.5">
+                  <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                  <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                </div>
+              )}
             </div>
 
             {/* Cannot section */}
-            <div className="bg-white rounded-lg p-4 h-36">
+            <div className="bg-white rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <CancelCircleIcon />
                 <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Cannot</span>
               </div>
-              <div className="flex flex-col gap-2.5 py-1.5">
-                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-              </div>
+              {selectedRole.details?.cannotDo && selectedRole.details.cannotDo.length > 0 ? (
+                <ul className="flex flex-col gap-1.5">
+                  {selectedRole.details.cannotDo.map((item, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <CancelCircleIcon className="shrink-0 mt-1 w-3 h-3" />
+                      <span className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="flex flex-col gap-2.5 py-1.5">
+                  <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                  <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                </div>
+              )}
             </div>
           </section>
 

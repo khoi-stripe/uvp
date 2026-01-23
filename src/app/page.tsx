@@ -45,7 +45,7 @@ function NavItem({ hasIcon = true }: { hasIcon?: boolean }) {
 // Global Top Bar Component
 function Topbar() {
   return (
-    <header className="bg-white flex items-center justify-between py-3 px-8 flex-shrink-0">
+    <header className="bg-white flex items-center justify-between py-3 flex-shrink-0">
       {/* Search field placeholder */}
       <div className="flex items-center gap-6">
         <div className="bg-[#F5F6F8] h-9 w-[360px] rounded-lg opacity-80" />
@@ -142,14 +142,14 @@ export default function RolesPermissionsPage() {
       <SideNav />
 
       {/* Right side: Topbar + Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col gap-5 px-8 pb-8 overflow-hidden">
         {/* Global Top Bar */}
         <Topbar />
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col gap-8 overflow-hidden">
         {/* Header */}
-        <header className="px-8 flex-shrink-0">
+        <header className="flex-shrink-0">
           <div className="flex flex-col gap-2">
             {/* Title row */}
             <div className="flex items-center gap-2">

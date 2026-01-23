@@ -149,19 +149,22 @@ export default function RolesPermissionsPage() {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="px-8 py-4 flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold text-gray-900">
-              Roles and permissions
-            </h1>
-            <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors">
-              New role
-            </button>
-          </div>
-          {/* Wireframe description placeholder */}
-          <div className="mt-3 space-y-2">
-            <div className="h-2 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-2 bg-gray-200 rounded w-1/2"></div>
+        <header className="px-8 flex-shrink-0">
+          <div className="flex flex-col gap-2">
+            {/* Title row */}
+            <div className="flex items-center gap-2">
+              <h1 className="flex-1 text-[28px] font-bold text-[#353A44] leading-9 tracking-[0.38px]">
+                Roles and permissions
+              </h1>
+              <button className="px-3 py-1.5 bg-[#635BFF] text-white text-sm font-semibold rounded-md hover:bg-[#5851DB] transition-colors shadow-[0_1px_1px_rgba(47,14,99,0.32)]">
+                Add role
+              </button>
+            </div>
+            {/* Wireframe description placeholder */}
+            <div className="flex flex-col gap-2.5 py-1.5 w-[640px]">
+              <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+              <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+            </div>
           </div>
         </header>
 

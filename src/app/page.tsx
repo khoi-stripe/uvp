@@ -25,6 +25,24 @@ function NavItem({ hasIcon = true }: { hasIcon?: boolean }) {
   );
 }
 
+// Global Top Bar Component
+function Topbar() {
+  return (
+    <header className="bg-white flex items-center justify-between py-3 px-5 border-b border-[rgba(0,39,77,0.08)] flex-shrink-0">
+      {/* Search field placeholder */}
+      <div className="flex items-center gap-6">
+        <div className="bg-[#F5F6F8] h-9 w-[360px] rounded-lg opacity-80" />
+      </div>
+      
+      {/* Right icons */}
+      <div className="flex items-center gap-4">
+        <div className="w-4 h-4 rounded-full bg-[#EBEEF1]" />
+        <div className="w-4 h-4 rounded-full bg-[#EBEEF1]" />
+      </div>
+    </header>
+  );
+}
+
 // Side Navigation Component
 function SideNav() {
   return (
@@ -102,12 +120,17 @@ export default function RolesPermissionsPage() {
   const groupedPermissions = groupPermissions(rolePermissions, groupBy);
 
   return (
-    <div className="h-screen flex bg-white">
-      {/* Side Navigation */}
-      <SideNav />
+    <div className="h-screen flex flex-col bg-white">
+      {/* Global Top Bar */}
+      <Topbar />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Main Layout: Side Nav + Content */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Side Navigation */}
+        <SideNav />
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header className="border-b border-gray-200 px-6 py-4 flex-shrink-0">
           <div className="flex items-center justify-between">
@@ -313,6 +336,7 @@ export default function RolesPermissionsPage() {
             )}
           </div>
         </main>
+        </div>
         </div>
       </div>
     </div>

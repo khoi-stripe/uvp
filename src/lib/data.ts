@@ -1399,7 +1399,7 @@ export function generateRoleDetails(selectedPermissions: Permission[]): RoleDeta
 // Risk Assessment
 // ============================================
 
-export type RiskLevel = "Low" | "Medium" | "High" | "Highest";
+export type RiskLevel = "Low" | "Medium" | "High";
 
 export interface RiskAssessment {
   overallRisk: RiskLevel;
@@ -1456,7 +1456,7 @@ export function generateRiskAssessment(selectedPermissions: Permission[]): RiskA
   if (criticalCount > 0) {
     factors.push({
       name: "Critical Operations",
-      level: "Highest",
+      level: "High",
       description: `${criticalCount} permission${criticalCount > 1 ? 's' : ''} can perform irreversible or high-impact actions`,
       count: criticalCount,
     });
@@ -1482,7 +1482,7 @@ export function generateRiskAssessment(selectedPermissions: Permission[]): RiskA
   const sensitivityMultiplier = isReadOnlyRole ? 0.2 : 1;
 
   if (credentialsCount > 0) {
-    const level = isReadOnlyRole ? "Medium" : "Highest";
+    const level = isReadOnlyRole ? "Medium" : "High";
     factors.push({
       name: "Payment Credentials",
       level,
@@ -1587,7 +1587,7 @@ export function generateRiskAssessment(selectedPermissions: Permission[]): RiskA
   const cappedScore = Math.min(100, totalScore);
   let overallRisk: RiskLevel;
   if (cappedScore >= 70) {
-    overallRisk = "Highest";
+    overallRisk = "High";
   } else if (cappedScore >= 45) {
     overallRisk = "High";
   } else if (cappedScore >= 20) {
@@ -1597,7 +1597,7 @@ export function generateRiskAssessment(selectedPermissions: Permission[]): RiskA
   }
 
   // Sort factors by severity
-  const riskOrder: Record<RiskLevel, number> = { "Highest": 0, "High": 1, "Medium": 2, "Low": 3 };
+  const riskOrder: Record<RiskLevel, number> = { "High": 0, "Medium": 1, "Low": 2 };
   factors.sort((a, b) => riskOrder[a.level] - riskOrder[b.level]);
 
   return {

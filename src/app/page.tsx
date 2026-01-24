@@ -149,10 +149,14 @@ function PermissionCardContent({
   permission,
   showTaskCategories = false,
   showActions = false,
+  currentGroup,
+  groupBy,
 }: {
   permission: Permission;
   showTaskCategories?: boolean;
   showActions?: boolean;
+  currentGroup?: string;
+  groupBy?: string;
 }) {
   // Format actions for display
   const getActionsLabel = (actions: string) => {
@@ -164,6 +168,19 @@ function PermissionCardContent({
 
   const actionsLabel = getActionsLabel(permission.actions);
   const isWrite = permission.actions.toLowerCase().includes('write');
+
+  // Get other groups this permission belongs to (excluding current group)
+  const getOtherGroups = (): string[] => {
+    if (!currentGroup || !groupBy) return [];
+    
+    if (groupBy === "taskCategory") {
+      return permission.taskCategories.filter(tc => tc !== currentGroup);
+    }
+    // For other multi-value groupings like sensitivity, add similar logic here
+    return [];
+  };
+
+  const otherGroups = getOtherGroups();
 
   return (
     <div className="flex-1 min-w-0">
@@ -202,9 +219,23 @@ function PermissionCardContent({
           {permission.taskCategories.map(tc => (
             <span
               key={tc}
-              className="text-[10px] px-1.5 py-0.5 bg-[#EBEEF1] text-[#596171] rounded"
+              className="text-[10px] px-1.5 py-0.5 bg-white text-[#596171] rounded"
             >
               {tc}
+            </span>
+          ))}
+        </div>
+      )}
+      {/* Show other groups when permission appears in multiple groups */}
+      {otherGroups.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1 mt-2">
+          <span className="text-[10px] text-[#818DA0]">Also in:</span>
+          {otherGroups.map(group => (
+            <span
+              key={group}
+              className="text-[10px] px-1.5 py-0.5 bg-white text-[#596171] rounded"
+            >
+              {group}
             </span>
           ))}
         </div>
@@ -226,8 +257,7 @@ function RiskBadge({ level, score }: { level: RiskLevel; score?: number }) {
   const styles: Record<RiskLevel, string> = {
     Low: "bg-[#D3F8DF] text-[#1D7C4D]",
     Medium: "bg-[#FEF6D4] text-[#8A6100]",
-    High: "bg-[#FFE4E4] text-[#CD3131]",
-    Highest: "bg-[#DF1B41] text-white",
+    High: "bg-[#DF1B41] text-white",
   };
   return (
     <span className={`inline-flex items-center text-[12px] font-normal px-2 py-0.5 rounded leading-4 ${styles[level]}`}>
@@ -292,9 +322,9 @@ function RiskAssessmentCard({
 
             {/* Warnings & Recommendations - only shown when customizing */}
             {showAdvice && (assessment.warnings.length > 0 || assessment.recommendations.length > 0) && (
-              <div className="flex gap-6 text-[12px]">
+              <div className="flex flex-col gap-3 text-[12px]">
                 {assessment.warnings.length > 0 && (
-                  <div className="flex-1">
+                  <div>
                     <div className="font-medium text-[#353A44] mb-1">Warnings</div>
                     <ul className="space-y-0.5 text-[#596171]">
                       {assessment.warnings.map((warning, i) => (
@@ -307,7 +337,7 @@ function RiskAssessmentCard({
                   </div>
                 )}
                 {assessment.recommendations.length > 0 && (
-                  <div className="flex-1">
+                  <div>
                     <div className="font-medium text-[#353A44] mb-1">Recommendations</div>
                     <ul className="space-y-0.5 text-[#596171]">
                       {assessment.recommendations.map((rec, i) => (
@@ -938,7 +968,7 @@ function CustomizeRoleModal({
                                 onChange={() => !exitingApiName && togglePermission(perm.apiName)}
                                 className="mt-0.5"
                               />
-                              <PermissionCardContent permission={perm} showTaskCategories={false} showActions={true} />
+                              <PermissionCardContent permission={perm} showTaskCategories={false} showActions={true} currentGroup={group} groupBy={groupBy} />
                             </div>
                           ))}
                         </div>
@@ -980,7 +1010,7 @@ function CustomizeRoleModal({
                                 onChange={() => !exitingApiName && togglePermission(perm.apiName)}
                                 className="mt-0.5"
                               />
-                              <PermissionCardContent permission={perm} showTaskCategories={false} showActions={true} />
+                              <PermissionCardContent permission={perm} showTaskCategories={false} showActions={true} currentGroup={group} groupBy={groupBy} />
                             </div>
                           ))}
                         </div>
@@ -1533,6 +1563,8 @@ export default function RolesPermissionsPage() {
                           permission={permission}
                           roleId={selectedRole.id}
                           showTaskCategories={false}
+                          currentGroup={groupName}
+                          groupBy={groupBy}
                         />
                       ))}
                     </div>
@@ -1578,10 +1610,14 @@ function PermissionItem({
   permission,
   roleId,
   showTaskCategories = false,
+  currentGroup,
+  groupBy,
 }: {
   permission: Permission;
   roleId: string;
   showTaskCategories?: boolean;
+  currentGroup?: string;
+  groupBy?: string;
 }) {
   // For custom roles (or roles not in roleAccess), use the permission's actions field
   const access = permission.roleAccess[roleId];
@@ -1620,7 +1656,7 @@ function PermissionItem({
   return (
     <div className="bg-[#F5F6F8] rounded px-4 py-3">
       <div className="flex items-start justify-between gap-3">
-        <PermissionCardContent permission={permission} showTaskCategories={showTaskCategories} />
+        <PermissionCardContent permission={permission} showTaskCategories={showTaskCategories} currentGroup={currentGroup} groupBy={groupBy} />
         <span
           className={`text-[12px] font-medium px-2 py-0.5 rounded flex-shrink-0 ${
             hasWrite

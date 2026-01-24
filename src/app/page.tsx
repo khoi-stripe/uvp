@@ -173,10 +173,6 @@ function PermissionCardContent({
           <h4 className="text-[14px] font-medium text-[#353A44] leading-5 tracking-[-0.15px]">
             {permission.displayName}
           </h4>
-          {/* API name in monospace */}
-          <p className="text-[11px] text-[#353A44] font-mono leading-4 mt-0.5">
-            {permission.apiName}
-          </p>
         </div>
         {/* Actions badge */}
         {showActions && (
@@ -192,8 +188,12 @@ function PermissionCardContent({
         )}
       </div>
       {/* Description */}
-      <p className="text-[12px] text-[#596171] leading-4 mt-1">
+      <p className="text-[14px] text-[#596171] leading-5 mt-1">
         {permission.description}
+      </p>
+      {/* API name in monospace */}
+      <p className="text-[11px] text-[#596171] font-mono leading-4 mt-1">
+        {permission.apiName}
       </p>
       {/* Task categories as context tags (only when alphabetical/ungrouped) */}
       {showTaskCategories && permission.taskCategories.length > 0 && (

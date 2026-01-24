@@ -291,7 +291,6 @@ function RiskAssessmentCard({
             assessment.overallRisk === "Medium" ? "bg-[#D97706]" :
             "bg-[#1D7C4D]"
           }`} />
-          <span className="text-[12px] text-[#596171] leading-4">{assessment.score}/100</span>
         </div>
         <ChevronDown 
           className="w-4 h-4 text-[#474E5A] transition-transform duration-200"

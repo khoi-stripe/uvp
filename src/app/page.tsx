@@ -284,9 +284,14 @@ function RiskAssessmentCard({
         onClick={onToggle}
         className="w-full flex items-center justify-between gap-3 cursor-pointer hover:opacity-80 transition-opacity"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Risk Assessment</span>
-          <RiskBadge level={assessment.overallRisk} score={assessment.score} />
+          <span className={`w-2 h-2 rounded-full ${
+            assessment.overallRisk === "High" ? "bg-[#DF1B41]" :
+            assessment.overallRisk === "Medium" ? "bg-[#D97706]" :
+            "bg-[#1D7C4D]"
+          }`} />
+          <span className="text-[12px] text-[#596171] leading-4">{assessment.score}/100</span>
         </div>
         <ChevronDown 
           className="w-4 h-4 text-[#474E5A] transition-transform duration-200"
@@ -307,12 +312,12 @@ function RiskAssessmentCard({
                 <tbody className="divide-y divide-[#EBEEF1]">
                   {assessment.factors.map((factor, i) => (
                     <tr key={i}>
-                      <td className="py-2 align-top w-[70px]">
-                        <RiskBadge level={factor.level} />
-                      </td>
                       <td className="py-2 text-[#353A44]">
                         <span className="font-medium">{factor.name}</span>
                         <p className="text-[12px] text-[#596171] mt-0.5">{factor.description}</p>
+                      </td>
+                      <td className="py-2 align-top text-right">
+                        <RiskBadge level={factor.level} />
                       </td>
                     </tr>
                   ))}
@@ -322,7 +327,7 @@ function RiskAssessmentCard({
 
             {/* Warnings & Recommendations - only shown when customizing */}
             {showAdvice && (assessment.warnings.length > 0 || assessment.recommendations.length > 0) && (
-              <div className="flex flex-col gap-3 text-[12px]">
+              <div className="flex flex-col gap-3 text-[14px]">
                 {assessment.warnings.length > 0 && (
                   <div>
                     <div className="font-medium text-[#353A44] mb-1">Warnings</div>
@@ -817,7 +822,7 @@ function CustomizeRoleModal({
                       onChange={(e) => setCustomDescription(e.target.value)}
                       rows={4}
                       autoFocus
-                      className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-white border border-[#D8DEE4] rounded-[6px] px-2 py-1 outline-none resize focus:shadow-[0px_0px_0px_4px_rgba(8,142,249,0.36)] focus:border-[#D8DEE4] transition-shadow"
+                      className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-white border border-[#D8DEE4] rounded-[6px] px-2 py-1 outline-none resize-y focus:shadow-[0px_0px_0px_4px_rgba(8,142,249,0.36)] focus:border-[#D8DEE4] transition-shadow"
                     />
                     <button
                       onClick={() => {

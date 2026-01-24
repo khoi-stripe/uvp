@@ -431,56 +431,71 @@ export default function RolesPermissionsPage() {
               )}
             </div>
 
-            {/* Best for section */}
-            {selectedRole.details?.bestFor && (
-              <div className="bg-white rounded-lg p-4">
-                <div className="mb-2">
-                  <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Best for:</span>
-                </div>
-                <p className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">
-                  {selectedRole.details.bestFor}
-                </p>
-              </div>
-            )}
-
-            {/* Can section */}
-            <div className="bg-white rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <CheckCircleIcon />
-                <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Can</span>
-              </div>
-              {selectedRole.details?.canDo && selectedRole.details.canDo.length > 0 ? (
-                <ul className="list-disc pl-4 flex flex-col gap-1">
-                  {selectedRole.details.canDo.map((item, index) => (
-                    <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="flex flex-col gap-2.5 py-1.5">
-                  <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                  <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                </div>
+            {/* Best for, Can, Cannot - combined container */}
+            <div className="bg-white rounded-lg p-4 flex flex-col">
+              {/* Best for section */}
+              {selectedRole.details?.bestFor && (
+                <>
+                  <div className="pb-4">
+                    <div className="mb-2">
+                      <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Best for:</span>
+                    </div>
+                    <p className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">
+                      {selectedRole.details.bestFor}
+                    </p>
+                  </div>
+                  <div className="h-px bg-[#EBEEF1]" />
+                </>
               )}
-            </div>
 
-            {/* Cannot section */}
-            <div className="bg-white rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <CancelCircleIcon />
-                <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Cannot</span>
-              </div>
-              {selectedRole.details?.cannotDo && selectedRole.details.cannotDo.length > 0 ? (
-                <ul className="list-disc pl-4 flex flex-col gap-1">
-                  {selectedRole.details.cannotDo.map((item, index) => (
-                    <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="flex flex-col gap-2.5 py-1.5">
-                  <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                  <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+              {/* Can section */}
+              <div className={selectedRole.details?.bestFor ? "py-4" : "pb-4"}>
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircleIcon />
+                  <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Can</span>
                 </div>
-              )}
+                {selectedRole.details?.canDo && selectedRole.details.canDo.length > 0 ? (
+                  <ul className="list-disc pl-4 flex flex-col gap-1">
+                    {selectedRole.details.canDo.map((item, index) => (
+                      <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="flex flex-col gap-2.5 py-1.5">
+                    <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                    <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                  </div>
+                )}
+              </div>
+
+              <div className="h-px bg-[#EBEEF1]" />
+
+              {/* Cannot section */}
+              <div className="py-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <CancelCircleIcon />
+                  <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Cannot</span>
+                </div>
+                {selectedRole.details?.cannotDo && selectedRole.details.cannotDo.length > 0 ? (
+                  <ul className="list-disc pl-4 flex flex-col gap-1">
+                    {selectedRole.details.cannotDo.map((item, index) => (
+                      <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="flex flex-col gap-2.5 py-1.5">
+                    <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                    <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                  </div>
+                )}
+              </div>
+
+              <div className="h-px bg-[#EBEEF1]" />
+
+              {/* Note */}
+              <p className="pt-4 text-[12px] text-[#596171] leading-4">
+                Note: The capabilities listed are highlights only. Refer to the permissions panel for the complete, authoritative list of what each role can access.
+              </p>
             </div>
           </section>
 

@@ -257,7 +257,7 @@ function RiskBadge({ level, score }: { level: RiskLevel; score?: number }) {
   const styles: Record<RiskLevel, string> = {
     Low: "bg-[#D3F8DF] text-[#1D7C4D]",
     Medium: "bg-[#FEF6D4] text-[#8A6100]",
-    High: "bg-[#DF1B41] text-white",
+    High: "bg-[#FFE4E4] text-[#CD3131]",
   };
   return (
     <span className={`inline-flex items-center text-[12px] font-normal px-2 py-0.5 rounded leading-4 ${styles[level]}`}>

@@ -1148,7 +1148,6 @@ export default function RolesPermissionsPage() {
   const [groupBy, setGroupBy] = useState<GroupByOption>("alphabetical");
   const [searchQuery, setSearchQuery] = useState("");
   const roleDetailsRef = useRef<HTMLElement>(null);
-  const [isCapabilitiesExpanded, setIsCapabilitiesExpanded] = useState(true);
   const [isRiskExpanded, setIsRiskExpanded] = useState(false);
   
   // Custom roles state with localStorage persistence
@@ -1259,6 +1258,19 @@ export default function RolesPermissionsPage() {
               <h1 className="flex-1 text-[28px] font-bold text-[#353A44] leading-9 tracking-[0.38px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                 Roles and permissions
               </h1>
+              <a 
+                href="/map"
+                className="px-3 py-1.5 border border-[#D8DEE4] text-[#353A44] text-sm font-semibold rounded-md hover:bg-[#F5F6F8] transition-colors shadow-[0_1px_1px_rgba(33,37,44,0.16)] flex items-center gap-2"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 3.5C2 2.67157 2.67157 2 3.5 2H6.5C7.32843 2 8 2.67157 8 3.5V6.5C8 7.32843 7.32843 8 6.5 8H3.5C2.67157 8 2 7.32843 2 6.5V3.5Z" stroke="#474E5A" strokeWidth="1.5"/>
+                  <path d="M8 9.5C8 8.67157 8.67157 8 9.5 8H12.5C13.3284 8 14 8.67157 14 9.5V12.5C14 13.3284 13.3284 14 12.5 14H9.5C8.67157 14 8 13.3284 8 12.5V9.5Z" stroke="#474E5A" strokeWidth="1.5"/>
+                  <path d="M8 3.5C8 2.67157 8.67157 2 9.5 2H12.5C13.3284 2 14 2.67157 14 3.5V6.5C14 7.32843 13.3284 8 12.5 8H9.5C8.67157 8 8 7.32843 8 6.5V3.5Z" stroke="#474E5A" strokeWidth="1.5"/>
+                  <path d="M2 9.5C2 8.67157 2.67157 8 3.5 8H6.5C7.32843 8 8 8.67157 8 9.5V12.5C8 13.3284 7.32843 14 6.5 14H3.5C2.67157 14 2 13.3284 2 12.5V9.5Z" stroke="#474E5A" strokeWidth="1.5"/>
+                  <path d="M5 5L11 11M11 5L5 11" stroke="#474E5A" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+                View Map
+              </a>
               <button className="px-3 py-1.5 bg-[#635BFF] text-white text-sm font-semibold rounded-md hover:bg-[#5851DB] transition-colors shadow-[0_1px_1px_rgba(47,14,99,0.32)]">
                 Add role
               </button>
@@ -1403,91 +1415,69 @@ export default function RolesPermissionsPage() {
 
             {/* Best for, Can, Cannot - combined container */}
             <div className="bg-white rounded-lg p-4 flex flex-col">
-              {/* Collapsible header */}
-              <button 
-                onClick={() => setIsCapabilitiesExpanded(!isCapabilitiesExpanded)}
-                className="w-full flex items-center justify-between cursor-pointer hover:opacity-80 transition-opacity"
-              >
-                <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Role Capabilities</span>
-                <ChevronDown 
-                  className="w-4 h-4 text-[#474E5A] transition-transform duration-200"
-                  style={{ transform: isCapabilitiesExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                />
-              </button>
-
-              {/* Collapsible content */}
-              <div 
-                className="grid transition-[grid-template-rows] duration-200"
-                style={{ gridTemplateRows: isCapabilitiesExpanded ? '1fr' : '0fr' }}
-              >
-                <div className="overflow-hidden">
-                  <div className="pt-4">
-                    {/* Best for section */}
-                    {selectedRole.details?.bestFor && (
-                      <>
-                        <div className="pb-4">
-                          <div className="mb-2">
-                            <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Best for:</span>
-                          </div>
-                          <p className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">
-                            {selectedRole.details.bestFor}
-                          </p>
-                        </div>
-                        <div className="h-px bg-[#EBEEF1]" />
-                      </>
-                    )}
-
-                    {/* Can section */}
-                    <div className={selectedRole.details?.bestFor ? "py-4" : "pb-4"}>
-                      <div className="flex items-center gap-2 mb-2">
-                        <CheckCircleIcon />
-                        <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Can</span>
-                      </div>
-                      {selectedRole.details?.canDo && selectedRole.details.canDo.length > 0 ? (
-                        <ul className="list-disc pl-4 flex flex-col gap-1">
-                          {selectedRole.details.canDo.map((item, index) => (
-                            <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <div className="flex flex-col gap-2.5 py-1.5">
-                          <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                          <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                        </div>
-                      )}
+              {/* Best for section */}
+              {selectedRole.details?.bestFor && (
+                <>
+                  <div className="pb-4">
+                    <div className="mb-2">
+                      <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Best for:</span>
                     </div>
-
-                    <div className="h-px bg-[#EBEEF1]" />
-
-                    {/* Cannot section */}
-                    <div className="py-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <CancelCircleIcon />
-                        <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Cannot</span>
-                      </div>
-                      {selectedRole.details?.cannotDo && selectedRole.details.cannotDo.length > 0 ? (
-                        <ul className="list-disc pl-4 flex flex-col gap-1">
-                          {selectedRole.details.cannotDo.map((item, index) => (
-                            <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <div className="flex flex-col gap-2.5 py-1.5">
-                          <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                          <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="h-px bg-[#EBEEF1]" />
-
-                    {/* Note */}
-                    <p className="pt-4 text-[12px] text-[#596171] leading-4">
-                      Note: The capabilities listed are highlights only. Refer to the permissions panel for the complete, authoritative list of what each role can access.
+                    <p className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">
+                      {selectedRole.details.bestFor}
                     </p>
                   </div>
+                  <div className="h-px bg-[#EBEEF1]" />
+                </>
+              )}
+
+              {/* Can section */}
+              <div className={selectedRole.details?.bestFor ? "py-4" : "pb-4"}>
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircleIcon />
+                  <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Can</span>
                 </div>
+                {selectedRole.details?.canDo && selectedRole.details.canDo.length > 0 ? (
+                  <ul className="list-disc pl-4 flex flex-col gap-1">
+                    {selectedRole.details.canDo.map((item, index) => (
+                      <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="flex flex-col gap-2.5 py-1.5">
+                    <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                    <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                  </div>
+                )}
               </div>
+
+              <div className="h-px bg-[#EBEEF1]" />
+
+              {/* Cannot section */}
+              <div className="py-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <CancelCircleIcon />
+                  <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Cannot</span>
+                </div>
+                {selectedRole.details?.cannotDo && selectedRole.details.cannotDo.length > 0 ? (
+                  <ul className="list-disc pl-4 flex flex-col gap-1">
+                    {selectedRole.details.cannotDo.map((item, index) => (
+                      <li key={index} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="flex flex-col gap-2.5 py-1.5">
+                    <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                    <div className="h-2 bg-[#EBEEF1] rounded-lg w-full"></div>
+                  </div>
+                )}
+              </div>
+
+              <div className="h-px bg-[#EBEEF1]" />
+
+              {/* Note */}
+              <p className="pt-4 text-[12px] text-[#596171] leading-4">
+                Note: The capabilities listed are highlights only. Refer to the permissions panel for the complete, authoritative list of what each role can access.
+              </p>
             </div>
 
             {/* Risk Assessment - own container */}

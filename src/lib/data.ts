@@ -1107,9 +1107,22 @@ export function getSensitivityGroups(p: Permission): SensitivityGroup[] {
   return groups;
 }
 
-// Get permissions for a specific role
+// Get permissions for a specific role, adjusted for the role's actual access level
 export function getPermissionsForRole(roleId: string): Permission[] {
-  return permissions.filter((p) => p.roleAccess[roleId]);
+  return permissions
+    .filter((p) => p.roleAccess[roleId])
+    .map((p) => {
+      const roleAccess = p.roleAccess[roleId];
+      // If role only has read access, override operationType to Read-only
+      if (roleAccess === "read" && p.operationType !== "Read-only") {
+        return {
+          ...p,
+          operationType: "Read-only" as const,
+          actions: "read",
+        };
+      }
+      return p;
+    });
 }
 
 // Get permissions for a role by API names (for custom roles)
@@ -1379,6 +1392,220 @@ export function generateRoleDetails(selectedPermissions: Permission[]): RoleDeta
     bestFor: generateBestFor(selectedPermissions),
     canDo: generateCanDo(selectedPermissions),
     cannotDo: generateCannotDo(selectedPermissions),
+  };
+}
+
+// ============================================
+// Risk Assessment
+// ============================================
+
+export type RiskLevel = "Low" | "Medium" | "High" | "Highest";
+
+export interface RiskAssessment {
+  overallRisk: RiskLevel;
+  score: number;  // 0-100
+  factors: {
+    name: string;
+    level: RiskLevel;
+    description: string;
+    count?: number;
+  }[];
+  warnings: string[];
+  recommendations: string[];
+}
+
+// High-risk permissions that warrant specific warnings
+const HIGH_RISK_PERMISSIONS: Record<string, string> = {
+  "balance_transfer_operations": "Can transfer funds between accounts",
+  "account_admin_management_operations": "Can perform destructive account operations",
+  "team_management": "Can invite/remove team members and change roles",
+  "settings_security": "Can modify security settings and 2FA",
+  "sensitive_resources": "Has access to API keys and secrets",
+  "embeddable_key_admin": "Can manage embeddable keys",
+  "payout_operations": "Can create and manage payouts",
+};
+
+export function generateRiskAssessment(selectedPermissions: Permission[]): RiskAssessment {
+  if (selectedPermissions.length === 0) {
+    return {
+      overallRisk: "Low",
+      score: 0,
+      factors: [],
+      warnings: [],
+      recommendations: ["Add permissions to define role capabilities"],
+    };
+  }
+
+  const factors: RiskAssessment["factors"] = [];
+  const warnings: string[] = [];
+  const recommendations: string[] = [];
+  let totalScore = 0;
+
+  // Determine if this is a read-only role (significantly reduces risk)
+  const writeCount = selectedPermissions.filter(p => p.operationType === "Write" || p.operationType === "Read + Write").length;
+  const readOnlyCount = selectedPermissions.filter(p => p.operationType === "Read-only").length;
+  const isReadOnlyRole = readOnlyCount === selectedPermissions.length;
+  const writeRatio = writeCount / selectedPermissions.length;
+
+  // 1. Risk Level Analysis (only for write permissions)
+  const writePermissions = selectedPermissions.filter(p => p.operationType === "Write" || p.operationType === "Read + Write");
+  const criticalCount = writePermissions.filter(p => p.riskLevel === "Critical").length;
+  const elevatedCount = writePermissions.filter(p => p.riskLevel === "Elevated").length;
+  const standardCount = selectedPermissions.filter(p => p.riskLevel === "Standard").length;
+
+  if (criticalCount > 0) {
+    factors.push({
+      name: "Critical Operations",
+      level: "Highest",
+      description: `${criticalCount} permission${criticalCount > 1 ? 's' : ''} can perform irreversible or high-impact actions`,
+      count: criticalCount,
+    });
+    totalScore += criticalCount * 25;
+  }
+
+  if (elevatedCount > 0) {
+    factors.push({
+      name: "Administrative Access",
+      level: "High",
+      description: `${elevatedCount} permission${elevatedCount > 1 ? 's' : ''} can modify settings or manage access`,
+      count: elevatedCount,
+    });
+    totalScore += elevatedCount * 15;
+  }
+
+  // 2. Sensitivity Analysis (reduced weight for read-only)
+  const piiCount = selectedPermissions.filter(p => p.hasPII).length;
+  const financialCount = selectedPermissions.filter(p => p.hasFinancialData).length;
+  const credentialsCount = selectedPermissions.filter(p => p.hasPaymentCredentials).length;
+  
+  // Multiplier: read-only access is much less risky
+  const sensitivityMultiplier = isReadOnlyRole ? 0.2 : 1;
+
+  if (credentialsCount > 0) {
+    const level = isReadOnlyRole ? "Medium" : "Highest";
+    factors.push({
+      name: "Payment Credentials",
+      level,
+      description: `${isReadOnlyRole ? 'Read' : 'Access to'} ${credentialsCount} permission${credentialsCount > 1 ? 's' : ''} with API keys, secrets, or payment tokens`,
+      count: credentialsCount,
+    });
+    totalScore += Math.round(credentialsCount * 20 * sensitivityMultiplier);
+    if (!isReadOnlyRole) {
+      warnings.push("Role has access to payment credentials - ensure proper security training");
+    }
+  }
+
+  if (financialCount > 0) {
+    const level = isReadOnlyRole ? "Low" : "High";
+    factors.push({
+      name: "Financial Data",
+      level,
+      description: `${isReadOnlyRole ? 'Read-only view of' : 'Access to'} ${financialCount} permission${financialCount > 1 ? 's' : ''} with financial records`,
+      count: financialCount,
+    });
+    totalScore += Math.round(financialCount * 10 * sensitivityMultiplier);
+  }
+
+  if (piiCount > 0) {
+    const level = isReadOnlyRole ? "Low" : "Medium";
+    factors.push({
+      name: "Personal Information",
+      level,
+      description: `${isReadOnlyRole ? 'Read-only view of' : 'Access to'} ${piiCount} permission${piiCount > 1 ? 's' : ''} with customer PII`,
+      count: piiCount,
+    });
+    totalScore += Math.round(piiCount * 8 * sensitivityMultiplier);
+    if (piiCount > 3 && !isReadOnlyRole) {
+      warnings.push("Broad PII access - ensure GDPR/privacy compliance");
+    }
+  }
+
+  // 3. Operation Type Analysis
+  if (isReadOnlyRole) {
+    factors.push({
+      name: "Read-Only Access",
+      level: "Low",
+      description: "All permissions are read-only - no modification capability",
+      count: readOnlyCount,
+    });
+    // Read-only roles get a significant score reduction
+    totalScore = Math.round(totalScore * 0.3);
+  } else if (writeRatio > 0.7) {
+    factors.push({
+      name: "Write-Heavy Access",
+      level: "Medium",
+      description: `${Math.round(writeRatio * 100)}% of permissions allow modifications`,
+      count: writeCount,
+    });
+    totalScore += 10;
+  }
+
+  // Add Low factor for standard operations when no critical/elevated write access
+  if (standardCount > 0 && criticalCount === 0 && elevatedCount === 0 && !isReadOnlyRole) {
+    factors.push({
+      name: "Standard Operations",
+      level: "Low",
+      description: `${standardCount} permission${standardCount > 1 ? 's' : ''} with routine, low-risk access`,
+      count: standardCount,
+    });
+  }
+
+  // 4. Check for specific high-risk permissions
+  for (const [apiName, warning] of Object.entries(HIGH_RISK_PERMISSIONS)) {
+    if (selectedPermissions.some(p => p.apiName === apiName)) {
+      warnings.push(warning);
+    }
+  }
+
+  // 5. Breadth of access
+  const productCategories = new Set(selectedPermissions.map(p => p.productCategory));
+  if (productCategories.size > 8) {
+    factors.push({
+      name: "Broad Access",
+      level: "Medium",
+      description: `Spans ${productCategories.size} product areas`,
+      count: productCategories.size,
+    });
+    totalScore += 10;
+    recommendations.push("Consider splitting into more focused roles");
+  }
+
+  // 6. Generate recommendations
+  if (criticalCount > 0 && !selectedPermissions.some(p => p.apiName === "team_management")) {
+    recommendations.push("Critical operations without team management - ensure proper oversight");
+  }
+
+  if (selectedPermissions.length > 30) {
+    recommendations.push("Large permission set - review if all are necessary");
+  }
+
+  if (writeCount > 0 && readOnlyCount === 0) {
+    recommendations.push("No read-only permissions - consider adding for audit visibility");
+  }
+
+  // Calculate overall risk level
+  const cappedScore = Math.min(100, totalScore);
+  let overallRisk: RiskLevel;
+  if (cappedScore >= 70) {
+    overallRisk = "Highest";
+  } else if (cappedScore >= 45) {
+    overallRisk = "High";
+  } else if (cappedScore >= 20) {
+    overallRisk = "Medium";
+  } else {
+    overallRisk = "Low";
+  }
+
+  // Sort factors by severity
+  const riskOrder: Record<RiskLevel, number> = { "Highest": 0, "High": 1, "Medium": 2, "Low": 3 };
+  factors.sort((a, b) => riskOrder[a.level] - riskOrder[b.level]);
+
+  return {
+    overallRisk,
+    score: cappedScore,
+    factors,
+    warnings: warnings.slice(0, 5), // Limit to top 5 warnings
+    recommendations: recommendations.slice(0, 3), // Limit to top 3 recommendations
   };
 }
 

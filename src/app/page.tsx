@@ -515,10 +515,10 @@ function RoleMenu({
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    // Only show "Customize" for custom roles (edit in place)
-    ...(isCustomRole && onEdit ? [{ label: "Customize", onClick: onEdit }] : []),
-    // Duplicate is always available (creates a new copy)
-    { label: "Duplicate", onClick: onDuplicate },
+    // Only show "Edit" for custom roles (edit in place)
+    ...(isCustomRole && onEdit ? [{ label: "Edit", onClick: onEdit }] : []),
+    // Duplicate and customize is always available (creates a new copy)
+    { label: "Duplicate and customize", onClick: onDuplicate },
     { label: "Test in sandbox", onClick: () => console.log("Test in sandbox") },
   ];
 
@@ -537,7 +537,7 @@ function RoleMenu({
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)} 
           />
-          <div className="absolute top-full right-0 mt-1 bg-white border border-[#D8DEE4] rounded-[8px] shadow-[0_5px_15px_rgba(0,0,0,0.12),0_15px_35px_rgba(48,49,61,0.08)] z-20 min-w-[168px] overflow-hidden">
+          <div className="absolute top-full right-0 mt-1 bg-white border border-[#D8DEE4] rounded-[8px] shadow-[0_5px_15px_rgba(0,0,0,0.12),0_15px_35px_rgba(48,49,61,0.08)] z-20 min-w-[190px] overflow-hidden">
             <div className="p-1 flex flex-col">
               {menuItems.map((item) => (
                 <button

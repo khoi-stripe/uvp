@@ -1,7 +1,47 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { ChevronDown, MoreHorizontal } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { ChevronDown, MoreHorizontal, X } from "lucide-react";
+
+// Animated ticker number component
+function AnimatedNumber({ value, className = "" }: { value: number; className?: string }) {
+  const [displayValue, setDisplayValue] = useState(value);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const prevValue = useRef(value);
+
+  useEffect(() => {
+    if (prevValue.current !== value) {
+      setIsAnimating(true);
+      const diff = value - prevValue.current;
+      const steps = Math.abs(diff);
+      const duration = Math.min(300, steps * 50); // Cap at 300ms
+      const stepTime = duration / steps;
+      
+      let current = prevValue.current;
+      const increment = diff > 0 ? 1 : -1;
+      
+      const tick = () => {
+        current += increment;
+        setDisplayValue(current);
+        
+        if (current !== value) {
+          setTimeout(tick, stepTime);
+        } else {
+          setIsAnimating(false);
+        }
+      };
+      
+      setTimeout(tick, stepTime);
+      prevValue.current = value;
+    }
+  }, [value]);
+
+  return (
+    <span className={`${className} ${isAnimating ? 'text-[#635BFF]' : ''} transition-colors duration-150`}>
+      {displayValue}
+    </span>
+  );
+}
 
 // Custom SVG Icons
 function CheckCircleIcon() {
@@ -30,6 +70,15 @@ function SearchIcon({ className }: { className?: string }) {
   );
 }
 
+function HistoryIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3.98717 5.53849L2.5434 5.05723C3.69723 2.54125 5.96605 1.5 7.99987 1.5C11.5858 1.5 14.5 4.41422 14.5 7.99999C14.4999 11.5858 11.5857 14.5 7.99987 14.5C4.87508 14.5 2.62696 12.5093 1.71147 9.76283C1.58049 9.36987 1.15575 9.1575 0.762788 9.28849C0.448485 9.39326 0.249711 9.68595 0.249756 10C0.249767 10.0786 0.262229 10.1585 0.288447 10.2372C1.37296 13.4907 4.12484 16 7.99987 16C12.4142 16 15.9999 12.4142 16 8.00001C16 3.58578 12.4142 0 7.99987 0C5.63618 0 3.00506 1.13867 1.5 3.804V1.75C1.5 1.33579 1.16421 1 0.75 1C0.335786 1 0 1.33579 0 1.75V5.25C0 5.57282 0.206573 5.85943 0.512829 5.96151L3.51283 6.96151C3.90579 7.0925 4.33053 6.88013 4.46151 6.48717C4.5925 6.09421 4.38013 5.66947 3.98717 5.53849Z" fill="#6C7688"/>
+      <path d="M8.5 4.25C8.5 3.83579 8.16421 3.5 7.75 3.5C7.33579 3.5 7 3.83579 7 4.25V8.75C7 9.06538 7.1973 9.34707 7.49369 9.45485L10.2437 10.4548C10.633 10.5964 11.0633 10.3956 11.2048 10.0063C11.3464 9.61703 11.1456 9.18671 10.7563 9.04515L8.5 8.22468V4.25Z" fill="#6C7688"/>
+    </svg>
+  );
+}
+
 function ShieldCheckIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -45,6 +94,122 @@ function ArrowUpDownIcon({ size = 12 }: { size?: number }) {
       <path fillRule="evenodd" clipRule="evenodd" d="M2.34975 9.91465C2.67304 9.55546 3.22629 9.52634 3.58548 9.84962L8.00003 13.8228L12.4149 9.84961C12.7741 9.52634 13.3273 9.55547 13.6506 9.91467C13.9739 10.2739 13.9448 10.8271 13.5856 11.1504L8.58534 15.6504C8.41896 15.8001 8.20949 15.875 8.00003 15.875C7.79054 15.875 7.58105 15.8001 7.41466 15.6504L2.41478 11.1504C2.05559 10.8271 2.02647 10.2738 2.34975 9.91465Z" fill="#474E5A"/>
       <path fillRule="evenodd" clipRule="evenodd" d="M7.41466 0.349625C7.58105 0.199871 7.79054 0.124995 8.00003 0.125C8.20949 0.125005 8.41896 0.199873 8.58534 0.349605L13.5856 4.84961C13.9448 5.17287 13.9739 5.72613 13.6506 6.08533C13.3273 6.44453 12.7741 6.47366 12.4149 6.15039L8.00003 2.17719L3.58548 6.15038C3.22629 6.47366 2.67304 6.44454 2.34975 6.08535C2.02647 5.72616 2.05559 5.17291 2.41478 4.84962L7.41466 0.349625Z" fill="#474E5A"/>
     </svg>
+  );
+}
+
+// Custom Checkbox component matching Figma design
+function Checkbox({ 
+  checked, 
+  onChange,
+  className = ""
+}: { 
+  checked: boolean; 
+  onChange: () => void;
+  className?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onChange();
+      }}
+      className={`relative shrink-0 w-[14px] h-[14px] rounded-[4px] transition-all flex items-center justify-center ${className}`}
+      style={{
+        backgroundColor: checked ? '#675DFF' : 'white',
+        border: checked ? '1px solid #675DFF' : '1px solid #D8DEE4',
+        boxShadow: checked 
+          ? '0px 1px 1px 0px rgba(10, 33, 86, 0.16)' 
+          : '0px 1px 1px 0px rgba(33, 37, 44, 0.16)',
+      }}
+    >
+      {checked && (
+        <svg 
+          width="10" 
+          height="8" 
+          viewBox="0 0 10 8" 
+          fill="none" 
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path 
+            d="M1 4L3.5 6.5L9 1" 
+            stroke="white" 
+            strokeWidth="1.5" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          />
+        </svg>
+      )}
+    </button>
+  );
+}
+
+// Shared Permission Card Content component
+function PermissionCardContent({
+  permission,
+  showTaskCategories = false,
+  showActions = false,
+}: {
+  permission: Permission;
+  showTaskCategories?: boolean;
+  showActions?: boolean;
+}) {
+  // Format actions for display
+  const getActionsLabel = (actions: string) => {
+    const lower = actions.toLowerCase();
+    if (lower.includes('write') && lower.includes('read')) return 'Read/Write';
+    if (lower.includes('write')) return 'Write';
+    return 'Read';
+  };
+
+  const actionsLabel = getActionsLabel(permission.actions);
+  const isWrite = permission.actions.toLowerCase().includes('write');
+
+  return (
+    <div className="flex-1 min-w-0">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          {/* Human-readable display name */}
+          <h4 className="text-[14px] font-medium text-[#353A44] leading-5 tracking-[-0.15px]">
+            {permission.displayName}
+          </h4>
+          {/* API name in monospace */}
+          <p className="text-[11px] text-[#353A44] font-mono leading-4 mt-0.5">
+            {permission.apiName}
+          </p>
+        </div>
+        {/* Actions badge */}
+        {showActions && (
+          <span
+            className={`text-[12px] font-medium px-2 py-0.5 rounded flex-shrink-0 ${
+              isWrite
+                ? "bg-[#D3F8DF] text-[#1D7C4D]"
+                : "bg-[#D4E5FF] text-[#0055BC]"
+            }`}
+          >
+            {actionsLabel}
+          </span>
+        )}
+      </div>
+      {/* Description */}
+      <p className="text-[12px] text-[#596171] leading-4 mt-1">
+        {permission.description}
+      </p>
+      {/* Task categories as context tags (only when alphabetical/ungrouped) */}
+      {showTaskCategories && permission.taskCategories.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1 mt-2">
+          <span className="text-[10px] text-[#818DA0]">Context:</span>
+          {permission.taskCategories.map(tc => (
+            <span
+              key={tc}
+              className="text-[10px] px-1.5 py-0.5 bg-[#EBEEF1] text-[#596171] rounded"
+            >
+              {tc}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -71,10 +236,13 @@ function OrgIcon() {
 import {
   roleCategories,
   allRoles,
-  getUniquePermissionsForRole,
+  getPermissionsForRole,
   groupPermissions,
+  getAllPermissions,
+  generateRoleDetails,
   type Role,
   type Permission,
+  type RoleDetails,
 } from "@/lib/data";
 
 // Tooltip component
@@ -116,32 +284,28 @@ function Tooltip({ children, content }: { children: React.ReactNode; content: st
   );
 }
 
-type GroupByOption = "alphabetical" | "productCategory" | "taskCategory" | "actionType";
-
-const groupByOptions: { value: GroupByOption; label: string }[] = [
-  { value: "alphabetical", label: "Alphabetical" },
-  { value: "productCategory", label: "Product" },
-  { value: "taskCategory", label: "Task" },
-  { value: "actionType", label: "Action" },
-];
-
-// Custom dropdown component matching Figma design
-function GroupByDropdown({
+// Shared Dropdown component
+function Dropdown<T extends string>({
   value,
   onChange,
+  options,
+  width = 120,
 }: {
-  value: GroupByOption;
-  onChange: (value: GroupByOption) => void;
+  value: T;
+  onChange: (value: T) => void;
+  options: { value: T; label: string }[];
+  width?: number;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const selectedLabel = groupByOptions.find((o) => o.value === value)?.label || "Product";
+  const selectedLabel = options.find((o) => o.value === value)?.label || options[0]?.label;
 
   return (
     <div className="relative">
       {/* Trigger button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between gap-2 w-[120px] text-[14px] font-semibold leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white text-[#353A44] hover:bg-[#F5F6F8] transition-colors shadow-[0_1px_1px_rgba(33,37,44,0.16)]"
+        className="flex items-center justify-between gap-2 text-[14px] font-semibold leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white text-[#353A44] hover:bg-[#F5F6F8] transition-colors shadow-[0_1px_1px_rgba(33,37,44,0.16)]"
+        style={{ width }}
       >
         <span>{selectedLabel}</span>
         <ArrowUpDownIcon size={12} />
@@ -155,26 +319,587 @@ function GroupByDropdown({
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)} 
           />
-          {/* Popover */}
-          <div className="absolute top-full left-0 mt-1 bg-white border border-[#D8DEE4] rounded-lg shadow-[0_5px_15px_rgba(0,0,0,0.12),0_15px_35px_rgba(48,49,61,0.08)] z-20 min-w-[140px] py-1">
-            {groupByOptions.map((option) => (
+          {/* Popover - with 4px internal padding */}
+          <div className="absolute top-full left-0 mt-1 bg-white border border-[#D8DEE4] rounded-[8px] shadow-[0_15px_35px_rgba(48,49,61,0.08),0_5px_15px_rgba(0,0,0,0.12)] z-20 min-w-[168px] p-1 overflow-hidden">
+            {options.map((option) => (
               <button
                 key={option.value}
                 onClick={() => {
                   onChange(option.value);
                   setIsOpen(false);
                 }}
-                className="w-full flex items-center justify-between gap-3 px-3 py-2 text-[14px] leading-5 tracking-[-0.15px] text-[#353A44] hover:bg-[#F5F6F8] transition-colors"
+                className={`w-full flex items-center justify-between gap-3 px-2.5 py-1.5 text-[14px] leading-5 tracking-[-0.15px] text-[#353A44] rounded transition-colors ${
+                  value === option.value ? "bg-[#F5F6F8]" : "hover:bg-[#F5F6F8]"
+                }`}
               >
                 <span className={value === option.value ? "font-semibold" : ""}>
                   {option.label}
                 </span>
-                {value === option.value && <CheckCircleFilledIcon />}
+                {value === option.value && <CheckCircleFilledIcon size={12} />}
               </button>
             ))}
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+type GroupByOption = "alphabetical" | "productCategory" | "taskCategory" | "operationType" | "riskLevel" | "sensitivity";
+
+const groupByOptions: { value: GroupByOption; label: string }[] = [
+  { value: "alphabetical", label: "Alphabetical" },
+  { value: "productCategory", label: "Product" },
+  { value: "taskCategory", label: "Task" },
+  { value: "operationType", label: "Operation" },
+  { value: "riskLevel", label: "Risk" },
+  { value: "sensitivity", label: "Sensitivity" },
+];
+
+// Role overflow menu component
+function RoleMenu({ 
+  onDuplicate, 
+  onEdit,
+  isCustomRole = false,
+  onDelete,
+}: { 
+  onDuplicate: () => void;
+  onEdit?: () => void;
+  isCustomRole?: boolean;
+  onDelete?: () => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const menuItems = [
+    // Only show "Customize" for custom roles (edit in place)
+    ...(isCustomRole && onEdit ? [{ label: "Customize", onClick: onEdit }] : []),
+    // Duplicate is always available (creates a new copy)
+    { label: "Duplicate", onClick: onDuplicate },
+    { label: "Test in sandbox", onClick: () => console.log("Test in sandbox") },
+  ];
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="p-1 rounded-md hover:bg-[#EBEEF1] transition-colors"
+      >
+        <MoreHorizontal className="w-5 h-5 text-[#474E5A]" />
+      </button>
+
+      {isOpen && (
+        <>
+          <div 
+            className="fixed inset-0 z-10" 
+            onClick={() => setIsOpen(false)} 
+          />
+          <div className="absolute top-full right-0 mt-1 bg-white border border-[#D8DEE4] rounded-[8px] shadow-[0_5px_15px_rgba(0,0,0,0.12),0_15px_35px_rgba(48,49,61,0.08)] z-20 min-w-[168px] overflow-hidden">
+            <div className="p-1 flex flex-col">
+              {menuItems.map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => {
+                    item.onClick();
+                    setIsOpen(false);
+                  }}
+                  className="w-full text-left px-[10px] py-[6px] text-[14px] leading-5 tracking-[-0.15px] text-[#353A44] hover:bg-[#F5F6F8] rounded transition-colors"
+                >
+                  {item.label}
+                </button>
+              ))}
+              {isCustomRole && onDelete && (
+                <>
+                  <div className="h-px bg-[#EBEEF1] my-1" />
+                  <button
+                    onClick={() => {
+                      onDelete();
+                      setIsOpen(false);
+                    }}
+                    className="w-full text-left px-[10px] py-[6px] text-[14px] leading-5 tracking-[-0.15px] text-[#C0123C] hover:bg-[#FEF2F4] rounded transition-colors"
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Customize Role Modal Component
+function CustomizeRoleModal({
+  isOpen,
+  onClose,
+  baseRole,
+  onSave,
+  onUpdate,
+  initialGroupBy,
+  mode = "create",
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  baseRole: Role;
+  onSave: (role: Role) => void;
+  onUpdate?: (role: Role) => void;
+  initialGroupBy: GroupByOption;
+  mode?: "create" | "edit";
+}) {
+  const isEditMode = mode === "edit";
+  const allPermissions = getAllPermissions(); // ~50 consolidated permissions
+  
+  const [roleName, setRoleName] = useState(isEditMode ? baseRole.name : `${baseRole.name} (copy)`);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [customDescription, setCustomDescription] = useState("");
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [selectedApiNames, setSelectedApiNames] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState("");
+  const [groupBy, setGroupBy] = useState<GroupByOption>(initialGroupBy);
+  const [exitingApiName, setExitingApiName] = useState<string | null>(null);
+
+  // Reset state when modal opens with new role
+  useEffect(() => {
+    if (isOpen) {
+      // Get permissions for the base role (handle both standard and custom roles)
+      const basePermissions = baseRole.permissionApiNames
+        ? allPermissions.filter(p => baseRole.permissionApiNames!.includes(p.apiName))
+        : getPermissionsForRole(baseRole.id);
+      
+      setRoleName(isEditMode ? baseRole.name : `${baseRole.name} (copy)`);
+      setIsEditingName(false);
+      setCustomDescription(baseRole.customDescription || "");
+      setIsEditingDescription(!!baseRole.customDescription);
+      setSelectedApiNames(new Set(basePermissions.map(p => p.apiName)));
+      setSearchQuery("");
+      setGroupBy(initialGroupBy);
+    }
+  }, [isOpen, baseRole.id, baseRole.permissionApiNames, baseRole.customDescription, initialGroupBy]);
+
+  if (!isOpen) return null;
+
+  const selectedPermissions = allPermissions.filter(p => selectedApiNames.has(p.apiName));
+  const availablePermissions = allPermissions.filter(p => !selectedApiNames.has(p.apiName));
+  
+  // Filter by search
+  const filterBySearch = (perms: Permission[]) => {
+    if (!searchQuery) return perms;
+    const q = searchQuery.toLowerCase();
+    return perms.filter(p => 
+      p.apiName.toLowerCase().includes(q) ||
+      p.displayName.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q) ||
+      p.productCategory.toLowerCase().includes(q) ||
+      p.taskCategories.some(tc => tc.toLowerCase().includes(q))
+    );
+  };
+
+  const filteredSelected = filterBySearch(selectedPermissions);
+  const filteredAvailable = filterBySearch(availablePermissions);
+
+  // Group permissions - matches main page logic
+  const groupPerms = (perms: Permission[]) => {
+    if (groupBy === "alphabetical") {
+      return { "": [...perms].sort((a, b) => a.apiName.localeCompare(b.apiName)) };
+    }
+    const groups: Record<string, Permission[]> = {};
+    for (const p of perms) {
+      if (groupBy === "taskCategory") {
+        // Put permission in each of its task categories
+        for (const tc of p.taskCategories) {
+          if (!groups[tc]) groups[tc] = [];
+          groups[tc].push(p);
+        }
+      } else if (groupBy === "sensitivity") {
+        // Put permission in each applicable sensitivity group
+        const sensitivityGroups: string[] = [];
+        if (p.hasPII) sensitivityGroups.push("PII");
+        if (p.hasFinancialData) sensitivityGroups.push("Financial Data");
+        if (p.hasPaymentCredentials) sensitivityGroups.push("Payment Credentials");
+        if (sensitivityGroups.length === 0) sensitivityGroups.push("Non-sensitive");
+        for (const sg of sensitivityGroups) {
+          if (!groups[sg]) groups[sg] = [];
+          groups[sg].push(p);
+        }
+      } else if (groupBy === "operationType") {
+        const key = p.operationType;
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(p);
+      } else if (groupBy === "riskLevel") {
+        const key = p.riskLevel;
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(p);
+      } else {
+        const key = p[groupBy];
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(p);
+      }
+    }
+    return groups;
+  };
+
+  const groupedSelected = groupPerms(filteredSelected);
+  const groupedAvailable = groupPerms(filteredAvailable);
+  const isAlphabetical = groupBy === "alphabetical";
+
+  const togglePermission = (apiName: string) => {
+    // Start exit animation
+    setExitingApiName(apiName);
+    
+    // After animation completes, actually toggle
+    setTimeout(() => {
+      setSelectedApiNames(prev => {
+        const next = new Set(prev);
+        if (next.has(apiName)) {
+          next.delete(apiName);
+        } else {
+          next.add(apiName);
+        }
+        return next;
+      });
+      setExitingApiName(null);
+    }, 200); // Match animation duration
+  };
+
+  const handleRevert = () => {
+    const basePermissions = baseRole.permissionApiNames
+      ? allPermissions.filter(p => baseRole.permissionApiNames!.includes(p.apiName))
+      : getPermissionsForRole(baseRole.id);
+    setSelectedApiNames(new Set(basePermissions.map(p => p.apiName)));
+    setRoleName(isEditMode ? baseRole.name : `${baseRole.name} (copy)`);
+    setIsEditingName(false);
+    setCustomDescription(baseRole.customDescription || "");
+    setIsEditingDescription(!!baseRole.customDescription);
+  };
+
+  const handleSave = () => {
+    const generatedDetails = generateRoleDetails(selectedPermissions);
+    // Use custom description if provided, otherwise use generated
+    const finalDetails: RoleDetails = {
+      ...generatedDetails,
+      description: customDescription.trim() || generatedDetails.description,
+    };
+    
+    if (isEditMode && onUpdate) {
+      // Edit mode: update existing role
+      const updatedRole: Role = {
+        ...baseRole,
+        name: roleName,
+        details: finalDetails,
+        permissionApiNames: Array.from(selectedApiNames),
+        customDescription: customDescription.trim() || undefined,
+      };
+      onUpdate(updatedRole);
+    } else {
+      // Create mode: create new role
+      const newRole: Role = {
+        id: `custom_${Date.now()}`,
+        name: roleName,
+        category: "Custom",
+        details: finalDetails,
+        userCount: 0,
+        permissionApiNames: Array.from(selectedApiNames),
+        customDescription: customDescription.trim() || undefined,
+      };
+      onSave(newRole);
+    }
+    onClose();
+  };
+
+  // Generate live preview of details
+  const previewDetails = generateRoleDetails(selectedPermissions);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/50 animate-fade-in"
+        onClick={onClose}
+      />
+      
+      {/* Modal - full screen with 60px margin */}
+      <div className="relative bg-white rounded-[12px] shadow-[0px_15px_35px_0px_rgba(48,49,61,0.08),0px_5px_15px_0px_rgba(0,0,0,0.12)] flex flex-col overflow-hidden m-[60px] animate-modal-in" style={{ width: 'calc(100vw - 120px)', height: 'calc(100vh - 120px)' }}>
+        {/* Close button - top right */}
+        <div className="flex items-end justify-end pt-6 px-6">
+          <button 
+            onClick={onClose}
+            className="p-1 rounded-md hover:bg-[#F5F6F8] transition-colors"
+          >
+            <X className="w-5 h-5 text-[#6C7688]" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 flex flex-col gap-4 px-8 overflow-hidden">
+          {/* Title */}
+          <h2 className="text-[24px] font-bold text-[#21252C] leading-8 tracking-[0.3px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
+            {isEditMode ? "Edit role" : "Duplicate role"}
+          </h2>
+
+          {/* Main content area */}
+          <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
+            {/* All panels inside offset background */}
+            <div className="bg-[#F5F6F8] rounded-[12px] p-2 flex gap-4 flex-1 overflow-hidden">
+              {/* Role info column - equal width */}
+              <div className="flex-1 flex flex-col gap-4 px-4 py-4 overflow-y-auto min-w-0">
+                {/* Role name header */}
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    {isEditingName ? (
+                      <input
+                        type="text"
+                        value={roleName}
+                        onChange={(e) => setRoleName(e.target.value)}
+                        autoFocus
+                        className="flex-1 text-[20px] font-bold text-[#353A44] leading-7 tracking-[0.3px] bg-white border border-[#D8DEE4] rounded-[6px] px-2 py-1 outline-none font-display min-w-0 focus:shadow-[0px_0px_0px_4px_rgba(8,142,249,0.36)] transition-shadow"
+                        style={{ fontFeatureSettings: "'lnum', 'pnum'" }}
+                      />
+                    ) : (
+                      <h3 className="flex-1 text-[20px] font-bold text-[#353A44] leading-7 tracking-[0.3px] font-display min-w-0" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
+                        {roleName}
+                      </h3>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setIsEditingName(!isEditingName)}
+                    className="self-start text-[12px] text-[#635BFF] hover:text-[#5851DB] transition-colors"
+                  >
+                    {isEditingName ? "Done" : "Edit name"}
+                  </button>
+                </div>
+
+                {/* Description - display or edit mode */}
+                {isEditingDescription ? (
+                  <div className="flex flex-col gap-1">
+                    <textarea
+                      value={customDescription}
+                      onChange={(e) => setCustomDescription(e.target.value)}
+                      rows={4}
+                      autoFocus
+                      className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-white border border-[#D8DEE4] rounded-[6px] px-2 py-1 outline-none resize focus:shadow-[0px_0px_0px_4px_rgba(8,142,249,0.36)] focus:border-[#D8DEE4] transition-shadow"
+                    />
+                    <button
+                      onClick={() => {
+                        setCustomDescription("");
+                        setIsEditingDescription(false);
+                      }}
+                      className="self-start text-[12px] text-[#635BFF] hover:text-[#5851DB] transition-colors"
+                    >
+                      Use auto-generated
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-1">
+                    <p className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">
+                      {previewDetails.description}
+                    </p>
+                    <button
+                      onClick={() => {
+                        setCustomDescription(previewDetails.description);
+                        setIsEditingDescription(true);
+                      }}
+                      className="self-start text-[12px] text-[#635BFF] hover:text-[#5851DB] transition-colors"
+                    >
+                      Edit description
+                    </button>
+                  </div>
+                )}
+
+                {/* Combined Can / Cannot container */}
+                <div className="bg-white rounded-lg p-4">
+                  {/* Can section */}
+                  <div className="pb-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <CheckCircleIcon />
+                      <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Can</span>
+                    </div>
+                    <ul className="list-disc pl-6 flex flex-col gap-1.5">
+                      {previewDetails.canDo.slice(0, 5).map((item, i) => (
+                        <li key={i} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]">{item}</li>
+                      ))}
+                      {previewDetails.canDo.length > 5 && (
+                        <li className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">+{previewDetails.canDo.length - 5} more</li>
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="h-px bg-[#EBEEF1] my-4" />
+
+                  {/* Cannot section */}
+                  <div className="pb-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <CancelCircleIcon />
+                      <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Cannot</span>
+                    </div>
+                    <ul className="list-disc pl-6 flex flex-col gap-1.5">
+                      {previewDetails.cannotDo.slice(0, 5).map((item, i) => (
+                        <li key={i} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]">{item}</li>
+                      ))}
+                      {previewDetails.cannotDo.length > 5 && (
+                        <li className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">+{previewDetails.cannotDo.length - 5} more</li>
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="h-px bg-[#EBEEF1] my-4" />
+
+                  {/* Note */}
+                  <p className="text-[13px] text-[#596171] leading-5">
+                    Note: The capabilities listed are highlights only. Refer to the permissions panel for the complete, authoritative list of what each role can access.
+                  </p>
+                </div>
+              </div>
+
+              {/* Permissions module - spans 2 columns worth */}
+              <div className="flex-[2] bg-white rounded-lg shadow-[0px_7px_14px_0px_rgba(48,49,61,0.08),0px_3px_6px_0px_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 overflow-hidden min-w-0">
+                {/* Permissions header */}
+                <div className="flex items-center gap-2">
+                  <ShieldCheckIcon />
+                  <span className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
+                    Permissions
+                  </span>
+                </div>
+
+                {/* Controls row */}
+                <div className="flex items-center gap-2">
+                  {/* Group by dropdown - using shared component */}
+                  <Dropdown
+                    value={groupBy}
+                    onChange={setGroupBy}
+                    options={groupByOptions}
+                  />
+                  {/* Search field - matching main page styling */}
+                  <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
+                    <SearchIcon className="text-[#818DA0]" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search"
+                      className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => setSearchQuery("")}
+                        className="text-[#818DA0] hover:text-[#353A44] transition-colors"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Two-column permission lists */}
+                <div className="flex-1 flex gap-4 min-h-0 overflow-hidden">
+                  {/* Current permissions */}
+                  <div className="flex-1 flex flex-col gap-2 overflow-hidden min-w-0">
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex-1 text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Current</span>
+                      <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
+                        <AnimatedNumber value={selectedPermissions.length} />
+                      </span>
+                    </div>
+                    <div className="flex-1 overflow-y-auto">
+                      {Object.entries(groupedSelected).sort(([a], [b]) => a.localeCompare(b)).map(([group, perms]) => (
+                        <div key={group || "all"} className={isAlphabetical ? "" : "mb-3"}>
+                          {!isAlphabetical && group && (
+                            <div className="text-[12px] font-semibold text-[#353A44] leading-4 tracking-[-0.024px] mb-2">
+                              {group}
+                            </div>
+                          )}
+                          {perms.map(perm => (
+                            <div
+                              key={perm.apiName}
+                              onClick={() => !exitingApiName && togglePermission(perm.apiName)}
+                              className={`flex items-start gap-4 px-4 py-3 bg-[#F5F6F8] rounded hover:bg-[#EBEEF1] cursor-pointer mb-2 transition-all duration-150 ${
+                                exitingApiName === perm.apiName ? 'animate-scale-out' : ''
+                              }`}
+                            >
+                              <Checkbox
+                                checked={true}
+                                onChange={() => !exitingApiName && togglePermission(perm.apiName)}
+                                className="mt-0.5"
+                              />
+                              <PermissionCardContent permission={perm} showTaskCategories={false} showActions={true} />
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                      {filteredSelected.length === 0 && (
+                        <div className="text-center py-8 text-[#596171] text-[14px] leading-5 tracking-[-0.15px]">
+                          No permissions selected
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Available permissions */}
+                  <div className="flex-1 flex flex-col gap-2 overflow-hidden min-w-0">
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex-1 text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Available</span>
+                      <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
+                        <AnimatedNumber value={availablePermissions.length} />
+                      </span>
+                    </div>
+                    <div className="flex-1 overflow-y-auto">
+                      {Object.entries(groupedAvailable).sort(([a], [b]) => a.localeCompare(b)).map(([group, perms]) => (
+                        <div key={group || "all"} className={isAlphabetical ? "" : "mb-3"}>
+                          {!isAlphabetical && group && (
+                            <div className="text-[12px] font-semibold text-[#353A44] leading-4 tracking-[-0.024px] mb-2">
+                              {group}
+                            </div>
+                          )}
+                          {perms.map(perm => (
+                            <div
+                              key={perm.apiName}
+                              onClick={() => !exitingApiName && togglePermission(perm.apiName)}
+                              className={`flex items-start gap-4 px-4 py-3 bg-[#F5F6F8] rounded hover:bg-[#EBEEF1] cursor-pointer mb-2 transition-all duration-150 ${
+                                exitingApiName === perm.apiName ? 'animate-scale-out' : ''
+                              }`}
+                            >
+                              <Checkbox
+                                checked={false}
+                                onChange={() => !exitingApiName && togglePermission(perm.apiName)}
+                                className="mt-0.5"
+                              />
+                              <PermissionCardContent permission={perm} showTaskCategories={false} showActions={true} />
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                      {filteredAvailable.length === 0 && (
+                        <div className="text-center py-8 text-[#596171] text-[14px] leading-5 tracking-[-0.15px]">
+                          All permissions selected
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-2 px-8 py-6">
+          <button
+            onClick={handleRevert}
+            className="flex items-center gap-2 px-3 py-1.5 text-[14px] font-medium text-[#353A44] leading-5 tracking-[-0.15px] hover:bg-[#F5F6F8] border border-[#D8DEE4] rounded-md transition-colors bg-white shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)]"
+          >
+            <HistoryIcon />
+            Revert
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-4 py-1.5 bg-[#675DFF] text-white text-[14px] font-semibold leading-5 tracking-[-0.15px] rounded-md hover:bg-[#5851DB] transition-colors shadow-[0px_1px_1px_0px_rgba(47,14,99,0.32)]"
+          >
+            Save
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -273,22 +998,82 @@ export default function RolesPermissionsPage() {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(roleCategories[0]?.name || null);
   const [groupBy, setGroupBy] = useState<GroupByOption>("alphabetical");
   const [searchQuery, setSearchQuery] = useState("");
+  const roleDetailsRef = useRef<HTMLElement>(null);
+  
+  // Custom roles state with localStorage persistence
+  const [customRoles, setCustomRoles] = useState<Role[]>([]);
+  const [isCustomizeModalOpen, setIsCustomizeModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
+
+  // Load custom roles from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("customRoles");
+    if (saved) {
+      try {
+        setCustomRoles(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse custom roles:", e);
+      }
+    }
+  }, []);
+
+  // Save custom roles to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("customRoles", JSON.stringify(customRoles));
+  }, [customRoles]);
+
+  // Combined role categories including custom roles
+  const allCategories = customRoles.length > 0
+    ? [...roleCategories, { name: "Custom", roles: customRoles }]
+    : roleCategories;
+
+  // All roles including custom ones
+  const combinedAllRoles = [...allRoles, ...customRoles];
 
   const toggleCategory = (categoryName: string) => {
     // If clicking the already expanded category, collapse it; otherwise expand clicked category
     setExpandedCategory((prev) => prev === categoryName ? null : categoryName);
   };
 
-  const rolePermissions = getUniquePermissionsForRole(selectedRole.id);
+  const handleSaveCustomRole = (newRole: Role) => {
+    setCustomRoles(prev => [...prev, newRole]);
+    setSelectedRole(newRole);
+    setExpandedCategory("Custom");
+  };
+
+  const handleUpdateCustomRole = (updatedRole: Role) => {
+    setCustomRoles(prev => prev.map(r => r.id === updatedRole.id ? updatedRole : r));
+    setSelectedRole(updatedRole);
+  };
+
+  const handleDeleteCustomRole = () => {
+    if (selectedRole.category !== "Custom") return;
+    
+    const updatedRoles = customRoles.filter(r => r.id !== selectedRole.id);
+    setCustomRoles(updatedRoles);
+    
+    // Select the first available role after deletion
+    const firstRole = roleCategories[0]?.roles[0];
+    if (firstRole) {
+      setSelectedRole(firstRole);
+      setExpandedCategory(roleCategories[0].name);
+    }
+  };
+
+  // For custom roles, we need to handle permissions differently
+  const rolePermissions = selectedRole.permissionApiNames
+    ? getAllPermissions().filter(p => selectedRole.permissionApiNames!.includes(p.apiName))
+    : getPermissionsForRole(selectedRole.id);
   
   // Filter permissions by search query
   const filteredPermissions = searchQuery
     ? rolePermissions.filter(
         (p) =>
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.apiName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
           p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
           p.productCategory.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.taskCategory.toLowerCase().includes(searchQuery.toLowerCase())
+          p.taskCategories.some(tc => tc.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     : rolePermissions;
   
@@ -297,7 +1082,7 @@ export default function RolesPermissionsPage() {
     : null;
   
   const alphabeticalPermissions = groupBy === "alphabetical"
-    ? [...filteredPermissions].sort((a, b) => a.name.localeCompare(b.name))
+    ? [...filteredPermissions].sort((a, b) => a.apiName.localeCompare(b.apiName))
     : null;
 
   return (
@@ -344,12 +1129,16 @@ export default function RolesPermissionsPage() {
 
           {/* Categories */}
           <div className="flex flex-col">
-            {roleCategories.map((category) => {
+            {allCategories.map((category) => {
               const isExpanded = expandedCategory === category.name;
               return (
                 <div 
                   key={category.name} 
-                  className={`border-b border-[#EBEEF1] ${isExpanded ? 'py-4' : 'py-1'}`}
+                  className="border-b border-[#EBEEF1] transition-[padding] duration-300"
+                  style={{ 
+                    padding: isExpanded ? '16px 0' : '4px 0',
+                    transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }}
                 >
                   {/* Category header */}
                   <button
@@ -363,16 +1152,21 @@ export default function RolesPermissionsPage() {
                       {category.roles.length}
                     </span>
                     <ChevronDown 
-                      className={`w-4 h-4 text-[#474E5A] transition-transform duration-200 ${
-                        isExpanded ? 'rotate-180' : 'rotate-0'
-                      }`}
+                      className="w-4 h-4 text-[#474E5A] transition-transform duration-300"
+                      style={{
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+                      }}
                     />
                   </button>
 
                   {/* Roles in category - animated accordion */}
                   <div 
-                    className="grid transition-[grid-template-rows] duration-200 ease-out"
-                    style={{ gridTemplateRows: isExpanded ? '1fr' : '0fr' }}
+                    className="grid transition-[grid-template-rows] duration-300"
+                    style={{ 
+                      gridTemplateRows: isExpanded ? '1fr' : '0fr',
+                      transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    }}
                   >
                     <div className="overflow-hidden">
                       <div className="flex flex-col gap-px mt-px">
@@ -382,16 +1176,20 @@ export default function RolesPermissionsPage() {
                             onClick={() => {
                               setSelectedRole(role);
                               setSearchQuery(""); // Clear search when switching roles
+                              roleDetailsRef.current?.scrollTo(0, 0); // Reset scroll position
                             }}
-                            className={`w-full text-left px-2 py-1 text-[14px] leading-5 tracking-[-0.15px] rounded-md transition-all duration-200 ${
+                            className={`w-full text-left px-2 py-1 text-[14px] leading-5 tracking-[-0.15px] rounded-md transition-[background-color] duration-150 ${
                               selectedRole.id === role.id
                                 ? "bg-[#F7F5FD] text-[#533AFD]"
                                 : "text-[#353A44] hover:bg-[#F5F6F8]"
                             }`}
                             style={{ 
-                              transitionDelay: isExpanded ? `${index * 30}ms` : '0ms',
+                              transitionProperty: 'opacity, transform, background-color, color',
+                              transitionDuration: '250ms',
+                              transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+                              transitionDelay: isExpanded ? `${index * 40}ms` : '0ms',
                               opacity: isExpanded ? 1 : 0,
-                              transform: isExpanded ? 'translateY(0)' : 'translateY(-4px)'
+                              transform: isExpanded ? 'translateY(0) scale(1)' : 'translateY(-8px) scale(0.95)'
                             }}
                           >
                             {role.name}
@@ -409,19 +1207,36 @@ export default function RolesPermissionsPage() {
         {/* Shared Container for Role Details + Permissions */}
         <div className="flex-1 flex gap-4 p-2 bg-[#F5F6F8] rounded-xl overflow-hidden">
           {/* Role Details Panel */}
-          <section className="flex-1 flex flex-col gap-6 px-4 py-[13px] overflow-y-auto">
+          <section ref={roleDetailsRef} className="flex-1 flex flex-col gap-6 px-4 py-[13px] overflow-y-auto">
             {/* Header */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">
-                <h2 className="flex-1 text-[20px] font-bold text-[#353A44] leading-7 tracking-[0.3px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
+                <h2 className="text-[20px] font-bold text-[#353A44] leading-7 tracking-[0.3px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                   {selectedRole.name}
                 </h2>
+                {selectedRole.category === "Custom" && (
+                  <span className="bg-[#675DFF] text-white text-[11px] font-semibold px-2 py-0.5 rounded flex-shrink-0">
+                    Custom
+                  </span>
+                )}
+                <div className="flex-1" />
                 <Tooltip content={`There are ${selectedRole.userCount} users with the ${selectedRole.name} role`}>
                   <span className="bg-white text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center cursor-default">
                     {selectedRole.userCount}
                   </span>
                 </Tooltip>
-                <MoreHorizontal className="w-6 h-6 text-[#474E5A]" />
+                <RoleMenu 
+                  onDuplicate={() => {
+                    setModalMode("create");
+                    setIsCustomizeModalOpen(true);
+                  }}
+                  onEdit={selectedRole.category === "Custom" ? () => {
+                    setModalMode("edit");
+                    setIsCustomizeModalOpen(true);
+                  } : undefined}
+                  isCustomRole={selectedRole.category === "Custom"}
+                  onDelete={handleDeleteCustomRole}
+                />
               </div>
               {/* Description */}
               {selectedRole.details?.description && (
@@ -513,7 +1328,7 @@ export default function RolesPermissionsPage() {
             {/* Controls */}
             <div className="flex items-end gap-2">
               {/* Group by selector */}
-              <GroupByDropdown value={groupBy} onChange={setGroupBy} />
+              <Dropdown value={groupBy} onChange={setGroupBy} options={groupByOptions} />
               {/* Search field */}
               <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
                 <SearchIcon className="text-[#818DA0]" />
@@ -537,14 +1352,15 @@ export default function RolesPermissionsPage() {
 
             {/* Permissions list */}
             <div className="flex-1 overflow-y-auto flex flex-col gap-4">
-              {/* Alphabetical (flat list) */}
+              {/* Alphabetical (flat list) - show task categories as tags */}
               {alphabeticalPermissions && (
                 <div className="flex flex-col gap-2">
                   {alphabeticalPermissions.map((permission) => (
                     <PermissionItem
-                      key={permission.id}
+                      key={permission.apiName}
                       permission={permission}
                       roleId={selectedRole.id}
+                      showTaskCategories={true}
                     />
                   ))}
                 </div>
@@ -561,9 +1377,10 @@ export default function RolesPermissionsPage() {
                     <div className="flex flex-col gap-2">
                       {perms.map((permission) => (
                         <PermissionItem
-                          key={permission.id}
+                          key={permission.apiName}
                           permission={permission}
                           roleId={selectedRole.id}
+                          showTaskCategories={false}
                         />
                       ))}
                     </div>
@@ -590,6 +1407,17 @@ export default function RolesPermissionsPage() {
         </div>
         </div>
       </div>
+
+      {/* Customize Role Modal */}
+      <CustomizeRoleModal
+        isOpen={isCustomizeModalOpen}
+        onClose={() => setIsCustomizeModalOpen(false)}
+        baseRole={selectedRole}
+        onSave={handleSaveCustomRole}
+        onUpdate={handleUpdateCustomRole}
+        initialGroupBy={groupBy}
+        mode={modalMode}
+      />
     </div>
   );
 }
@@ -597,34 +1425,53 @@ export default function RolesPermissionsPage() {
 function PermissionItem({
   permission,
   roleId,
+  showTaskCategories = false,
 }: {
   permission: Permission;
   roleId: string;
+  showTaskCategories?: boolean;
 }) {
+  // For custom roles (or roles not in roleAccess), use the permission's actions field
   const access = permission.roleAccess[roleId];
-  const accessLabel =
-    access === "read"
-      ? "Read"
-      : access === "write"
-      ? "Write"
-      : access?.includes("read") && access?.includes("write")
-      ? "Read + Write"
-      : access || "—";
+  const isCustomRole = roleId.startsWith("custom_");
+  
+  // Determine access label based on role type
+  let accessLabel: string;
+  let hasWrite: boolean;
+  
+  if (isCustomRole || !access) {
+    // Use permission's actions field for custom roles
+    const actions = permission.actions.toLowerCase();
+    if (actions.includes('write') && actions.includes('read')) {
+      accessLabel = "Read/Write";
+      hasWrite = true;
+    } else if (actions.includes('write')) {
+      accessLabel = "Write";
+      hasWrite = true;
+    } else {
+      accessLabel = "Read";
+      hasWrite = false;
+    }
+  } else {
+    // Use role-specific access for standard roles
+    accessLabel =
+      access === "read"
+        ? "Read"
+        : access === "write"
+        ? "Write"
+        : access?.includes("read") && access?.includes("write")
+        ? "Read + Write"
+        : access;
+    hasWrite = access === "write" || access?.includes("write");
+  }
 
   return (
     <div className="bg-[#F5F6F8] rounded px-4 py-3">
       <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <h4 className="text-[14px] font-medium text-[#353A44] leading-5 tracking-[-0.15px] capitalize">
-            {permission.name.replace(/_/g, " ")}
-          </h4>
-          <p className="text-[12px] text-[#596171] leading-4 mt-0.5 truncate">
-            {permission.description}
-          </p>
-        </div>
+        <PermissionCardContent permission={permission} showTaskCategories={showTaskCategories} />
         <span
           className={`text-[12px] font-medium px-2 py-0.5 rounded flex-shrink-0 ${
-            access === "write" || access?.includes("write")
+            hasWrite
               ? "bg-[#D3F8DF] text-[#1D7C4D]"
               : "bg-[#D4E5FF] text-[#0055BC]"
           }`}

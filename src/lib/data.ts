@@ -1,14 +1,18 @@
 // Types
 export interface Permission {
-  id: string;
-  name: string;
-  actions: string;
-  productCategory: string;
-  taskCategory: string;
-  actionType: string;
-  sensitivityLevel: string;
-  description: string;
-  roleAccess: Record<string, string>;
+  apiName: string;              // Original UVP/UVB name from CSV (maps to API)
+  displayName: string;          // Human-readable name (auto-derived)
+  description: string;          // Brief description
+  productCategory: string;      // "Account & Connect", "Payments", etc.
+  taskCategories: string[];     // ["Manage team access", "Configure settings"] (consolidated)
+  actions: string;              // "read", "write", "read, write"
+  operationType: string;        // "Read-only", "Write", "Read + Write"
+  riskLevel: string;            // "Standard", "Elevated", "Critical"
+  // Sensitivity flags (can have multiple)
+  hasPII: boolean;
+  hasFinancialData: boolean;
+  hasPaymentCredentials: boolean;
+  roleAccess: Record<string, string>;  // { super_admin: "write", admin: "write", ... }
 }
 
 export interface RoleDetails {
@@ -24,11 +28,26 @@ export interface Role {
   category: string;
   details?: RoleDetails;
   userCount: number;
+  permissionApiNames?: string[];    // For custom roles - stores the API names of selected permissions
+  customDescription?: string;       // User-edited description (overrides generated)
 }
 
 export interface RoleCategory {
   name: string;
   roles: Role[];
+}
+
+// Helper to derive human-readable display name from API name
+export function toDisplayName(apiName: string): string {
+  // Words that should be fully capitalized (acronyms)
+  const acronyms = new Set(['kyc', 'pii', 'api', 'pos', 'id']);
+  
+  return apiName
+    .split('_')
+    .map(word => acronyms.has(word.toLowerCase()) 
+      ? word.toUpperCase() 
+      : word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 // Role details from CSV
@@ -352,1054 +371,1014 @@ export const roleCategories: RoleCategory[] = [
 // All roles flattened
 export const allRoles: Role[] = roleCategories.flatMap((cat) => cat.roles);
 
-// Permission data from CSV
+// Permission data from CSV (consolidated by API name)
 export const permissions: Permission[] = [
   {
-    id: "account_admin_management_operations_1",
-    name: "account_admin_management_operations",
-    actions: "write",
+    apiName: "account_admin_management_operations",
+    displayName: toDisplayName("account_admin_management_operations"),
+    description: "Administrative account operations (does not include team member management)",
     productCategory: "Account & Connect",
-    taskCategory: "Manage team access",
-    actionType: "Destructive",
-    sensitivityLevel: "Non-sensitive",
-    description: "Full administrative account management",
+    taskCategories: ["Configure settings"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Critical",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", developer: "write" },
   },
   {
-    id: "account_admin_management_operations_2",
-    name: "account_admin_management_operations",
-    actions: "write",
-    productCategory: "Account & Connect",
-    taskCategory: "Configure settings",
-    actionType: "Destructive",
-    sensitivityLevel: "Non-sensitive",
-    description: "Full administrative account management",
-    roleAccess: { super_admin: "write", admin: "write", developer: "write" },
-  },
-  {
-    id: "account_operations_1",
-    name: "account_operations",
-    actions: "read, write",
-    productCategory: "Account & Connect",
-    taskCategory: "Configure settings",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "account_operations",
+    displayName: toDisplayName("account_operations"),
     description: "Read access to base account details",
+    productCategory: "Account & Connect",
+    taskCategories: ["Configure settings", "Monitor platform"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", support: "write", support_associate: "write", analyst: "read", refund_analyst: "read", sandbox_admin: "read" },
   },
   {
-    id: "account_operations_2",
-    name: "account_operations",
-    actions: "read, write",
-    productCategory: "Account & Connect",
-    taskCategory: "Monitor platform",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
-    description: "Read access to base account details",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", support: "write", support_associate: "write", analyst: "read", refund_analyst: "read", sandbox_admin: "read" },
-  },
-  {
-    id: "accounts_kyc_basic_1",
-    name: "accounts_kyc_basic",
-    actions: "read",
-    productCategory: "Account & Connect",
-    taskCategory: "Verify identity",
-    actionType: "Read-only",
-    sensitivityLevel: "Contains PII",
+    apiName: "accounts_kyc_basic",
+    displayName: toDisplayName("accounts_kyc_basic"),
     description: "Read access to basic KYC fields",
+    productCategory: "Account & Connect",
+    taskCategories: ["Verify identity", "Handle customer issues"],
+    actions: "read",
+    operationType: "Read-only",
+    riskLevel: "Standard",
+    hasPII: true,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "read", admin: "read", view_only: "read", identity_analyst: "read" },
   },
   {
-    id: "accounts_kyc_basic_2",
-    name: "accounts_kyc_basic",
-    actions: "read",
-    productCategory: "Account & Connect",
-    taskCategory: "Handle customer issues",
-    actionType: "Read-only",
-    sensitivityLevel: "Contains PII",
-    description: "Read access to basic KYC fields",
-    roleAccess: { super_admin: "read", admin: "read", view_only: "read", identity_analyst: "read" },
-  },
-  {
-    id: "application_fee_operations_1",
-    name: "application_fee_operations",
-    actions: "read, write",
-    productCategory: "Account & Connect",
-    taskCategory: "Monitor platform",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
+    apiName: "application_fee_operations",
+    displayName: toDisplayName("application_fee_operations"),
     description: "Application fees for platforms",
+    productCategory: "Account & Connect",
+    taskCategories: ["Monitor platform", "Export & analyze data"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", support: "write", analyst: "write" },
   },
   {
-    id: "application_fee_operations_2",
-    name: "application_fee_operations",
-    actions: "read, write",
-    productCategory: "Account & Connect",
-    taskCategory: "Export & analyze data",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
-    description: "Application fees for platforms",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", support: "write", analyst: "write" },
-  },
-  {
-    id: "connect_settings_1",
-    name: "connect_settings",
-    actions: "write",
-    productCategory: "Account & Connect",
-    taskCategory: "Configure settings",
-    actionType: "Administrative",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "connect_settings",
+    displayName: toDisplayName("connect_settings"),
     description: "Manage Connect settings",
+    productCategory: "Account & Connect",
+    taskCategories: ["Configure settings", "Monitor platform"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Elevated",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", support: "write", support_associate: "write" },
   },
   {
-    id: "connect_settings_2",
-    name: "connect_settings",
-    actions: "write",
-    productCategory: "Account & Connect",
-    taskCategory: "Monitor platform",
-    actionType: "Administrative",
-    sensitivityLevel: "Non-sensitive",
-    description: "Manage Connect settings",
-    roleAccess: { super_admin: "write", admin: "write", support: "write", support_associate: "write" },
-  },
-  {
-    id: "connected_account_operations_1",
-    name: "connected_account_operations",
-    actions: "read, write",
-    productCategory: "Account & Connect",
-    taskCategory: "Monitor platform",
-    actionType: "Read + Write",
-    sensitivityLevel: "Contains PII",
+    apiName: "connected_account_operations",
+    displayName: toDisplayName("connected_account_operations"),
     description: "Connected accounts management",
+    productCategory: "Account & Connect",
+    taskCategories: ["Monitor platform", "Handle customer issues"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: true,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "read" },
   },
   {
-    id: "connected_account_operations_2",
-    name: "connected_account_operations",
-    actions: "read, write",
-    productCategory: "Account & Connect",
-    taskCategory: "Handle customer issues",
-    actionType: "Read + Write",
-    sensitivityLevel: "Contains PII",
-    description: "Connected accounts management",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "read" },
-  },
-  {
-    id: "embeddable_key_admin_1",
-    name: "embeddable_key_admin",
-    actions: "write",
-    productCategory: "Account & Connect",
-    taskCategory: "Configure settings",
-    actionType: "Administrative",
-    sensitivityLevel: "Payment credentials",
+    apiName: "embeddable_key_admin",
+    displayName: toDisplayName("embeddable_key_admin"),
     description: "Embeddable keys admin",
+    productCategory: "Account & Connect",
+    taskCategories: ["Configure settings", "Develop & integrate"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Elevated",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: true,
     roleAccess: { super_admin: "write", admin: "write" },
   },
   {
-    id: "embeddable_key_admin_2",
-    name: "embeddable_key_admin",
-    actions: "write",
-    productCategory: "Account & Connect",
-    taskCategory: "Develop & integrate",
-    actionType: "Administrative",
-    sensitivityLevel: "Payment credentials",
-    description: "Embeddable keys admin",
-    roleAccess: { super_admin: "write", admin: "write" },
-  },
-  {
-    id: "sandbox_creation_1",
-    name: "sandbox_creation",
-    actions: "write",
-    productCategory: "Account & Connect",
-    taskCategory: "Develop & integrate",
-    actionType: "Create & update",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "sandbox_creation",
+    displayName: toDisplayName("sandbox_creation"),
     description: "Create sandbox organizations",
+    productCategory: "Account & Connect",
+    taskCategories: ["Develop & integrate"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", developer: "write", sandbox_admin: "write" },
   },
   {
-    id: "team_management_1",
-    name: "team_management",
-    actions: "read, write",
+    apiName: "team_management",
+    displayName: toDisplayName("team_management"),
+    description: "Invite, remove, and change roles for team members",
     productCategory: "Account & Connect",
-    taskCategory: "Manage team access",
-    actionType: "Administrative",
-    sensitivityLevel: "Non-sensitive",
-    description: "Manage team members and roles",
+    taskCategories: ["Manage team access"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Elevated",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", iam_admin: "write" },
   },
+  // Admin
   {
-    id: "team_management_2",
-    name: "team_management",
-    actions: "read, write",
-    productCategory: "Account & Connect",
-    taskCategory: "Configure settings",
-    actionType: "Administrative",
-    sensitivityLevel: "Non-sensitive",
-    description: "Manage team members and roles",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", iam_admin: "write" },
-  },
-  {
-    id: "sensitive_resources_1",
-    name: "sensitive_resources",
-    actions: "read",
-    productCategory: "Admin",
-    taskCategory: "Develop & integrate",
-    actionType: "Read-only",
-    sensitivityLevel: "Payment credentials",
+    apiName: "sensitive_resources",
+    displayName: toDisplayName("sensitive_resources"),
     description: "API keys and secrets",
+    productCategory: "Admin",
+    taskCategories: ["Develop & integrate", "Configure settings"],
+    actions: "read",
+    operationType: "Read-only",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: true,
     roleAccess: { super_admin: "read", admin: "read", view_only: "read", developer: "read" },
   },
+  // Billing & Subscriptions
   {
-    id: "sensitive_resources_2",
-    name: "sensitive_resources",
-    actions: "read",
-    productCategory: "Admin",
-    taskCategory: "Configure settings",
-    actionType: "Read-only",
-    sensitivityLevel: "Payment credentials",
-    description: "API keys and secrets",
-    roleAccess: { super_admin: "read", admin: "read", view_only: "read", developer: "read" },
-  },
-  {
-    id: "billing_operations_1",
-    name: "billing_operations",
-    actions: "read, write",
-    productCategory: "Billing & Subscriptions",
-    taskCategory: "Manage billing",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
+    apiName: "billing_operations",
+    displayName: toDisplayName("billing_operations"),
     description: "Billing meters and bills",
+    productCategory: "Billing & Subscriptions",
+    taskCategories: ["Manage billing", "Export & analyze data"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", analyst: "write" },
   },
   {
-    id: "billing_operations_2",
-    name: "billing_operations",
-    actions: "read, write",
-    productCategory: "Billing & Subscriptions",
-    taskCategory: "Export & analyze data",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
-    description: "Billing meters and bills",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", analyst: "write" },
-  },
-  {
-    id: "billing_settings_operations_1",
-    name: "billing_settings_operations",
-    actions: "read, write",
-    productCategory: "Billing & Subscriptions",
-    taskCategory: "Configure settings",
-    actionType: "Administrative",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "billing_settings_operations",
+    displayName: toDisplayName("billing_settings_operations"),
     description: "Billing settings and profiles",
+    productCategory: "Billing & Subscriptions",
+    taskCategories: ["Configure settings", "Manage billing"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Elevated",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
   },
   {
-    id: "billing_settings_operations_2",
-    name: "billing_settings_operations",
-    actions: "read, write",
-    productCategory: "Billing & Subscriptions",
-    taskCategory: "Manage billing",
-    actionType: "Administrative",
-    sensitivityLevel: "Non-sensitive",
-    description: "Billing settings and profiles",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "credit_note_operations_1",
-    name: "credit_note_operations",
-    actions: "read, write",
-    productCategory: "Billing & Subscriptions",
-    taskCategory: "Handle customer issues",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
+    apiName: "credit_note_operations",
+    displayName: toDisplayName("credit_note_operations"),
     description: "Manage credit notes",
+    productCategory: "Billing & Subscriptions",
+    taskCategories: ["Handle customer issues", "Manage billing"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "write" },
   },
   {
-    id: "credit_note_operations_2",
-    name: "credit_note_operations",
-    actions: "read, write",
-    productCategory: "Billing & Subscriptions",
-    taskCategory: "Manage billing",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
-    description: "Manage credit notes",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "write" },
-  },
-  {
-    id: "invoice_operations_1",
-    name: "invoice_operations",
-    actions: "read, write",
-    productCategory: "Billing & Subscriptions",
-    taskCategory: "Handle customer issues",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
+    apiName: "invoice_operations",
+    displayName: toDisplayName("invoice_operations"),
     description: "Manage invoices and quotes",
+    productCategory: "Billing & Subscriptions",
+    taskCategories: ["Handle customer issues", "Manage billing", "Export & analyze data"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
   },
   {
-    id: "invoice_operations_2",
-    name: "invoice_operations",
-    actions: "read, write",
-    productCategory: "Billing & Subscriptions",
-    taskCategory: "Manage billing",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
-    description: "Manage invoices and quotes",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "invoice_operations_3",
-    name: "invoice_operations",
-    actions: "read, write",
-    productCategory: "Billing & Subscriptions",
-    taskCategory: "Export & analyze data",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
-    description: "Manage invoices and quotes",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "subscription_operations_1",
-    name: "subscription_operations",
-    actions: "read, write",
-    productCategory: "Billing & Subscriptions",
-    taskCategory: "Handle customer issues",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
+    apiName: "subscription_operations",
+    displayName: toDisplayName("subscription_operations"),
     description: "Manage subscriptions",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "subscription_operations_2",
-    name: "subscription_operations",
-    actions: "read, write",
     productCategory: "Billing & Subscriptions",
-    taskCategory: "Manage billing",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
-    description: "Manage subscriptions",
+    taskCategories: ["Handle customer issues", "Manage billing"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
   },
+  // Capital & Treasury
   {
-    id: "capital_operations_1",
-    name: "capital_operations",
-    actions: "read, write",
-    productCategory: "Capital & Treasury",
-    taskCategory: "Monitor financials",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
+    apiName: "capital_operations",
+    displayName: toDisplayName("capital_operations"),
     description: "Capital for Platforms",
+    productCategory: "Capital & Treasury",
+    taskCategories: ["Monitor financials", "Export & analyze data"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", analyst: "write" },
   },
   {
-    id: "capital_operations_2",
-    name: "capital_operations",
-    actions: "read, write",
-    productCategory: "Capital & Treasury",
-    taskCategory: "Export & analyze data",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
-    description: "Capital for Platforms",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", analyst: "write" },
-  },
-  {
-    id: "treasury_operations_1",
-    name: "treasury_operations",
-    actions: "read, write",
-    productCategory: "Capital & Treasury",
-    taskCategory: "Monitor financials",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
+    apiName: "treasury_operations",
+    displayName: toDisplayName("treasury_operations"),
     description: "Treasury financial accounts",
+    productCategory: "Capital & Treasury",
+    taskCategories: ["Monitor financials", "Export & analyze data"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", analyst: "read" },
   },
+  // Compliance & Identity
   {
-    id: "treasury_operations_2",
-    name: "treasury_operations",
-    actions: "read, write",
-    productCategory: "Capital & Treasury",
-    taskCategory: "Export & analyze data",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
-    description: "Treasury financial accounts",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", analyst: "read" },
-  },
-  {
-    id: "identity_verification_operations_1",
-    name: "identity_verification_operations",
-    actions: "read, write",
-    productCategory: "Compliance & Identity",
-    taskCategory: "Verify identity",
-    actionType: "Read + Write",
-    sensitivityLevel: "Contains PII",
+    apiName: "identity_verification_operations",
+    displayName: toDisplayName("identity_verification_operations"),
     description: "Identity verification",
+    productCategory: "Compliance & Identity",
+    taskCategories: ["Verify identity", "Handle customer issues"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: true,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", analyst: "write", identity_analyst: "write" },
   },
+  // Crypto & Climate
   {
-    id: "identity_verification_operations_2",
-    name: "identity_verification_operations",
-    actions: "read, write",
-    productCategory: "Compliance & Identity",
-    taskCategory: "Handle customer issues",
-    actionType: "Read + Write",
-    sensitivityLevel: "Contains PII",
-    description: "Identity verification",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", analyst: "write", identity_analyst: "write" },
-  },
-  {
-    id: "climate_operations_1",
-    name: "climate_operations",
-    actions: "read, write",
-    productCategory: "Crypto & Climate",
-    taskCategory: "Process transactions",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "climate_operations",
+    displayName: toDisplayName("climate_operations"),
     description: "Climate orders",
+    productCategory: "Crypto & Climate",
+    taskCategories: ["Process transactions", "Configure settings"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", analyst: "write" },
   },
   {
-    id: "climate_operations_2",
-    name: "climate_operations",
-    actions: "read, write",
-    productCategory: "Crypto & Climate",
-    taskCategory: "Configure settings",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
-    description: "Climate orders",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", analyst: "write" },
-  },
-  {
-    id: "crypto_operations_1",
-    name: "crypto_operations",
-    actions: "read, write",
-    productCategory: "Crypto & Climate",
-    taskCategory: "Process transactions",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "crypto_operations",
+    displayName: toDisplayName("crypto_operations"),
     description: "Crypto financial accounts",
+    productCategory: "Crypto & Climate",
+    taskCategories: ["Process transactions"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", analyst: "write" },
   },
+  // Customers
   {
-    id: "customer_operations_1",
-    name: "customer_operations",
-    actions: "read, write",
-    productCategory: "Customers",
-    taskCategory: "Handle customer issues",
-    actionType: "Read + Write",
-    sensitivityLevel: "Contains PII",
+    apiName: "customer_operations",
+    displayName: toDisplayName("customer_operations"),
     description: "Manage customer profiles",
+    productCategory: "Customers",
+    taskCategories: ["Handle customer issues", "Export & analyze data"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: true,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
   },
   {
-    id: "customer_operations_2",
-    name: "customer_operations",
-    actions: "read, write",
-    productCategory: "Customers",
-    taskCategory: "Export & analyze data",
-    actionType: "Read + Write",
-    sensitivityLevel: "Contains PII",
-    description: "Manage customer profiles",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "customer_portal_operations_1",
-    name: "customer_portal_operations",
-    actions: "write",
-    productCategory: "Customers",
-    taskCategory: "Configure settings",
-    actionType: "Create & update",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "customer_portal_operations",
+    displayName: toDisplayName("customer_portal_operations"),
     description: "Create customer portals",
+    productCategory: "Customers",
+    taskCategories: ["Configure settings", "Handle customer issues"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", analyst: "write" },
   },
+  // Disputes & Fraud Prevention
   {
-    id: "customer_portal_operations_2",
-    name: "customer_portal_operations",
-    actions: "write",
-    productCategory: "Customers",
-    taskCategory: "Handle customer issues",
-    actionType: "Create & update",
-    sensitivityLevel: "Non-sensitive",
-    description: "Create customer portals",
-    roleAccess: { super_admin: "write", admin: "write", analyst: "write" },
-  },
-  {
-    id: "dispute_operations_1",
-    name: "dispute_operations",
-    actions: "read, write",
-    productCategory: "Disputes & Fraud Prevention",
-    taskCategory: "Handle customer issues",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "dispute_operations",
+    displayName: toDisplayName("dispute_operations"),
     description: "Manage disputes",
+    productCategory: "Disputes & Fraud Prevention",
+    taskCategories: ["Handle customer issues", "Manage disputes & fraud"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "write" },
   },
   {
-    id: "dispute_operations_2",
-    name: "dispute_operations",
-    actions: "read, write",
-    productCategory: "Disputes & Fraud Prevention",
-    taskCategory: "Manage disputes & fraud",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
-    description: "Manage disputes",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "write" },
-  },
-  {
-    id: "radar_operations_1",
-    name: "radar_operations",
-    actions: "read, write",
-    productCategory: "Disputes & Fraud Prevention",
-    taskCategory: "Configure settings",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "radar_operations",
+    displayName: toDisplayName("radar_operations"),
     description: "Configure Radar fraud rules",
+    productCategory: "Disputes & Fraud Prevention",
+    taskCategories: ["Configure settings", "Manage disputes & fraud"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "read", support_associate: "read", analyst: "read", refund_analyst: "read" },
   },
   {
-    id: "radar_operations_2",
-    name: "radar_operations",
-    actions: "read, write",
-    productCategory: "Disputes & Fraud Prevention",
-    taskCategory: "Manage disputes & fraud",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
-    description: "Configure Radar fraud rules",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "read", support_associate: "read", analyst: "read", refund_analyst: "read" },
-  },
-  {
-    id: "review_operations_1",
-    name: "review_operations",
-    actions: "write",
-    productCategory: "Disputes & Fraud Prevention",
-    taskCategory: "Handle customer issues",
-    actionType: "Create & update",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "review_operations",
+    displayName: toDisplayName("review_operations"),
     description: "Action fraud reviews",
+    productCategory: "Disputes & Fraud Prevention",
+    taskCategories: ["Handle customer issues", "Manage disputes & fraud"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", support: "write", support_associate: "write", analyst: "write" },
   },
+  // Financial Operations
   {
-    id: "review_operations_2",
-    name: "review_operations",
-    actions: "write",
-    productCategory: "Disputes & Fraud Prevention",
-    taskCategory: "Manage disputes & fraud",
-    actionType: "Create & update",
-    sensitivityLevel: "Non-sensitive",
-    description: "Action fraud reviews",
-    roleAccess: { super_admin: "write", admin: "write", support: "write", support_associate: "write", analyst: "write" },
-  },
-  {
-    id: "balance_operations_1",
-    name: "balance_operations",
-    actions: "read",
-    productCategory: "Financial Operations",
-    taskCategory: "Monitor financials",
-    actionType: "Read-only",
-    sensitivityLevel: "Financial data",
+    apiName: "balance_operations",
+    displayName: toDisplayName("balance_operations"),
     description: "View account balances",
+    productCategory: "Financial Operations",
+    taskCategories: ["Monitor financials", "Export & analyze data"],
+    actions: "read",
+    operationType: "Read-only",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "read", admin: "read", view_only: "read", support: "read", support_associate: "read", analyst: "read", refund_analyst: "read", dispute_analyst: "read" },
   },
   {
-    id: "balance_operations_2",
-    name: "balance_operations",
-    actions: "read",
-    productCategory: "Financial Operations",
-    taskCategory: "Export & analyze data",
-    actionType: "Read-only",
-    sensitivityLevel: "Financial data",
-    description: "View account balances",
-    roleAccess: { super_admin: "read", admin: "read", view_only: "read", support: "read", support_associate: "read", analyst: "read", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "balance_transfer_operations_1",
-    name: "balance_transfer_operations",
-    actions: "write",
-    productCategory: "Financial Operations",
-    taskCategory: "Transfer funds",
-    actionType: "Destructive",
-    sensitivityLevel: "Financial data",
+    apiName: "balance_transfer_operations",
+    displayName: toDisplayName("balance_transfer_operations"),
     description: "Transfer balances (high risk)",
+    productCategory: "Financial Operations",
+    taskCategories: ["Transfer funds"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Critical",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", analyst: "write" },
   },
   {
-    id: "payout_operations_1",
-    name: "payout_operations",
-    actions: "read, write",
-    productCategory: "Financial Operations",
-    taskCategory: "Transfer funds",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
+    apiName: "payout_operations",
+    displayName: toDisplayName("payout_operations"),
     description: "Manage payouts",
+    productCategory: "Financial Operations",
+    taskCategories: ["Transfer funds", "Monitor financials"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", analyst: "write" },
   },
   {
-    id: "payout_operations_2",
-    name: "payout_operations",
-    actions: "read, write",
-    productCategory: "Financial Operations",
-    taskCategory: "Monitor financials",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
-    description: "Manage payouts",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", analyst: "write" },
-  },
-  {
-    id: "transfer_operations_1",
-    name: "transfer_operations",
-    actions: "read, write",
-    productCategory: "Financial Operations",
-    taskCategory: "Transfer funds",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
+    apiName: "transfer_operations",
+    displayName: toDisplayName("transfer_operations"),
     description: "Transfer operations",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", analyst: "write" },
-  },
-  {
-    id: "transfer_operations_2",
-    name: "transfer_operations",
-    actions: "read, write",
     productCategory: "Financial Operations",
-    taskCategory: "Monitor financials",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
-    description: "Transfer operations",
+    taskCategories: ["Transfer funds", "Monitor financials"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", analyst: "write" },
   },
+  // Integrations & Data
   {
-    id: "data_export_operations_1",
-    name: "data_export_operations",
-    actions: "read",
-    productCategory: "Integrations & Data",
-    taskCategory: "Export & analyze data",
-    actionType: "Read-only",
-    sensitivityLevel: "Financial data + PII",
+    apiName: "data_export_operations",
+    displayName: toDisplayName("data_export_operations"),
     description: "Export bulk data",
+    productCategory: "Integrations & Data",
+    taskCategories: ["Export & analyze data"],
+    actions: "read",
+    operationType: "Read-only",
+    riskLevel: "Standard",
+    hasPII: true,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "read", admin: "read", view_only: "read", developer: "read", analyst: "read" },
   },
   {
-    id: "dev_integration_1",
-    name: "dev_integration",
-    actions: "read, write",
-    productCategory: "Integrations & Data",
-    taskCategory: "Develop & integrate",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "dev_integration",
+    displayName: toDisplayName("dev_integration"),
     description: "Development tools",
+    productCategory: "Integrations & Data",
+    taskCategories: ["Develop & integrate"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", analyst: "write" },
   },
   {
-    id: "reporting_operations_1",
-    name: "reporting_operations",
-    actions: "read, write",
-    productCategory: "Integrations & Data",
-    taskCategory: "Export & analyze data",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
+    apiName: "reporting_operations",
+    displayName: toDisplayName("reporting_operations"),
     description: "Run and access reports",
+    productCategory: "Integrations & Data",
+    taskCategories: ["Export & analyze data", "Monitor financials"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read, write", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read" },
   },
   {
-    id: "reporting_operations_2",
-    name: "reporting_operations",
-    actions: "read, write",
-    productCategory: "Integrations & Data",
-    taskCategory: "Monitor financials",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data",
-    description: "Run and access reports",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read, write", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read" },
-  },
-  {
-    id: "stripe_apps_development_1",
-    name: "stripe_apps_development",
-    actions: "read, write",
-    productCategory: "Integrations & Data",
-    taskCategory: "Develop & integrate",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "stripe_apps_development",
+    displayName: toDisplayName("stripe_apps_development"),
     description: "Build Stripe Apps",
+    productCategory: "Integrations & Data",
+    taskCategories: ["Develop & integrate"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", analyst: "write" },
   },
+  // Issuing & Cards
   {
-    id: "issuing_card_operations_1",
-    name: "issuing_card_operations",
-    actions: "read, write",
-    productCategory: "Issuing & Cards",
-    taskCategory: "Handle customer issues",
-    actionType: "Read + Write",
-    sensitivityLevel: "Payment credentials",
+    apiName: "issuing_card_operations",
+    displayName: toDisplayName("issuing_card_operations"),
     description: "Manage issuing cards",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", support: "write", support_associate: "read, write", analyst: "write" },
-  },
-  {
-    id: "issuing_card_operations_2",
-    name: "issuing_card_operations",
-    actions: "read, write",
     productCategory: "Issuing & Cards",
-    taskCategory: "Manage cards",
-    actionType: "Read + Write",
-    sensitivityLevel: "Payment credentials",
-    description: "Manage issuing cards",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", support: "write", support_associate: "read, write", analyst: "write" },
-  },
-  {
-    id: "charge_1",
-    name: "charge",
-    actions: "read",
-    productCategory: "Payments",
-    taskCategory: "Handle customer issues",
-    actionType: "Read-only",
-    sensitivityLevel: "Non-sensitive",
-    description: "Charge read access",
-    roleAccess: { view_only: "read", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "charge_2",
-    name: "charge",
-    actions: "read",
-    productCategory: "Payments",
-    taskCategory: "Export & analyze data",
-    actionType: "Read-only",
-    sensitivityLevel: "Non-sensitive",
-    description: "Charge read access",
-    roleAccess: { view_only: "read", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "charge_operations_1",
-    name: "charge_operations",
-    actions: "write",
-    productCategory: "Payments",
-    taskCategory: "Handle customer issues",
-    actionType: "Create & update",
-    sensitivityLevel: "Financial data",
-    description: "Process charges and refunds",
-    roleAccess: { super_admin: "write", admin: "write", developer: "write", support: "write", support_associate: "write", analyst: "write" },
-  },
-  {
-    id: "charge_operations_2",
-    name: "charge_operations",
-    actions: "write",
-    productCategory: "Payments",
-    taskCategory: "Process transactions",
-    actionType: "Create & update",
-    sensitivityLevel: "Financial data",
-    description: "Process charges and refunds",
-    roleAccess: { super_admin: "write", admin: "write", developer: "write", support: "write", support_associate: "write", analyst: "write" },
-  },
-  {
-    id: "payment_intent_1",
-    name: "payment_intent",
-    actions: "read",
-    productCategory: "Payments",
-    taskCategory: "Handle customer issues",
-    actionType: "Read-only",
-    sensitivityLevel: "Non-sensitive",
-    description: "Payment intent read",
-    roleAccess: { view_only: "read", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "payment_intent_2",
-    name: "payment_intent",
-    actions: "read",
-    productCategory: "Payments",
-    taskCategory: "Export & analyze data",
-    actionType: "Read-only",
-    sensitivityLevel: "Non-sensitive",
-    description: "Payment intent read",
-    roleAccess: { view_only: "read", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "payment_intent_operations_1",
-    name: "payment_intent_operations",
-    actions: "write",
-    productCategory: "Payments",
-    taskCategory: "Handle customer issues",
-    actionType: "Create & update",
-    sensitivityLevel: "Non-sensitive",
-    description: "Manage payment intents",
-    roleAccess: { super_admin: "write", admin: "write", developer: "write", support: "write", support_associate: "write", analyst: "write" },
-  },
-  {
-    id: "payment_intent_operations_2",
-    name: "payment_intent_operations",
-    actions: "write",
-    productCategory: "Payments",
-    taskCategory: "Process transactions",
-    actionType: "Create & update",
-    sensitivityLevel: "Non-sensitive",
-    description: "Manage payment intents",
-    roleAccess: { super_admin: "write", admin: "write", developer: "write", support: "write", support_associate: "write", analyst: "write" },
-  },
-  {
-    id: "payment_processing_1",
-    name: "payment_processing",
+    taskCategories: ["Handle customer issues", "Manage cards"],
     actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: true,
+    roleAccess: { super_admin: "write", admin: "write", view_only: "read", support: "write", support_associate: "read, write", analyst: "write", issuing_support_agent: "write" },
+  },
+  // Payments
+  {
+    apiName: "charge",
+    displayName: toDisplayName("charge"),
+    description: "Charge read access",
     productCategory: "Payments",
-    taskCategory: "Process transactions",
-    actionType: "Read + Write",
-    sensitivityLevel: "Payment credentials",
+    taskCategories: ["Handle customer issues", "Export & analyze data"],
+    actions: "read",
+    operationType: "Read-only",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
+    roleAccess: { view_only: "read", refund_analyst: "read", dispute_analyst: "read" },
+  },
+  {
+    apiName: "charge_operations",
+    displayName: toDisplayName("charge_operations"),
+    description: "Process charges and refunds",
+    productCategory: "Payments",
+    taskCategories: ["Handle customer issues", "Process transactions"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
+    roleAccess: { super_admin: "write", admin: "write", developer: "write", support: "write", support_associate: "write", analyst: "write" },
+  },
+  {
+    apiName: "payment_intent",
+    displayName: toDisplayName("payment_intent"),
+    description: "Payment intent read",
+    productCategory: "Payments",
+    taskCategories: ["Handle customer issues", "Export & analyze data"],
+    actions: "read",
+    operationType: "Read-only",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
+    roleAccess: { view_only: "read", refund_analyst: "read", dispute_analyst: "read" },
+  },
+  {
+    apiName: "payment_intent_operations",
+    displayName: toDisplayName("payment_intent_operations"),
+    description: "Manage payment intents",
+    productCategory: "Payments",
+    taskCategories: ["Handle customer issues", "Process transactions"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
+    roleAccess: { super_admin: "write", admin: "write", developer: "write", support: "write", support_associate: "write", analyst: "write" },
+  },
+  {
+    apiName: "payment_processing",
+    displayName: toDisplayName("payment_processing"),
     description: "Manage payment methods",
+    productCategory: "Payments",
+    taskCategories: ["Process transactions", "Configure settings"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: true,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
   },
+  // Products & Orders
   {
-    id: "payment_processing_2",
-    name: "payment_processing",
-    actions: "read, write",
-    productCategory: "Payments",
-    taskCategory: "Configure settings",
-    actionType: "Read + Write",
-    sensitivityLevel: "Payment credentials",
-    description: "Manage payment methods",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "checkout_operations_1",
-    name: "checkout_operations",
-    actions: "read, write",
-    productCategory: "Products & Orders",
-    taskCategory: "Process transactions",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "checkout_operations",
+    displayName: toDisplayName("checkout_operations"),
     description: "Manage checkout",
+    productCategory: "Products & Orders",
+    taskCategories: ["Process transactions", "Configure settings"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "read", analyst: "write" },
   },
   {
-    id: "checkout_operations_2",
-    name: "checkout_operations",
-    actions: "read, write",
-    productCategory: "Products & Orders",
-    taskCategory: "Configure settings",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
-    description: "Manage checkout",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "read", analyst: "write" },
-  },
-  {
-    id: "order_operations_1",
-    name: "order_operations",
-    actions: "read, write",
-    productCategory: "Products & Orders",
-    taskCategory: "Handle customer issues",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "order_operations",
+    displayName: toDisplayName("order_operations"),
     description: "Manage orders",
+    productCategory: "Products & Orders",
+    taskCategories: ["Handle customer issues", "Process transactions"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
   },
   {
-    id: "order_operations_2",
-    name: "order_operations",
-    actions: "read, write",
-    productCategory: "Products & Orders",
-    taskCategory: "Process transactions",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
-    description: "Manage orders",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "order_refund_operations_1",
-    name: "order_refund_operations",
-    actions: "write",
-    productCategory: "Products & Orders",
-    taskCategory: "Handle customer issues",
-    actionType: "Create & update",
-    sensitivityLevel: "Financial data",
+    apiName: "order_refund_operations",
+    displayName: toDisplayName("order_refund_operations"),
     description: "Process order refunds",
+    productCategory: "Products & Orders",
+    taskCategories: ["Handle customer issues"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", analyst: "write", refund_analyst: "write" },
   },
   {
-    id: "product_operations_1",
-    name: "product_operations",
-    actions: "read, write",
-    productCategory: "Products & Orders",
-    taskCategory: "Manage catalog",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "product_operations",
+    displayName: toDisplayName("product_operations"),
     description: "Manage products and pricing",
+    productCategory: "Products & Orders",
+    taskCategories: ["Manage catalog", "Configure settings"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", support: "write", support_associate: "read", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
   },
   {
-    id: "product_operations_2",
-    name: "product_operations",
-    actions: "read, write",
-    productCategory: "Products & Orders",
-    taskCategory: "Configure settings",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
-    description: "Manage products and pricing",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", support: "write", support_associate: "read", analyst: "write", refund_analyst: "read", dispute_analyst: "read" },
-  },
-  {
-    id: "promotion_operations_1",
-    name: "promotion_operations",
-    actions: "read, write",
-    productCategory: "Products & Orders",
-    taskCategory: "Manage catalog",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "promotion_operations",
+    displayName: toDisplayName("promotion_operations"),
     description: "Manage promotions",
+    productCategory: "Products & Orders",
+    taskCategories: ["Manage catalog", "Configure settings"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write" },
   },
+  // Support & Operations
   {
-    id: "promotion_operations_2",
-    name: "promotion_operations",
-    actions: "read, write",
-    productCategory: "Products & Orders",
-    taskCategory: "Configure settings",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
-    description: "Manage promotions",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", support_associate: "write", analyst: "write" },
-  },
-  {
-    id: "dashboard_baseline_1",
-    name: "dashboard_baseline",
-    actions: "read",
-    productCategory: "Support & Operations",
-    taskCategory: "All tasks",
-    actionType: "Read-only",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "dashboard_baseline",
+    displayName: toDisplayName("dashboard_baseline"),
     description: "Basic Dashboard access (required)",
+    productCategory: "Support & Operations",
+    taskCategories: ["All tasks"],
+    actions: "read",
+    operationType: "Read-only",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "read", admin: "read", view_only: "read", developer: "read", support: "read", support_associate: "read", analyst: "read", refund_analyst: "read", dispute_analyst: "read", issuing_support_agent: "read", tax_analyst: "read", identity_analyst: "read", iam_admin: "read", sandbox_admin: "read" },
   },
   {
-    id: "settings_security_1",
-    name: "settings_security",
-    actions: "write",
-    productCategory: "Support & Operations",
-    taskCategory: "Configure settings",
-    actionType: "Administrative",
-    sensitivityLevel: "Payment credentials",
+    apiName: "settings_security",
+    displayName: toDisplayName("settings_security"),
     description: "Security configuration",
+    productCategory: "Support & Operations",
+    taskCategories: ["Configure settings", "Manage team access"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Elevated",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: true,
     roleAccess: { iam_admin: "write" },
   },
+  // Tax
   {
-    id: "settings_security_2",
-    name: "settings_security",
-    actions: "write",
-    productCategory: "Support & Operations",
-    taskCategory: "Manage team access",
-    actionType: "Administrative",
-    sensitivityLevel: "Payment credentials",
-    description: "Security configuration",
-    roleAccess: { iam_admin: "write" },
-  },
-  {
-    id: "tax_automation_operations_1",
-    name: "tax_automation_operations",
-    actions: "read, write",
-    productCategory: "Tax",
-    taskCategory: "Configure settings",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "tax_automation_operations",
+    displayName: toDisplayName("tax_automation_operations"),
     description: "Tax automation rules",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", analyst: "write" },
+    productCategory: "Tax",
+    taskCategories: ["Configure settings", "Monitor tax compliance"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
+    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", analyst: "write", tax_analyst: "write" },
   },
   {
-    id: "tax_automation_operations_2",
-    name: "tax_automation_operations",
-    actions: "read, write",
-    productCategory: "Tax",
-    taskCategory: "Monitor tax compliance",
-    actionType: "Read + Write",
-    sensitivityLevel: "Non-sensitive",
-    description: "Tax automation rules",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "write", support: "write", analyst: "write" },
-  },
-  {
-    id: "tax_filing_operations_1",
-    name: "tax_filing_operations",
-    actions: "read, write",
-    productCategory: "Tax",
-    taskCategory: "Configure settings",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data + PII",
+    apiName: "tax_filing_operations",
+    displayName: toDisplayName("tax_filing_operations"),
     description: "Tax filing management",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "read", analyst: "write" },
-  },
-  {
-    id: "tax_filing_operations_2",
-    name: "tax_filing_operations",
-    actions: "read, write",
     productCategory: "Tax",
-    taskCategory: "Monitor tax compliance",
-    actionType: "Read + Write",
-    sensitivityLevel: "Financial data + PII",
-    description: "Tax filing management",
-    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "read", analyst: "write" },
+    taskCategories: ["Configure settings", "Monitor tax compliance"],
+    actions: "read, write",
+    operationType: "Read + Write",
+    riskLevel: "Standard",
+    hasPII: true,
+    hasFinancialData: true,
+    hasPaymentCredentials: false,
+    roleAccess: { super_admin: "write", admin: "write", view_only: "read", developer: "read", analyst: "write", tax_analyst: "write" },
   },
+  // Terminal
   {
-    id: "terminal_infrastructure_1",
-    name: "terminal_infrastructure",
-    actions: "read",
-    productCategory: "Terminal",
-    taskCategory: "Monitor hardware",
-    actionType: "Read-only",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "terminal_infrastructure",
+    displayName: toDisplayName("terminal_infrastructure"),
     description: "View terminal infrastructure",
+    productCategory: "Terminal",
+    taskCategories: ["Monitor hardware"],
+    actions: "read",
+    operationType: "Read-only",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "read", admin: "read", view_only: "read", support: "read", support_associate: "read", analyst: "read" },
   },
   {
-    id: "terminal_operations_1",
-    name: "terminal_operations",
-    actions: "write",
-    productCategory: "Terminal",
-    taskCategory: "Manage hardware",
-    actionType: "Create & update",
-    sensitivityLevel: "Non-sensitive",
+    apiName: "terminal_operations",
+    displayName: toDisplayName("terminal_operations"),
     description: "Terminal POS operations",
-    roleAccess: { super_admin: "write", admin: "write", analyst: "write" },
-  },
-  {
-    id: "terminal_operations_2",
-    name: "terminal_operations",
-    actions: "write",
     productCategory: "Terminal",
-    taskCategory: "Process transactions",
-    actionType: "Create & update",
-    sensitivityLevel: "Non-sensitive",
-    description: "Terminal POS operations",
+    taskCategories: ["Manage hardware", "Process transactions"],
+    actions: "write",
+    operationType: "Write",
+    riskLevel: "Standard",
+    hasPII: false,
+    hasFinancialData: false,
+    hasPaymentCredentials: false,
     roleAccess: { super_admin: "write", admin: "write", analyst: "write" },
   },
 ];
 
 // Helper to get unique values for grouping
 export const productCategories = [...new Set(permissions.map((p) => p.productCategory))].sort();
-export const taskCategories = [...new Set(permissions.map((p) => p.taskCategory))].sort();
-export const actionTypes = [...new Set(permissions.map((p) => p.actionType))].sort();
+export const taskCategories = [...new Set(permissions.flatMap((p) => p.taskCategories))].sort();
+export const operationTypes = [...new Set(permissions.map((p) => p.operationType))].sort();
+export const riskLevels = ["Standard", "Elevated", "Critical"]; // Ordered by severity
+
+// Sensitivity groupings for UI
+export type SensitivityGroup = "PII" | "Financial Data" | "Payment Credentials" | "Non-sensitive";
+export function getSensitivityGroups(p: Permission): SensitivityGroup[] {
+  const groups: SensitivityGroup[] = [];
+  if (p.hasPII) groups.push("PII");
+  if (p.hasFinancialData) groups.push("Financial Data");
+  if (p.hasPaymentCredentials) groups.push("Payment Credentials");
+  if (groups.length === 0) groups.push("Non-sensitive");
+  return groups;
+}
 
 // Get permissions for a specific role
 export function getPermissionsForRole(roleId: string): Permission[] {
   return permissions.filter((p) => p.roleAccess[roleId]);
 }
 
-// Get unique permissions for a role (deduplicated by name)
-export function getUniquePermissionsForRole(roleId: string): Permission[] {
-  const rolePerms = getPermissionsForRole(roleId);
-  const seen = new Set<string>();
-  return rolePerms.filter((p) => {
-    if (seen.has(p.name)) return false;
-    seen.add(p.name);
-    return true;
-  });
+// Get permissions for a role by API names (for custom roles)
+export function getPermissionsByApiNames(apiNames: string[]): Permission[] {
+  const apiNameSet = new Set(apiNames);
+  return permissions.filter((p) => apiNameSet.has(p.apiName));
 }
 
 // Group permissions by a field
+export type GroupByOption = "productCategory" | "taskCategory" | "operationType" | "riskLevel" | "sensitivity";
+
 export function groupPermissions(
   perms: Permission[],
-  groupBy: "productCategory" | "taskCategory" | "actionType"
+  groupBy: GroupByOption
 ): Record<string, Permission[]> {
   const groups: Record<string, Permission[]> = {};
+  
   for (const p of perms) {
-    const key = p[groupBy];
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(p);
+    if (groupBy === "taskCategory") {
+      // For taskCategory, put permission in each of its task categories
+      for (const tc of p.taskCategories) {
+        if (!groups[tc]) groups[tc] = [];
+        groups[tc].push(p);
+      }
+    } else if (groupBy === "sensitivity") {
+      // For sensitivity, put permission in each applicable sensitivity group
+      const sensitivityGroups = getSensitivityGroups(p);
+      for (const sg of sensitivityGroups) {
+        if (!groups[sg]) groups[sg] = [];
+        groups[sg].push(p);
+      }
+    } else if (groupBy === "operationType") {
+      const key = p.operationType;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(p);
+    } else if (groupBy === "riskLevel") {
+      const key = p.riskLevel;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(p);
+    } else {
+      const key = p[groupBy];
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(p);
+    }
   }
   return groups;
+}
+
+// Get all permissions (consolidated - ~50 unique)
+export function getAllPermissions(): Permission[] {
+  return permissions;
+}
+
+// ============================================
+// Description Generation Functions
+// ============================================
+
+// Generate "Best for" description based on selected permissions
+export function generateBestFor(selectedPermissions: Permission[]): string {
+  if (selectedPermissions.length === 0) {
+    return "Users who need minimal access to the Dashboard.";
+  }
+
+  // Count product categories
+  const categoryCount: Record<string, number> = {};
+  for (const p of selectedPermissions) {
+    categoryCount[p.productCategory] = (categoryCount[p.productCategory] || 0) + 1;
+  }
+
+  // Get top categories (sorted by count)
+  const topCategories = Object.entries(categoryCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([cat]) => cat);
+
+  // Count task categories for role type hints
+  const taskCount: Record<string, number> = {};
+  for (const p of selectedPermissions) {
+    for (const tc of p.taskCategories) {
+      taskCount[tc] = (taskCount[tc] || 0) + 1;
+    }
+  }
+
+  // Determine role type based on permissions
+  const hasWriteAccess = selectedPermissions.some(p => p.actions.includes("write"));
+  const hasFinancialAccess = selectedPermissions.some(p => p.hasFinancialData);
+  const hasAdminAccess = selectedPermissions.some(p => p.apiName.includes("admin") || p.apiName.includes("team_management"));
+  const hasSupportTasks = taskCount["Handle customer issues"] > 2;
+  const hasDevTasks = taskCount["Develop & integrate"] > 0;
+
+  // Build description based on access patterns
+  let roleType = "team members";
+  if (hasAdminAccess && hasFinancialAccess) {
+    roleType = "administrators and managers";
+  } else if (hasDevTasks) {
+    roleType = "developers and technical teams";
+  } else if (hasSupportTasks) {
+    roleType = "support and customer service teams";
+  } else if (hasFinancialAccess && !hasWriteAccess) {
+    roleType = "analysts and reporting teams";
+  } else if (!hasWriteAccess) {
+    roleType = "team members who need visibility without edit access";
+  }
+
+  const categoryStr = topCategories.length > 0 
+    ? topCategories.slice(0, 2).join(" and ").toLowerCase()
+    : "general operations";
+
+  return `${roleType.charAt(0).toUpperCase() + roleType.slice(1)} working with ${categoryStr}.`;
+}
+
+// Generate "Can" list from selected permissions
+export function generateCanDo(selectedPermissions: Permission[]): string[] {
+  if (selectedPermissions.length === 0) {
+    return ["Access basic Dashboard features"];
+  }
+
+  // Group by task category and collect descriptions
+  const taskGroups: Record<string, Set<string>> = {};
+  
+  for (const p of selectedPermissions) {
+    for (const tc of p.taskCategories) {
+      if (!taskGroups[tc]) {
+        taskGroups[tc] = new Set();
+      }
+      // Use description or create from apiName
+      const desc = p.description || p.apiName.replace(/_/g, " ");
+      taskGroups[tc].add(desc);
+    }
+  }
+
+  const canDoList: string[] = [];
+
+  // Priority order for task categories
+  const priorityTasks = [
+    "Process transactions",
+    "Handle customer issues",
+    "Manage billing",
+    "Monitor financials",
+    "Export & analyze data",
+    "Configure settings",
+    "Develop & integrate",
+    "Manage team access",
+    "Transfer funds",
+  ];
+
+  // Add items based on priority
+  for (const task of priorityTasks) {
+    if (taskGroups[task] && taskGroups[task].size > 0) {
+      const descriptions = Array.from(taskGroups[task]);
+      // Combine similar descriptions
+      if (descriptions.length > 2) {
+        canDoList.push(`${task} (${descriptions.length} capabilities)`);
+      } else {
+        canDoList.push(...descriptions.slice(0, 2));
+      }
+    }
+  }
+
+  // Add remaining tasks not in priority list
+  for (const [task, descs] of Object.entries(taskGroups)) {
+    if (!priorityTasks.includes(task) && descs.size > 0) {
+      canDoList.push(Array.from(descs)[0]);
+    }
+  }
+
+  // Limit to 6 items and deduplicate
+  const seen = new Set<string>();
+  return canDoList.filter(item => {
+    const normalized = item.toLowerCase();
+    if (seen.has(normalized)) return false;
+    seen.add(normalized);
+    return true;
+  }).slice(0, 6);
+}
+
+// Generate "Cannot" list based on what's NOT selected
+export function generateCannotDo(selectedPermissions: Permission[]): string[] {
+  const allPerms = getAllPermissions();
+  const selectedApiNames = new Set(selectedPermissions.map(p => p.apiName));
+  
+  // High-value permissions that are notable when missing
+  // Format: { permissionApiName: "Clear description of what you CANNOT do" }
+  const notablePermissions: Record<string, string> = {
+    "team_management": "Invite, remove, or manage team member roles",
+    "sensitive_resources": "View or manage API keys and secrets",
+    "balance_transfer_operations": "Transfer funds between accounts",
+    "payout_operations": "Create or manage payouts",
+    "settings_security": "Change security settings or 2FA",
+    "dispute_operations": "Accept, challenge, or manage disputes",
+    "order_refund_operations": "Issue refunds",
+    "charge_operations": "Create new charges or payments",
+    "customer_pii_operations": "View or edit customer personal information",
+    "account_admin_management_operations": "Perform administrative account changes",
+  };
+
+  const cannotList: string[] = [];
+
+  // Check for notable missing permissions
+  for (const [permApiName, description] of Object.entries(notablePermissions)) {
+    if (!selectedApiNames.has(permApiName) && cannotList.length < 5) {
+      cannotList.push(description);
+    }
+  }
+
+  // If still need more items, check for missing write access
+  if (cannotList.length < 5) {
+    const hasAnyWrite = selectedPermissions.some(p => p.actions.toLowerCase().includes("write"));
+    if (!hasAnyWrite) {
+      cannotList.push("Make any changes (read-only access)");
+    }
+  }
+
+  // If still need more items, check for missing product categories
+  if (cannotList.length < 5) {
+    const selectedCategories = new Set(selectedPermissions.map(p => p.productCategory));
+    const allCategories = new Set(allPerms.map(p => p.productCategory));
+    
+    for (const cat of allCategories) {
+      if (!selectedCategories.has(cat) && cannotList.length < 5) {
+        cannotList.push(`Access ${cat} features`);
+      }
+    }
+  }
+
+  return cannotList.slice(0, 5);
+}
+
+// Generate role description summary
+export function generateRoleDescription(selectedPermissions: Permission[]): string {
+  if (selectedPermissions.length === 0) {
+    return "A custom role with minimal permissions. Add permissions to define what this role can access.";
+  }
+
+  // Analyze permission characteristics
+  const hasWrite = selectedPermissions.some(p => p.actions.includes("write"));
+  const accessType = hasWrite ? "read and write" : "read-only";
+
+  // Get unique product categories
+  const categories = [...new Set(selectedPermissions.map(p => p.productCategory))];
+  const categoryStr = categories.length > 3 
+    ? `${categories.slice(0, 2).join(", ")}, and ${categories.length - 2} more areas`
+    : categories.join(", ");
+
+  // Check sensitivity using flags
+  const hasPII = selectedPermissions.some(p => p.hasPII);
+  const hasFinancial = selectedPermissions.some(p => p.hasFinancialData);
+  const hasCredentials = selectedPermissions.some(p => p.hasPaymentCredentials);
+
+  let sensitivityNote = "";
+  const sensitiveTypes: string[] = [];
+  if (hasPII) sensitiveTypes.push("PII");
+  if (hasFinancial) sensitiveTypes.push("financial data");
+  if (hasCredentials) sensitiveTypes.push("payment credentials");
+  
+  if (sensitiveTypes.length > 0) {
+    sensitivityNote = ` Includes access to ${sensitiveTypes.join(" and ")}.`;
+  }
+
+  return `Custom role with ${accessType} access to ${categoryStr}.${sensitivityNote}`;
+}
+
+// Generate complete role details from permissions
+export function generateRoleDetails(selectedPermissions: Permission[]): RoleDetails {
+  return {
+    description: generateRoleDescription(selectedPermissions),
+    bestFor: generateBestFor(selectedPermissions),
+    canDo: generateCanDo(selectedPermissions),
+    cannotDo: generateCannotDo(selectedPermissions),
+  };
 }
 

@@ -187,7 +187,7 @@ function PermissionCardContent({
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           {/* Human-readable display name */}
-          <h4 className="text-[14px] font-medium text-[#353A44] leading-5 tracking-[-0.15px]">
+          <h4 className="text-[12px] font-medium text-[#353A44] leading-4 tracking-[-0.15px]">
             {permission.displayName}
           </h4>
         </div>
@@ -205,11 +205,11 @@ function PermissionCardContent({
         )}
       </div>
       {/* Description */}
-      <p className="text-[14px] text-[#596171] leading-5 mt-1">
+      <p className="text-[12px] text-[#596171] leading-4 mt-0.5">
         {permission.description}
       </p>
       {/* API name in monospace */}
-      <p className="text-[11px] text-[#596171] font-mono leading-4 mt-1">
+      <p className="text-[11px] text-[#596171] font-mono leading-4 mt-2">
         {permission.apiName}
       </p>
       {/* Task categories as context tags (only when alphabetical/ungrouped) */}
@@ -600,6 +600,7 @@ function CustomizeRoleModal({
   const [searchQuery, setSearchQuery] = useState("");
   const [groupBy, setGroupBy] = useState<GroupByOption>(initialGroupBy);
   const [exitingApiName, setExitingApiName] = useState<string | null>(null);
+  const [isRiskExpandedModal, setIsRiskExpandedModal] = useState(false);
 
   // Reset state when modal opens with new role
   useEffect(() => {
@@ -896,7 +897,12 @@ function CustomizeRoleModal({
 
                 {/* Risk Assessment - own container */}
                 <div className="p-4 bg-white rounded-lg">
-                  <RiskAssessmentCard assessment={previewRiskAssessment} showAdvice />
+                  <RiskAssessmentCard 
+                    assessment={previewRiskAssessment} 
+                    showAdvice 
+                    isExpanded={isRiskExpandedModal}
+                    onToggle={() => setIsRiskExpandedModal(!isRiskExpandedModal)}
+                  />
                 </div>
               </div>
 
@@ -961,14 +967,13 @@ function CustomizeRoleModal({
                             <div
                               key={perm.apiName}
                               onClick={() => !exitingApiName && togglePermission(perm.apiName)}
-                              className={`flex items-start gap-4 px-4 py-3 bg-[#F5F6F8] rounded hover:bg-[#EBEEF1] cursor-pointer mb-2 transition-all duration-150 ${
+                              className={`flex items-center gap-4 px-4 py-3 bg-[#F5F6F8] rounded hover:bg-[#EBEEF1] cursor-pointer mb-2 transition-all duration-150 ${
                                 exitingApiName === perm.apiName ? 'animate-scale-out' : ''
                               }`}
                             >
                               <Checkbox
                                 checked={true}
                                 onChange={() => !exitingApiName && togglePermission(perm.apiName)}
-                                className="mt-0.5"
                               />
                               <PermissionCardContent permission={perm} showTaskCategories={false} showActions={true} currentGroup={group} groupBy={groupBy} />
                             </div>
@@ -1003,14 +1008,13 @@ function CustomizeRoleModal({
                             <div
                               key={perm.apiName}
                               onClick={() => !exitingApiName && togglePermission(perm.apiName)}
-                              className={`flex items-start gap-4 px-4 py-3 bg-[#F5F6F8] rounded hover:bg-[#EBEEF1] cursor-pointer mb-2 transition-all duration-150 ${
+                              className={`flex items-center gap-4 px-4 py-3 bg-[#F5F6F8] rounded hover:bg-[#EBEEF1] cursor-pointer mb-2 transition-all duration-150 ${
                                 exitingApiName === perm.apiName ? 'animate-scale-out' : ''
                               }`}
                             >
                               <Checkbox
                                 checked={false}
                                 onChange={() => !exitingApiName && togglePermission(perm.apiName)}
-                                className="mt-0.5"
                               />
                               <PermissionCardContent permission={perm} showTaskCategories={false} showActions={true} currentGroup={group} groupBy={groupBy} />
                             </div>
@@ -1359,7 +1363,7 @@ export default function RolesPermissionsPage() {
         {/* Shared Container for Role Details + Permissions */}
         <div className="flex-1 flex gap-4 p-2 bg-[#F5F6F8] rounded-xl overflow-hidden">
           {/* Role Details Panel */}
-          <section ref={roleDetailsRef} className="flex-1 flex flex-col gap-6 px-4 py-[13px] overflow-y-auto">
+          <section ref={roleDetailsRef} className="flex-1 flex flex-col gap-6 px-4 pt-[11px] pb-[13px] overflow-y-auto">
             {/* Header */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">

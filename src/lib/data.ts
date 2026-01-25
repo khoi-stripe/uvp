@@ -28,7 +28,8 @@ export interface Role {
   category: string;
   details?: RoleDetails;
   userCount: number;
-  permissionApiNames?: string[];    // For custom roles - stores the API names of selected permissions
+  permissionApiNames?: string[];    // Deprecated - use permissionAccess instead
+  permissionAccess?: Record<string, string>;  // For custom roles - maps API name to access level ("read", "write", "read, write")
   customDescription?: string;       // User-edited description (overrides generated)
 }
 

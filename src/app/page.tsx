@@ -227,6 +227,78 @@ function getAccessLabel(actions: string): { label: string; hasWrite: boolean } {
   return { label: 'Read', hasWrite: false };
 }
 
+// Access options for permissions that support both read and write
+const accessOptions: { value: string; label: string }[] = [
+  { value: "read", label: "Read" },
+  { value: "write", label: "Write" },
+  { value: "read, write", label: "Read/Write" },
+];
+
+// Inline access selector for permission cards
+function AccessSelector({
+  value,
+  onChange,
+  disabled = false,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { label, hasWrite } = getAccessLabel(value);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!disabled) setIsOpen(!isOpen);
+        }}
+        className={`flex items-center gap-1 text-[12px] font-medium px-2 py-0.5 rounded flex-shrink-0 transition-colors ${
+          hasWrite
+            ? "bg-[#D3F8DF] text-[#1D7C4D] hover:bg-[#C0F0D0]"
+            : "bg-[#D4E5FF] text-[#0055BC] hover:bg-[#C4D8F8]"
+        } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+      >
+        <span>{label}</span>
+        {!disabled && <ArrowUpDownIcon size={10} />}
+      </button>
+
+      {isOpen && (
+        <>
+          <div 
+            className="fixed inset-0 z-10" 
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(false);
+            }} 
+          />
+          <div className="absolute top-full right-0 mt-1 bg-white border border-[#D8DEE4] rounded-[8px] shadow-[0_15px_35px_rgba(48,49,61,0.08),0_5px_15px_rgba(0,0,0,0.12)] z-20 min-w-[100px] p-1 overflow-hidden">
+            {accessOptions.map((option) => (
+              <button
+                key={option.value}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+                className={`w-full flex items-center justify-between gap-2 px-2.5 py-1.5 text-[12px] leading-4 text-[#353A44] rounded transition-colors ${
+                  value === option.value ? "bg-[#F5F6F8]" : "hover:bg-[#F5F6F8]"
+                }`}
+              >
+                <span className={value === option.value ? "font-semibold" : ""}>
+                  {option.label}
+                </span>
+                {value === option.value && <CheckCircleFilledIcon size={10} />}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // Unified Permission Card component for both main view and customize modal
 function PermissionCard({
   permission,
@@ -238,6 +310,8 @@ function PermissionCard({
   groupBy,
   accessLabel,
   hasWrite,
+  currentAccess,
+  onAccessChange,
   isExiting = false,
 }: {
   permission: Permission;
@@ -249,12 +323,44 @@ function PermissionCard({
   groupBy?: string;
   accessLabel?: string;
   hasWrite?: boolean;
+  currentAccess?: string;
+  onAccessChange?: (access: string) => void;
   isExiting?: boolean;
 }) {
   // Default to permission's actions if not provided
   const { label: defaultLabel, hasWrite: defaultHasWrite } = getAccessLabel(permission.actions);
   const finalLabel = accessLabel ?? defaultLabel;
   const finalHasWrite = hasWrite ?? defaultHasWrite;
+  
+  // Check if permission supports multiple access levels
+  const supportsMultipleAccess = permission.actions.toLowerCase().includes("read") && 
+                                  permission.actions.toLowerCase().includes("write");
+
+  // Render access badge or selector
+  const renderAccessBadge = () => {
+    // Show selector in customize mode (when onAccessChange is provided) and permission supports both read and write
+    if (onAccessChange && supportsMultipleAccess && currentAccess) {
+      return (
+        <AccessSelector
+          value={currentAccess}
+          onChange={onAccessChange}
+        />
+      );
+    }
+    
+    // Show static badge
+    return (
+      <span
+        className={`text-[12px] font-medium px-2 py-0.5 rounded flex-shrink-0 ${
+          finalHasWrite
+            ? "bg-[#D3F8DF] text-[#1D7C4D]"
+            : "bg-[#D4E5FF] text-[#0055BC]"
+        }`}
+      >
+        {currentAccess ? getAccessLabel(currentAccess).label : finalLabel}
+      </span>
+    );
+  };
 
   const cardContent = (
     <>
@@ -272,15 +378,7 @@ function PermissionCard({
         currentGroup={currentGroup} 
         groupBy={groupBy} 
       />
-      <span
-        className={`text-[12px] font-medium px-2 py-0.5 rounded flex-shrink-0 ${
-          finalHasWrite
-            ? "bg-[#D3F8DF] text-[#1D7C4D]"
-            : "bg-[#D4E5FF] text-[#0055BC]"
-        }`}
-      >
-        {finalLabel}
-      </span>
+      {renderAccessBadge()}
     </>
   );
 
@@ -661,7 +759,8 @@ function CustomizeRoleModal({
   const [isEditingName, setIsEditingName] = useState(false);
   const [customDescription, setCustomDescription] = useState("");
   const [isEditingDescription, setIsEditingDescription] = useState(false);
-  const [selectedApiNames, setSelectedApiNames] = useState<Set<string>>(new Set());
+  // Maps permission API name to access level ("read", "write", "read, write")
+  const [permissionAccess, setPermissionAccess] = useState<Record<string, string>>({});
   const [searchQuery, setSearchQuery] = useState("");
   const [groupBy, setGroupBy] = useState<GroupByOption>(initialGroupBy);
   const [exitingApiName, setExitingApiName] = useState<string | null>(null);
@@ -680,20 +779,36 @@ function CustomizeRoleModal({
   // Reset state when modal opens with new role
   useEffect(() => {
     if (isOpen) {
-      // Get permissions for the base role (handle both standard and custom roles)
-      const basePermissions = baseRole.permissionApiNames
-        ? allPermissions.filter(p => baseRole.permissionApiNames!.includes(p.apiName))
-        : getPermissionsForRole(baseRole.id);
+      // Build permission access map from base role
+      const accessMap: Record<string, string> = {};
+      
+      if (baseRole.permissionAccess) {
+        // Custom role with permissionAccess - use it directly
+        Object.assign(accessMap, baseRole.permissionAccess);
+      } else if (baseRole.permissionApiNames) {
+        // Legacy custom role with just API names - default to full access
+        baseRole.permissionApiNames.forEach(apiName => {
+          const perm = allPermissions.find(p => p.apiName === apiName);
+          accessMap[apiName] = perm?.actions || "read";
+        });
+      } else {
+        // Standard role - get access from roleAccess field
+        const basePermissions = getPermissionsForRole(baseRole.id);
+        basePermissions.forEach(p => {
+          const roleAccess = p.roleAccess[baseRole.id];
+          accessMap[p.apiName] = roleAccess || p.actions;
+        });
+      }
       
       setRoleName(isEditMode ? baseRole.name : `${baseRole.name} (copy)`);
       setIsEditingName(false);
       setCustomDescription(baseRole.customDescription || "");
       setIsEditingDescription(!!baseRole.customDescription);
-      setSelectedApiNames(new Set(basePermissions.map(p => p.apiName)));
+      setPermissionAccess(accessMap);
       setSearchQuery("");
       setGroupBy(initialGroupBy);
     }
-  }, [isOpen, baseRole.id, baseRole.permissionApiNames, baseRole.customDescription, initialGroupBy]);
+  }, [isOpen, baseRole.id, baseRole.permissionApiNames, baseRole.permissionAccess, baseRole.customDescription, initialGroupBy]);
 
   // Keyboard shortcuts: ESC to close, CMD+Enter to save
   useEffect(() => {
@@ -709,7 +824,8 @@ function CustomizeRoleModal({
       if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         // Compute selected permissions inside the handler
-        const currentSelectedPermissions = allPermissions.filter(p => selectedApiNames.has(p.apiName));
+        const selectedApiNames = Object.keys(permissionAccess);
+        const currentSelectedPermissions = allPermissions.filter(p => selectedApiNames.includes(p.apiName));
         const finalDetails = generateRoleDetails(currentSelectedPermissions);
         if (customDescription.trim()) {
           finalDetails.description = customDescription.trim();
@@ -721,7 +837,7 @@ function CustomizeRoleModal({
             ...baseRole,
             name: roleName,
             details: finalDetails,
-            permissionApiNames: Array.from(selectedApiNames),
+            permissionAccess: { ...permissionAccess },
             customDescription: customDescription.trim() || undefined,
           };
           onUpdate(updatedRole);
@@ -733,7 +849,7 @@ function CustomizeRoleModal({
             category: "Custom",
             details: finalDetails,
             userCount: 0,
-            permissionApiNames: Array.from(selectedApiNames),
+            permissionAccess: { ...permissionAccess },
             customDescription: customDescription.trim() || undefined,
           };
           onSave(newRole);
@@ -744,12 +860,13 @@ function CustomizeRoleModal({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, isEditMode, baseRole, roleName, customDescription, selectedApiNames, allPermissions, onSave, onUpdate]);
+  }, [isOpen, isEditMode, baseRole, roleName, customDescription, permissionAccess, allPermissions, onSave, onUpdate]);
 
   if (!isOpen) return null;
 
-  const selectedPermissions = allPermissions.filter(p => selectedApiNames.has(p.apiName));
-  const availablePermissions = allPermissions.filter(p => !selectedApiNames.has(p.apiName));
+  const selectedApiNames = Object.keys(permissionAccess);
+  const selectedPermissions = allPermissions.filter(p => selectedApiNames.includes(p.apiName));
+  const availablePermissions = allPermissions.filter(p => !selectedApiNames.includes(p.apiName));
   
   // Filter by search
   const filterBySearch = (perms: Permission[]) => {
@@ -818,12 +935,14 @@ function CustomizeRoleModal({
     
     // After animation completes, actually toggle
     setTimeout(() => {
-      setSelectedApiNames(prev => {
-        const next = new Set(prev);
-        if (next.has(apiName)) {
-          next.delete(apiName);
+      setPermissionAccess(prev => {
+        const next = { ...prev };
+        if (apiName in next) {
+          delete next[apiName];
         } else {
-          next.add(apiName);
+          // When adding, default to the permission's full actions
+          const perm = allPermissions.find(p => p.apiName === apiName);
+          next[apiName] = perm?.actions || "read";
         }
         return next;
       });
@@ -831,11 +950,33 @@ function CustomizeRoleModal({
     }, 200); // Match animation duration
   };
 
+  const updatePermissionAccess = (apiName: string, access: string) => {
+    setPermissionAccess(prev => ({
+      ...prev,
+      [apiName]: access
+    }));
+  };
+
   const handleRevert = () => {
-    const basePermissions = baseRole.permissionApiNames
-      ? allPermissions.filter(p => baseRole.permissionApiNames!.includes(p.apiName))
-      : getPermissionsForRole(baseRole.id);
-    setSelectedApiNames(new Set(basePermissions.map(p => p.apiName)));
+    // Rebuild permission access map from base role
+    const accessMap: Record<string, string> = {};
+    
+    if (baseRole.permissionAccess) {
+      Object.assign(accessMap, baseRole.permissionAccess);
+    } else if (baseRole.permissionApiNames) {
+      baseRole.permissionApiNames.forEach(apiName => {
+        const perm = allPermissions.find(p => p.apiName === apiName);
+        accessMap[apiName] = perm?.actions || "read";
+      });
+    } else {
+      const basePermissions = getPermissionsForRole(baseRole.id);
+      basePermissions.forEach(p => {
+        const roleAccess = p.roleAccess[baseRole.id];
+        accessMap[p.apiName] = roleAccess || p.actions;
+      });
+    }
+    
+    setPermissionAccess(accessMap);
     setRoleName(isEditMode ? baseRole.name : `${baseRole.name} (copy)`);
     setIsEditingName(false);
     setCustomDescription(baseRole.customDescription || "");
@@ -856,7 +997,7 @@ function CustomizeRoleModal({
         ...baseRole,
         name: roleName,
         details: finalDetails,
-        permissionApiNames: Array.from(selectedApiNames),
+        permissionAccess: { ...permissionAccess },
         customDescription: customDescription.trim() || undefined,
       };
       onUpdate(updatedRole);
@@ -868,7 +1009,7 @@ function CustomizeRoleModal({
         category: "Custom",
         details: finalDetails,
         userCount: 0,
-        permissionApiNames: Array.from(selectedApiNames),
+        permissionAccess: { ...permissionAccess },
         customDescription: customDescription.trim() || undefined,
       };
       onSave(newRole);
@@ -1109,6 +1250,8 @@ function CustomizeRoleModal({
                                 currentGroup={group}
                                 groupBy={groupBy}
                                 isExiting={exitingApiName === perm.apiName}
+                                currentAccess={permissionAccess[perm.apiName]}
+                                onAccessChange={(access) => updatePermissionAccess(perm.apiName, access)}
                               />
                             </div>
                           ))}
@@ -1345,7 +1488,9 @@ export default function RolesPermissionsPage() {
   };
 
   // For custom roles, we need to handle permissions differently
-  const rolePermissions = selectedRole.permissionApiNames
+  const rolePermissions = selectedRole.permissionAccess
+    ? getAllPermissions().filter(p => p.apiName in selectedRole.permissionAccess!)
+    : selectedRole.permissionApiNames
     ? getAllPermissions().filter(p => selectedRole.permissionApiNames!.includes(p.apiName))
     : getPermissionsForRole(selectedRole.id);
   
@@ -1658,6 +1803,7 @@ export default function RolesPermissionsPage() {
                       permission={permission}
                       roleId={selectedRole.id}
                       showTaskCategories={true}
+                      customAccess={selectedRole.permissionAccess?.[permission.apiName]}
                     />
                   ))}
                 </div>
@@ -1680,6 +1826,7 @@ export default function RolesPermissionsPage() {
                           showTaskCategories={false}
                           currentGroup={groupName}
                           groupBy={groupBy}
+                          customAccess={selectedRole.permissionAccess?.[permission.apiName]}
                         />
                       ))}
                     </div>
@@ -1727,12 +1874,14 @@ function PermissionItem({
   showTaskCategories = false,
   currentGroup,
   groupBy,
+  customAccess,
 }: {
   permission: Permission;
   roleId: string;
   showTaskCategories?: boolean;
   currentGroup?: string;
   groupBy?: string;
+  customAccess?: string;  // For custom roles - the user-set access level
 }) {
   // For custom roles (or roles not in roleAccess), use the permission's actions field
   const access = permission.roleAccess[roleId];
@@ -1742,8 +1891,13 @@ function PermissionItem({
   let accessLabel: string;
   let hasWrite: boolean;
   
-  if (isCustomRole || !access) {
-    // Use permission's actions field for custom roles
+  if (isCustomRole && customAccess) {
+    // Use custom role's permissionAccess
+    const result = getAccessLabel(customAccess);
+    accessLabel = result.label;
+    hasWrite = result.hasWrite;
+  } else if (isCustomRole || !access) {
+    // Fallback: use permission's actions field for custom roles
     const result = getAccessLabel(permission.actions);
     accessLabel = result.label;
     hasWrite = result.hasWrite;

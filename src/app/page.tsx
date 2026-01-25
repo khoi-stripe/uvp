@@ -101,20 +101,23 @@ function ArrowUpDownIcon({ size = 12 }: { size?: number }) {
 function Checkbox({ 
   checked, 
   onChange,
-  className = ""
+  className = "",
+  disabled = false
 }: { 
   checked: boolean; 
   onChange: () => void;
   className?: string;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={(e) => {
         e.stopPropagation();
-        onChange();
+        if (!disabled) onChange();
       }}
-      className={`relative shrink-0 w-[14px] h-[14px] rounded-[4px] transition-all flex items-center justify-center ${className}`}
+      disabled={disabled}
+      className={`relative shrink-0 w-[14px] h-[14px] rounded-[4px] transition-all flex items-center justify-center ${className} ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
       style={{
         backgroundColor: checked ? '#675DFF' : 'white',
         border: checked ? '1px solid #675DFF' : '1px solid #D8DEE4',
@@ -239,13 +242,16 @@ function AccessSelector({
   value,
   onChange,
   disabled = false,
+  showPlaceholder = false,
 }: {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  showPlaceholder?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { label, hasWrite } = getAccessLabel(value);
+  const hasValue = value && !showPlaceholder;
+  const { label, hasWrite } = hasValue ? getAccessLabel(value) : { label: "Choose", hasWrite: false };
 
   return (
     <div className="relative">
@@ -255,7 +261,9 @@ function AccessSelector({
           if (!disabled) setIsOpen(!isOpen);
         }}
         className={`flex items-center gap-1 text-[12px] font-medium px-2 py-0.5 rounded flex-shrink-0 transition-colors ${
-          hasWrite
+          showPlaceholder
+            ? "bg-[#F5F6F8] text-[#596171] border border-dashed border-[#D8DEE4] hover:bg-[#EBEEF1]"
+            : hasWrite
             ? "bg-[#D3F8DF] text-[#1D7C4D] hover:bg-[#C0F0D0]"
             : "bg-[#D4E5FF] text-[#0055BC] hover:bg-[#C4D8F8]"
         } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
@@ -283,13 +291,13 @@ function AccessSelector({
                   setIsOpen(false);
                 }}
                 className={`w-full flex items-center justify-between gap-2 px-2.5 py-1.5 text-[12px] leading-4 text-[#353A44] rounded transition-colors ${
-                  value === option.value ? "bg-[#F5F6F8]" : "hover:bg-[#F5F6F8]"
+                  value === option.value && !showPlaceholder ? "bg-[#F5F6F8]" : "hover:bg-[#F5F6F8]"
                 }`}
               >
-                <span className={value === option.value ? "font-semibold" : ""}>
+                <span className={value === option.value && !showPlaceholder ? "font-semibold" : ""}>
                   {option.label}
                 </span>
-                {value === option.value && <CheckCircleFilledIcon size={10} />}
+                {value === option.value && !showPlaceholder && <CheckCircleFilledIcon size={10} />}
               </button>
             ))}
           </div>
@@ -312,6 +320,8 @@ function PermissionCard({
   hasWrite,
   currentAccess,
   onAccessChange,
+  pendingAccess,
+  onPendingAccessChange,
   isExiting = false,
 }: {
   permission: Permission;
@@ -325,6 +335,8 @@ function PermissionCard({
   hasWrite?: boolean;
   currentAccess?: string;
   onAccessChange?: (access: string) => void;
+  pendingAccess?: string;  // For available permissions - tracks access selection before adding
+  onPendingAccessChange?: (access: string) => void;
   isExiting?: boolean;
 }) {
   // Default to permission's actions if not provided
@@ -335,9 +347,25 @@ function PermissionCard({
   // Check if permission supports multiple access levels
   const supportsMultipleAccess = permission.actions.toLowerCase().includes("read") && 
                                   permission.actions.toLowerCase().includes("write");
+  
+  // For available permissions with multiple access options, check if access has been selected
+  const needsAccessSelection = !isChecked && supportsMultipleAccess && onPendingAccessChange;
+  const hasSelectedAccess = pendingAccess && pendingAccess !== "";
+  const isCheckboxDisabled = needsAccessSelection && !hasSelectedAccess;
 
   // Render access badge or selector
   const renderAccessBadge = () => {
+    // For available permissions that need access selection - show placeholder selector
+    if (needsAccessSelection) {
+      return (
+        <AccessSelector
+          value={pendingAccess || ""}
+          onChange={onPendingAccessChange!}
+          showPlaceholder={!hasSelectedAccess}
+        />
+      );
+    }
+    
     // Show selector in customize mode (when onAccessChange is provided) and permission supports both read and write
     if (onAccessChange && supportsMultipleAccess && currentAccess) {
       return (
@@ -366,10 +394,20 @@ function PermissionCard({
     <>
       {showCheckbox && (
         <div className="self-center">
-          <Checkbox
-            checked={isChecked}
-            onChange={() => onToggle?.()}
-          />
+          {isCheckboxDisabled ? (
+            <Tooltip content="Choose access level first" position="above">
+              <Checkbox
+                checked={isChecked}
+                onChange={() => {}}
+                disabled={true}
+              />
+            </Tooltip>
+          ) : (
+            <Checkbox
+              checked={isChecked}
+              onChange={() => onToggle?.()}
+            />
+          )}
         </div>
       )}
       <PermissionCardContent 
@@ -386,10 +424,10 @@ function PermissionCard({
   if (showCheckbox && onToggle) {
     return (
       <div
-        onClick={onToggle}
-        className={`flex items-start gap-4 px-4 py-3 bg-[#F5F6F8] rounded hover:bg-[#EBEEF1] cursor-pointer transition-all duration-150 ${
-          isExiting ? 'animate-scale-out' : ''
-        }`}
+        onClick={() => !isCheckboxDisabled && onToggle()}
+        className={`flex items-start gap-4 px-4 py-3 bg-[#F5F6F8] rounded transition-all duration-150 ${
+          isCheckboxDisabled ? 'cursor-default' : 'hover:bg-[#EBEEF1] cursor-pointer'
+        } ${isExiting ? 'animate-scale-out' : ''}`}
       >
         {cardContent}
       </div>
@@ -553,18 +591,25 @@ import {
 } from "@/lib/data";
 
 // Tooltip component
-function Tooltip({ children, content }: { children: React.ReactNode; content: string }) {
+function Tooltip({ children, content, position: pos = "below" }: { children: React.ReactNode; content: string; position?: "above" | "below" }) {
   const [isVisible, setIsVisible] = useState(false);
-  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
   const triggerRef = useRef<HTMLSpanElement>(null);
   
   const handleMouseEnter = () => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      setPosition({
-        top: rect.bottom + 8,
-        left: rect.left + rect.width / 2,
-      });
+      if (pos === "above") {
+        setTooltipPosition({
+          top: rect.top - 8,
+          left: rect.left + rect.width / 2,
+        });
+      } else {
+        setTooltipPosition({
+          top: rect.bottom + 8,
+          left: rect.left + rect.width / 2,
+        });
+      }
     }
     setIsVisible(true);
   };
@@ -579,8 +624,8 @@ function Tooltip({ children, content }: { children: React.ReactNode; content: st
       {children}
       {isVisible && (
         <div 
-          className="fixed z-[9999] px-4 py-3 bg-white border border-[#D8DEE4] rounded-lg shadow-[0px_2px_5px_rgba(64,68,82,0.08),0px_3px_9px_rgba(64,68,82,0.08)] whitespace-nowrap -translate-x-1/2"
-          style={{ top: position.top, left: position.left }}
+          className={`fixed z-[9999] px-4 py-3 bg-white border border-[#D8DEE4] rounded-lg shadow-[0px_2px_5px_rgba(64,68,82,0.08),0px_3px_9px_rgba(64,68,82,0.08)] whitespace-nowrap -translate-x-1/2 ${pos === "above" ? "-translate-y-full" : ""}`}
+          style={{ top: tooltipPosition.top, left: tooltipPosition.left }}
         >
           <p className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
             {content}
@@ -761,6 +806,8 @@ function CustomizeRoleModal({
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   // Maps permission API name to access level ("read", "write", "read, write")
   const [permissionAccess, setPermissionAccess] = useState<Record<string, string>>({});
+  // Tracks pending access selections for available permissions (before adding)
+  const [pendingAccess, setPendingAccess] = useState<Record<string, string>>({});
   const [searchQuery, setSearchQuery] = useState("");
   const [groupBy, setGroupBy] = useState<GroupByOption>(initialGroupBy);
   const [exitingApiName, setExitingApiName] = useState<string | null>(null);
@@ -805,6 +852,7 @@ function CustomizeRoleModal({
       setCustomDescription(baseRole.customDescription || "");
       setIsEditingDescription(!!baseRole.customDescription);
       setPermissionAccess(accessMap);
+      setPendingAccess({});
       setSearchQuery("");
       setGroupBy(initialGroupBy);
     }
@@ -938,11 +986,20 @@ function CustomizeRoleModal({
       setPermissionAccess(prev => {
         const next = { ...prev };
         if (apiName in next) {
+          // Removing permission
           delete next[apiName];
         } else {
-          // When adding, default to the permission's full actions
+          // Adding permission - use pending access if set, otherwise default to permission's actions
+          const pending = pendingAccess[apiName];
           const perm = allPermissions.find(p => p.apiName === apiName);
-          next[apiName] = perm?.actions || "read";
+          next[apiName] = pending || perm?.actions || "read";
+          
+          // Clear pending access after adding
+          setPendingAccess(p => {
+            const newPending = { ...p };
+            delete newPending[apiName];
+            return newPending;
+          });
         }
         return next;
       });
@@ -952,6 +1009,13 @@ function CustomizeRoleModal({
 
   const updatePermissionAccess = (apiName: string, access: string) => {
     setPermissionAccess(prev => ({
+      ...prev,
+      [apiName]: access
+    }));
+  };
+
+  const updatePendingAccess = (apiName: string, access: string) => {
+    setPendingAccess(prev => ({
       ...prev,
       [apiName]: access
     }));
@@ -977,6 +1041,7 @@ function CustomizeRoleModal({
     }
     
     setPermissionAccess(accessMap);
+    setPendingAccess({});
     setRoleName(isEditMode ? baseRole.name : `${baseRole.name} (copy)`);
     setIsEditingName(false);
     setCustomDescription(baseRole.customDescription || "");
@@ -1291,6 +1356,8 @@ function CustomizeRoleModal({
                                 currentGroup={group}
                                 groupBy={groupBy}
                                 isExiting={exitingApiName === perm.apiName}
+                                pendingAccess={pendingAccess[perm.apiName]}
+                                onPendingAccessChange={(access) => updatePendingAccess(perm.apiName, access)}
                               />
                             </div>
                           ))}

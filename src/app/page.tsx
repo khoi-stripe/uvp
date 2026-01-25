@@ -180,13 +180,13 @@ function PermissionCardContent({
         {permission.description}
       </p>
       {/* API name in monospace */}
-      <p className="text-[11px] text-[#596171] font-mono leading-4 mt-2">
+      <p className="text-[11px] text-[#596171] font-mono leading-4 mt-[2px]">
         {permission.apiName}
       </p>
-      {/* Task categories as context tags (only when alphabetical/ungrouped) */}
+      {/* Task categories as tags (only when alphabetical/ungrouped) */}
       {showTaskCategories && permission.taskCategories.length > 0 && (
         <div className="flex flex-wrap items-center gap-1 mt-2">
-          <span className="text-[10px] text-[#818DA0]">Context:</span>
+          <span className="text-[10px] text-[#818DA0]">Task:</span>
           {permission.taskCategories.map(tc => (
             <span
               key={tc}

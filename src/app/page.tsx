@@ -144,31 +144,18 @@ function Checkbox({
   );
 }
 
-// Shared Permission Card Content component
+// Shared Permission Card Content component (just the text content, no badge)
 function PermissionCardContent({
   permission,
   showTaskCategories = false,
-  showActions = false,
   currentGroup,
   groupBy,
 }: {
   permission: Permission;
   showTaskCategories?: boolean;
-  showActions?: boolean;
   currentGroup?: string;
   groupBy?: string;
 }) {
-  // Format actions for display
-  const getActionsLabel = (actions: string) => {
-    const lower = actions.toLowerCase();
-    if (lower.includes('write') && lower.includes('read')) return 'Read/Write';
-    if (lower.includes('write')) return 'Write';
-    return 'Read';
-  };
-
-  const actionsLabel = getActionsLabel(permission.actions);
-  const isWrite = permission.actions.toLowerCase().includes('write');
-
   // Get other groups this permission belongs to (excluding current group)
   const getOtherGroups = (): string[] => {
     if (!currentGroup || !groupBy) return [];
@@ -184,26 +171,10 @@ function PermissionCardContent({
 
   return (
     <div className="flex-1 min-w-0">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex-1 min-w-0">
-          {/* Human-readable display name */}
-          <h4 className="text-[12px] font-medium text-[#353A44] leading-4 tracking-[-0.15px]">
-            {permission.displayName}
-          </h4>
-        </div>
-        {/* Actions badge */}
-        {showActions && (
-          <span
-            className={`text-[12px] font-medium px-2 py-0.5 rounded flex-shrink-0 ${
-              isWrite
-                ? "bg-[#D3F8DF] text-[#1D7C4D]"
-                : "bg-[#D4E5FF] text-[#0055BC]"
-            }`}
-          >
-            {actionsLabel}
-          </span>
-        )}
-      </div>
+      {/* Human-readable display name */}
+      <h4 className="text-[12px] font-medium text-[#353A44] leading-4 tracking-[-0.15px]">
+        {permission.displayName}
+      </h4>
       {/* Description */}
       <p className="text-[12px] text-[#596171] leading-4 mt-0.5">
         {permission.description}
@@ -240,6 +211,97 @@ function PermissionCardContent({
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+// Helper to get access label from actions string
+function getAccessLabel(actions: string): { label: string; hasWrite: boolean } {
+  const lower = actions.toLowerCase();
+  if (lower.includes('write') && lower.includes('read')) {
+    return { label: 'Read/Write', hasWrite: true };
+  }
+  if (lower.includes('write')) {
+    return { label: 'Write', hasWrite: true };
+  }
+  return { label: 'Read', hasWrite: false };
+}
+
+// Unified Permission Card component for both main view and customize modal
+function PermissionCard({
+  permission,
+  showCheckbox = false,
+  isChecked = false,
+  onToggle,
+  showTaskCategories = false,
+  currentGroup,
+  groupBy,
+  accessLabel,
+  hasWrite,
+  isExiting = false,
+}: {
+  permission: Permission;
+  showCheckbox?: boolean;
+  isChecked?: boolean;
+  onToggle?: () => void;
+  showTaskCategories?: boolean;
+  currentGroup?: string;
+  groupBy?: string;
+  accessLabel?: string;
+  hasWrite?: boolean;
+  isExiting?: boolean;
+}) {
+  // Default to permission's actions if not provided
+  const { label: defaultLabel, hasWrite: defaultHasWrite } = getAccessLabel(permission.actions);
+  const finalLabel = accessLabel ?? defaultLabel;
+  const finalHasWrite = hasWrite ?? defaultHasWrite;
+
+  const cardContent = (
+    <>
+      {showCheckbox && (
+        <Checkbox
+          checked={isChecked}
+          onChange={() => onToggle?.()}
+        />
+      )}
+      <PermissionCardContent 
+        permission={permission} 
+        showTaskCategories={showTaskCategories} 
+        currentGroup={currentGroup} 
+        groupBy={groupBy} 
+      />
+      <span
+        className={`text-[12px] font-medium px-2 py-0.5 rounded flex-shrink-0 ${
+          finalHasWrite
+            ? "bg-[#D3F8DF] text-[#1D7C4D]"
+            : "bg-[#D4E5FF] text-[#0055BC]"
+        }`}
+      >
+        {finalLabel}
+      </span>
+    </>
+  );
+
+  // Clickable version for modal
+  if (showCheckbox && onToggle) {
+    return (
+      <div
+        onClick={onToggle}
+        className={`flex items-start gap-4 px-4 py-3 bg-[#F5F6F8] rounded hover:bg-[#EBEEF1] cursor-pointer transition-all duration-150 ${
+          isExiting ? 'animate-scale-out' : ''
+        }`}
+      >
+        {cardContent}
+      </div>
+    );
+  }
+
+  // Static version for main view
+  return (
+    <div className="bg-[#F5F6F8] rounded px-4 py-3">
+      <div className="flex items-start gap-4">
+        {cardContent}
+      </div>
     </div>
   );
 }
@@ -1036,18 +1098,16 @@ function CustomizeRoleModal({
                             </div>
                           )}
                           {perms.map(perm => (
-                            <div
-                              key={perm.apiName}
-                              onClick={() => !exitingApiName && togglePermission(perm.apiName)}
-                              className={`flex items-center gap-4 px-4 py-3 bg-[#F5F6F8] rounded hover:bg-[#EBEEF1] cursor-pointer mb-2 transition-all duration-150 ${
-                                exitingApiName === perm.apiName ? 'animate-scale-out' : ''
-                              }`}
-                            >
-                              <Checkbox
-                                checked={true}
-                                onChange={() => !exitingApiName && togglePermission(perm.apiName)}
+                            <div key={perm.apiName} className="mb-2">
+                              <PermissionCard
+                                permission={perm}
+                                showCheckbox
+                                isChecked={true}
+                                onToggle={() => !exitingApiName && togglePermission(perm.apiName)}
+                                currentGroup={group}
+                                groupBy={groupBy}
+                                isExiting={exitingApiName === perm.apiName}
                               />
-                              <PermissionCardContent permission={perm} showTaskCategories={false} showActions={true} currentGroup={group} groupBy={groupBy} />
                             </div>
                           ))}
                         </div>
@@ -1077,18 +1137,16 @@ function CustomizeRoleModal({
                             </div>
                           )}
                           {perms.map(perm => (
-                            <div
-                              key={perm.apiName}
-                              onClick={() => !exitingApiName && togglePermission(perm.apiName)}
-                              className={`flex items-center gap-4 px-4 py-3 bg-[#F5F6F8] rounded hover:bg-[#EBEEF1] cursor-pointer mb-2 transition-all duration-150 ${
-                                exitingApiName === perm.apiName ? 'animate-scale-out' : ''
-                              }`}
-                            >
-                              <Checkbox
-                                checked={false}
-                                onChange={() => !exitingApiName && togglePermission(perm.apiName)}
+                            <div key={perm.apiName} className="mb-2">
+                              <PermissionCard
+                                permission={perm}
+                                showCheckbox
+                                isChecked={false}
+                                onToggle={() => !exitingApiName && togglePermission(perm.apiName)}
+                                currentGroup={group}
+                                groupBy={groupBy}
+                                isExiting={exitingApiName === perm.apiName}
                               />
-                              <PermissionCardContent permission={perm} showTaskCategories={false} showActions={true} currentGroup={group} groupBy={groupBy} />
                             </div>
                           ))}
                         </div>
@@ -1684,17 +1742,9 @@ function PermissionItem({
   
   if (isCustomRole || !access) {
     // Use permission's actions field for custom roles
-    const actions = permission.actions.toLowerCase();
-    if (actions.includes('write') && actions.includes('read')) {
-      accessLabel = "Read/Write";
-      hasWrite = true;
-    } else if (actions.includes('write')) {
-      accessLabel = "Write";
-      hasWrite = true;
-    } else {
-      accessLabel = "Read";
-      hasWrite = false;
-    }
+    const result = getAccessLabel(permission.actions);
+    accessLabel = result.label;
+    hasWrite = result.hasWrite;
   } else {
     // Use role-specific access for standard roles
     accessLabel =
@@ -1703,25 +1753,19 @@ function PermissionItem({
         : access === "write"
         ? "Write"
         : access?.includes("read") && access?.includes("write")
-        ? "Read + Write"
+        ? "Read/Write"
         : access;
     hasWrite = access === "write" || access?.includes("write");
   }
 
   return (
-    <div className="bg-[#F5F6F8] rounded px-4 py-3">
-      <div className="flex items-start justify-between gap-3">
-        <PermissionCardContent permission={permission} showTaskCategories={showTaskCategories} currentGroup={currentGroup} groupBy={groupBy} />
-        <span
-          className={`text-[12px] font-medium px-2 py-0.5 rounded flex-shrink-0 ${
-            hasWrite
-              ? "bg-[#D3F8DF] text-[#1D7C4D]"
-              : "bg-[#D4E5FF] text-[#0055BC]"
-          }`}
-        >
-          {accessLabel}
-        </span>
-      </div>
-    </div>
+    <PermissionCard
+      permission={permission}
+      showTaskCategories={showTaskCategories}
+      currentGroup={currentGroup}
+      groupBy={groupBy}
+      accessLabel={accessLabel}
+      hasWrite={hasWrite}
+    />
   );
 }

@@ -382,6 +382,7 @@ import {
   getAllPermissions,
   generateRoleDetails,
   generateRiskAssessment,
+  generateRoleDescription,
   type Role,
   type Permission,
   type RoleDetails,
@@ -601,6 +602,16 @@ function CustomizeRoleModal({
   const [groupBy, setGroupBy] = useState<GroupByOption>(initialGroupBy);
   const [exitingApiName, setExitingApiName] = useState<string | null>(null);
   const [isRiskExpandedModal, setIsRiskExpandedModal] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  // Handle close with fade-out animation
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, 150); // Match animation duration
+  };
 
   // Reset state when modal opens with new role
   useEffect(() => {
@@ -619,6 +630,57 @@ function CustomizeRoleModal({
       setGroupBy(initialGroupBy);
     }
   }, [isOpen, baseRole.id, baseRole.permissionApiNames, baseRole.customDescription, initialGroupBy]);
+
+  // Keyboard shortcuts: ESC to close, CMD+Enter to save
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // ESC to close modal
+      if (e.key === "Escape") {
+        e.preventDefault();
+        handleClose();
+      }
+      // CMD+Enter (Mac) or Ctrl+Enter (Windows) to save
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        // Compute selected permissions inside the handler
+        const currentSelectedPermissions = allPermissions.filter(p => selectedApiNames.has(p.apiName));
+        const finalDetails = generateRoleDetails(currentSelectedPermissions);
+        if (customDescription.trim()) {
+          finalDetails.description = customDescription.trim();
+        }
+        
+        if (isEditMode && onUpdate) {
+          // Edit mode: update existing role
+          const updatedRole: Role = {
+            ...baseRole,
+            name: roleName,
+            details: finalDetails,
+            permissionApiNames: Array.from(selectedApiNames),
+            customDescription: customDescription.trim() || undefined,
+          };
+          onUpdate(updatedRole);
+        } else {
+          // Create mode: create new role
+          const newRole: Role = {
+            id: `custom_${Date.now()}`,
+            name: roleName,
+            category: "Custom",
+            details: finalDetails,
+            userCount: 0,
+            permissionApiNames: Array.from(selectedApiNames),
+            customDescription: customDescription.trim() || undefined,
+          };
+          onSave(newRole);
+        }
+        handleClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, isEditMode, baseRole, roleName, customDescription, selectedApiNames, allPermissions, onSave, onUpdate]);
 
   if (!isOpen) return null;
 
@@ -747,7 +809,7 @@ function CustomizeRoleModal({
       };
       onSave(newRole);
     }
-    onClose();
+    handleClose();
   };
 
   // Generate live preview of details
@@ -758,15 +820,25 @@ function CustomizeRoleModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/50 animate-fade-in"
+        className="absolute inset-0 bg-black/50"
+        style={{ 
+          animation: isClosing ? 'fade-out 150ms ease-out forwards' : 'fade-in 150ms ease-out' 
+        }}
       />
       
       {/* Modal - full screen with 60px margin */}
-      <div className="relative bg-white rounded-[12px] shadow-[0px_15px_35px_0px_rgba(48,49,61,0.08),0px_5px_15px_0px_rgba(0,0,0,0.12)] flex flex-col overflow-hidden m-[60px] animate-modal-in" style={{ width: 'calc(100vw - 120px)', height: 'calc(100vh - 120px)' }}>
+      <div 
+        className="relative bg-white rounded-[12px] shadow-[0px_15px_35px_0px_rgba(48,49,61,0.08),0px_5px_15px_0px_rgba(0,0,0,0.12)] flex flex-col overflow-hidden m-[60px]" 
+        style={{ 
+          width: 'calc(100vw - 120px)', 
+          height: 'calc(100vh - 120px)',
+          animation: isClosing ? 'modal-out 150ms ease-out forwards' : 'modal-in 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+        }}
+      >
         {/* Close button - top right */}
         <div className="flex items-end justify-end pt-6 px-6">
           <button 
-            onClick={onClose}
+            onClick={handleClose}
             className="p-1 rounded-md hover:bg-[#F5F6F8] transition-colors"
           >
             <X className="w-5 h-5 text-[#6C7688]" />

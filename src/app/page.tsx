@@ -117,11 +117,11 @@ function Checkbox({
         if (!disabled) onChange();
       }}
       disabled={disabled}
-      className={`relative shrink-0 w-[14px] h-[14px] rounded-[4px] transition-all flex items-center justify-center ${className} ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
+      className={`relative shrink-0 w-[14px] h-[14px] rounded-[4px] transition-all flex items-center justify-center ${className} ${disabled ? 'cursor-not-allowed' : ''}`}
       style={{
-        backgroundColor: checked ? '#675DFF' : 'white',
-        border: checked ? '1px solid #675DFF' : '1px solid #D8DEE4',
-        boxShadow: checked 
+        backgroundColor: disabled ? '#EBEEF1' : checked ? '#675DFF' : 'white',
+        border: disabled ? '1px solid #D8DEE4' : checked ? '1px solid #675DFF' : '1px solid #D8DEE4',
+        boxShadow: disabled ? 'none' : checked 
           ? '0px 1px 1px 0px rgba(10, 33, 86, 0.16)' 
           : '0px 1px 1px 0px rgba(33, 37, 44, 0.16)',
       }}

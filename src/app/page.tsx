@@ -1184,7 +1184,7 @@ function CustomizeRoleModal({
               </div>
 
               {/* Permissions module - spans 2 columns worth */}
-              <div className="flex-[2] bg-white rounded-lg shadow-[0px_7px_14px_0px_rgba(48,49,61,0.08),0px_3px_6px_0px_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 overflow-hidden min-w-0">
+              <div className="flex-[2] bg-white rounded-lg shadow-[0_2px_5px_0_rgba(48,49,61,0.08),0_1px_1px_0_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 overflow-hidden min-w-0">
                 {/* Permissions header */}
                 <div className="flex items-center gap-2">
                   <ShieldCheckIcon />
@@ -1757,7 +1757,7 @@ export default function RolesPermissionsPage() {
           </section>
 
           {/* Permissions Panel */}
-          <main className="flex-1 flex flex-col gap-4 p-4 bg-white rounded-lg shadow-[0px_3px_6px_rgba(0,0,0,0.12),0px_7px_14px_rgba(48,49,61,0.08)] overflow-hidden">
+          <main className="flex-1 flex flex-col gap-4 p-4 bg-white rounded-lg shadow-[0_2px_5px_0_rgba(48,49,61,0.08),0_1px_1px_0_rgba(0,0,0,0.12)] overflow-hidden">
             {/* Header */}
             <div className="flex items-center gap-2">
               <ShieldCheckIcon />

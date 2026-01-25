@@ -514,13 +514,19 @@ function RoleMenu({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const menuItems = [
-    // Only show "Edit" for custom roles (edit in place)
-    ...(isCustomRole && onEdit ? [{ label: "Edit", onClick: onEdit }] : []),
-    // Duplicate and customize is always available (creates a new copy)
-    { label: "Duplicate and customize", onClick: onDuplicate },
-    { label: "Test in sandbox", onClick: () => console.log("Test in sandbox") },
-  ];
+  const menuItems = isCustomRole
+    ? [
+        // Custom roles: Edit, Duplicate, Test in sandbox, Delete
+        ...(onEdit ? [{ label: "Edit", onClick: onEdit }] : []),
+        { label: "Duplicate", onClick: onDuplicate },
+        { label: "Test in sandbox", onClick: () => console.log("Test in sandbox") },
+        ...(onDelete ? [{ label: "Delete", onClick: onDelete, danger: true }] : []),
+      ]
+    : [
+        // Standard roles: Duplicate and customize (creates copy), Test in sandbox
+        { label: "Duplicate and customize", onClick: onDuplicate },
+        { label: "Test in sandbox", onClick: () => console.log("Test in sandbox") },
+      ];
 
   return (
     <div className="relative">
@@ -537,34 +543,26 @@ function RoleMenu({
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)} 
           />
-          <div className="absolute top-full right-0 mt-1 bg-white border border-[#D8DEE4] rounded-[8px] shadow-[0_5px_15px_rgba(0,0,0,0.12),0_15px_35px_rgba(48,49,61,0.08)] z-20 min-w-[190px] overflow-hidden">
+          <div className="absolute top-full right-0 mt-1 bg-white border border-[#D8DEE4] rounded-[8px] shadow-[0_5px_15px_rgba(0,0,0,0.12),0_15px_35px_rgba(48,49,61,0.08)] z-20 whitespace-nowrap overflow-hidden">
             <div className="p-1 flex flex-col">
-              {menuItems.map((item) => (
-                <button
-                  key={item.label}
-                  onClick={() => {
-                    item.onClick();
-                    setIsOpen(false);
-                  }}
-                  className="w-full text-left px-[10px] py-[6px] text-[14px] leading-5 tracking-[-0.15px] text-[#353A44] hover:bg-[#F5F6F8] rounded transition-colors"
-                >
-                  {item.label}
-                </button>
-              ))}
-              {isCustomRole && onDelete && (
-                <>
-                  <div className="h-px bg-[#EBEEF1] my-1" />
+              {menuItems.map((item, index) => (
+                <React.Fragment key={item.label}>
+                  {item.danger && index > 0 && <div className="h-px bg-[#EBEEF1] my-1" />}
                   <button
                     onClick={() => {
-                      onDelete();
+                      item.onClick();
                       setIsOpen(false);
                     }}
-                    className="w-full text-left px-[10px] py-[6px] text-[14px] leading-5 tracking-[-0.15px] text-[#C0123C] hover:bg-[#FEF2F4] rounded transition-colors"
+                    className={`w-full text-left px-[10px] py-[6px] text-[14px] leading-5 tracking-[-0.15px] rounded transition-colors ${
+                      item.danger 
+                        ? "text-[#C0123C] hover:bg-[#FEF2F4]" 
+                        : "text-[#353A44] hover:bg-[#F5F6F8]"
+                    }`}
                   >
-                    Delete
+                    {item.label}
                   </button>
-                </>
-              )}
+                </React.Fragment>
+              ))}
             </div>
           </div>
         </>
@@ -778,7 +776,7 @@ function CustomizeRoleModal({
         <div className="flex-1 flex flex-col gap-4 px-8 overflow-hidden">
           {/* Title */}
           <h2 className="text-[24px] font-bold text-[#21252C] leading-8 tracking-[0.3px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
-            {isEditMode ? "Edit role" : "Duplicate role"}
+            {isEditMode ? "Edit role" : "Duplicate and customize role"}
           </h2>
 
           {/* Main content area */}
@@ -1258,19 +1256,6 @@ export default function RolesPermissionsPage() {
               <h1 className="flex-1 text-[28px] font-bold text-[#353A44] leading-9 tracking-[0.38px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                 Roles and permissions
               </h1>
-              <a 
-                href="/map"
-                className="px-3 py-1.5 border border-[#D8DEE4] text-[#353A44] text-sm font-semibold rounded-md hover:bg-[#F5F6F8] transition-colors shadow-[0_1px_1px_rgba(33,37,44,0.16)] flex items-center gap-2"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2 3.5C2 2.67157 2.67157 2 3.5 2H6.5C7.32843 2 8 2.67157 8 3.5V6.5C8 7.32843 7.32843 8 6.5 8H3.5C2.67157 8 2 7.32843 2 6.5V3.5Z" stroke="#474E5A" strokeWidth="1.5"/>
-                  <path d="M8 9.5C8 8.67157 8.67157 8 9.5 8H12.5C13.3284 8 14 8.67157 14 9.5V12.5C14 13.3284 13.3284 14 12.5 14H9.5C8.67157 14 8 13.3284 8 12.5V9.5Z" stroke="#474E5A" strokeWidth="1.5"/>
-                  <path d="M8 3.5C8 2.67157 8.67157 2 9.5 2H12.5C13.3284 2 14 2.67157 14 3.5V6.5C14 7.32843 13.3284 8 12.5 8H9.5C8.67157 8 8 7.32843 8 6.5V3.5Z" stroke="#474E5A" strokeWidth="1.5"/>
-                  <path d="M2 9.5C2 8.67157 2.67157 8 3.5 8H6.5C7.32843 8 8 8.67157 8 9.5V12.5C8 13.3284 7.32843 14 6.5 14H3.5C2.67157 14 2 13.3284 2 12.5V9.5Z" stroke="#474E5A" strokeWidth="1.5"/>
-                  <path d="M5 5L11 11M11 5L5 11" stroke="#474E5A" strokeWidth="1.5" strokeLinecap="round"/>
-                </svg>
-                View Map
-              </a>
               <button className="px-3 py-1.5 bg-[#635BFF] text-white text-sm font-semibold rounded-md hover:bg-[#5851DB] transition-colors shadow-[0_1px_1px_rgba(47,14,99,0.32)]">
                 Add role
               </button>

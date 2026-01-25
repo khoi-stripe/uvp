@@ -259,10 +259,12 @@ function PermissionCard({
   const cardContent = (
     <>
       {showCheckbox && (
-        <Checkbox
-          checked={isChecked}
-          onChange={() => onToggle?.()}
-        />
+        <div className="self-center">
+          <Checkbox
+            checked={isChecked}
+            onChange={() => onToggle?.()}
+          />
+        </div>
       )}
       <PermissionCardContent 
         permission={permission} 

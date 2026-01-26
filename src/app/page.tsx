@@ -1744,25 +1744,10 @@ export default function RolesPermissionsPage() {
               )}
             </div>
 
-            {/* Best for, Can, Cannot - combined container */}
+            {/* Can, Cannot - combined container */}
             <div className="bg-white rounded-lg p-4 flex flex-col">
-              {/* Best for section */}
-              {selectedRole.details?.bestFor && (
-                <>
-                  <div className="pb-4">
-                    <div className="mb-2">
-                      <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Best for:</span>
-                    </div>
-                    <p className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px]">
-                      {selectedRole.details.bestFor}
-                    </p>
-                  </div>
-                  <div className="h-px bg-[#EBEEF1]" />
-                </>
-              )}
-
               {/* Can section */}
-              <div className={selectedRole.details?.bestFor ? "py-4" : "pb-4"}>
+              <div className="pb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircleIcon />
                   <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Can</span>

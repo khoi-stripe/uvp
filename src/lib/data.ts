@@ -19,7 +19,6 @@ export interface RoleDetails {
   description: string;
   canDo: string[];
   cannotDo: string[];
-  bestFor: string;
 }
 
 export interface Role {
@@ -54,7 +53,7 @@ export function toDisplayName(apiName: string): string {
 // Role details from CSV
 const roleDetailsMap: Record<string, RoleDetails> = {
   super_admin: {
-    description: "This role is assigned to the creator of a business account and should only be assigned to users who are allowed to perform all privileged actions. Only a Super Administrator can assign the Super Administrator role to other team members.",
+    description: "For account creators and C-level executives who need absolute control. This role allows all privileged actions including assigning Super Administrator to others. High security risk if compromised.",
     canDo: [
       "All Administrator capabilities",
       "Assign Super Administrator role to others",
@@ -65,10 +64,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
     cannotDo: [
       "Cannot change the account owner (only the owner can transfer ownership)"
     ],
-    bestFor: "Account creator, C-level executives who need absolute control. High security risk if compromised."
   },
   admin: {
-    description: "Full access to the account with the ability to manage all settings and perform all actions.",
+    description: "For account owners and senior management who need complete control. Full access to the account with the ability to manage all settings and perform all actions.",
     canDo: [
       "Manage all aspects of the account",
       "Invite and manage team members",
@@ -81,10 +79,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot assign Super Administrator role",
       "Cannot delete the account"
     ],
-    bestFor: "Account owners, senior management who need complete control"
   },
   developer: {
-    description: "Access to view and manage technical integration settings.",
+    description: "For engineering teams building and maintaining integrations. Access to view and manage technical integration settings including API keys and webhooks.",
     canDo: [
       "View API keys and create restricted keys",
       "Access webhooks and logs",
@@ -99,10 +96,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot process refunds",
       "Cannot access sensitive financial reports"
     ],
-    bestFor: "Engineering teams building and maintaining integrations"
   },
   analyst: {
-    description: "Read-only access to reports and data across the account.",
+    description: "For finance teams, business analysts, and executives who need visibility. Read-only access to reports and data across the account.",
     canDo: [
       "View all reports and analytics",
       "Export data",
@@ -116,10 +112,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot edit customers or payments",
       "Cannot access API keys"
     ],
-    bestFor: "Finance teams, business analysts, executives who need visibility"
   },
   support: {
-    description: "This role is for people who need to refund payments, resolve disputes, and may need to update products.",
+    description: "For customer support teams handling day-to-day customer issues. This role allows refunding payments, resolving disputes, and updating products.",
     canDo: [
       "View customer details",
       "View payment information",
@@ -135,10 +130,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot change account settings",
       "Cannot access detailed financial reports"
     ],
-    bestFor: "Customer support teams handling day-to-day customer issues"
   },
   support_associate: {
-    description: "Limited support access for basic customer inquiries.",
+    description: "For junior support staff handling basic inquiries. Limited support access for viewing customer information and payment details.",
     canDo: [
       "View customer information",
       "View payment details",
@@ -151,10 +145,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot edit customer data",
       "Cannot access API keys"
     ],
-    bestFor: "Junior support staff handling basic inquiries"
   },
   view_only: {
-    description: "Read-only access to most parts of the Dashboard.",
+    description: "For team members who need visibility without the ability to make changes. Read-only access to most parts of the Dashboard.",
     canDo: [
       "View payments and customers",
       "View basic reports",
@@ -168,10 +161,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot access API keys",
       "Cannot view sensitive financial data"
     ],
-    bestFor: "Team members who need visibility without ability to make changes"
   },
   dispute_analyst: {
-    description: "Specialized access for managing disputes and chargebacks.",
+    description: "For fraud and risk teams focused on dispute management. Specialized access for managing disputes and chargebacks.",
     canDo: [
       "View and manage disputes",
       "Upload evidence",
@@ -185,10 +177,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot access API keys",
       "Cannot manage team members"
     ],
-    bestFor: "Fraud and risk teams focused on dispute management"
   },
   refund_analyst: {
-    description: "Specialized access for processing refunds.",
+    description: "For finance operations teams focused on refund processing. Specialized access for processing full and partial refunds.",
     canDo: [
       "View payments and charges",
       "Create full and partial refunds",
@@ -202,10 +193,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot access financial reports",
       "Cannot manage team members"
     ],
-    bestFor: "Finance operations teams focused on refund processing"
   },
   identity_analyst: {
-    description: "Specialized access for identity verification and KYC.",
+    description: "For compliance and KYC teams managing identity verification. Specialized access for verifying identity documents and managing KYC workflows.",
     canDo: [
       "View and verify identity documents",
       "Manage KYC workflows",
@@ -218,10 +208,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot manage team members",
       "Cannot access API keys"
     ],
-    bestFor: "Compliance and KYC teams managing identity verification"
   },
   tax_analyst: {
-    description: "Specialized access for tax reporting and compliance.",
+    description: "For tax and accounting teams managing tax compliance. Specialized access for tax reporting, settings, and document management.",
     canDo: [
       "View tax reports",
       "Manage tax settings",
@@ -235,10 +224,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot manage team members",
       "Cannot access API keys"
     ],
-    bestFor: "Tax and accounting teams managing tax compliance"
   },
   iam_admin: {
-    description: "Specialized access for managing team access and security.",
+    description: "For security and IT teams managing access control. Specialized access for managing team members, roles, and security settings.",
     canDo: [
       "Manage team members and roles",
       "Configure SSO and SAML",
@@ -252,10 +240,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot view customer PII",
       "Cannot access API keys for integrations"
     ],
-    bestFor: "Security and IT teams managing access control"
   },
   issuing_support_agent: {
-    description: "Specialized access for managing Issuing cards and cardholders.",
+    description: "For support teams focused on card issuing operations. Specialized access for managing Issuing cards and cardholders.",
     canDo: [
       "View and manage issuing cards",
       "View cardholder information",
@@ -269,10 +256,9 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot access API keys",
       "Cannot access non-Issuing products"
     ],
-    bestFor: "Support teams focused on card issuing operations"
   },
   sandbox_admin: {
-    description: "Full administrative access to sandbox/test environments only.",
+    description: "For developers and QA teams testing integrations. Full administrative access to sandbox/test environments only.",
     canDo: [
       "Full access to sandbox mode",
       "Create test data",
@@ -285,7 +271,6 @@ const roleDetailsMap: Record<string, RoleDetails> = {
       "Cannot affect live transactions",
       "Cannot access production API keys"
     ],
-    bestFor: "Developers and QA teams testing integrations"
   },
 };
 
@@ -1358,17 +1343,49 @@ export function generateRoleDescription(selectedPermissions: Permission[]): stri
     return "A custom role with minimal permissions. Add permissions to define what this role can access.";
   }
 
-  // Analyze permission characteristics
-  const hasWrite = selectedPermissions.some(p => p.actions.includes("write"));
-  const accessType = hasWrite ? "read and write" : "read-only";
+  // Generate audience prefix (from generateBestFor logic)
+  const categoryCount: Record<string, number> = {};
+  for (const p of selectedPermissions) {
+    categoryCount[p.productCategory] = (categoryCount[p.productCategory] || 0) + 1;
+  }
+  const sortedCategories = Object.entries(categoryCount).sort((a, b) => b[1] - a[1]);
+  const primaryCategory = sortedCategories[0]?.[0] || "";
 
-  // Get unique product categories
+  // Determine audience based on primary category and access type
+  const hasWrite = selectedPermissions.some(p => p.actions.includes("write"));
+  const taskCategories = [...new Set(selectedPermissions.flatMap(p => p.taskCategories))];
+  
+  let audience = "team members";
+  if (taskCategories.includes("Manage team access")) {
+    audience = "security and IT teams";
+  } else if (primaryCategory === "Developer tools") {
+    audience = "engineering teams";
+  } else if (primaryCategory === "Payments") {
+    audience = hasWrite ? "payment operations teams" : "finance teams";
+  } else if (primaryCategory === "Connect") {
+    audience = "platform operations teams";
+  } else if (primaryCategory === "Billing") {
+    audience = "billing and subscription teams";
+  } else if (primaryCategory === "Identity") {
+    audience = "compliance teams";
+  } else if (primaryCategory === "Tax") {
+    audience = "tax and accounting teams";
+  } else if (primaryCategory === "Issuing") {
+    audience = "card issuing teams";
+  } else if (taskCategories.includes("Handle customer issues")) {
+    audience = "customer support teams";
+  } else if (!hasWrite) {
+    audience = "teams needing read-only visibility";
+  }
+
+  // Build description
+  const accessType = hasWrite ? "read and write" : "read-only";
   const categories = [...new Set(selectedPermissions.map(p => p.productCategory))];
   const categoryStr = categories.length > 3 
     ? `${categories.slice(0, 2).join(", ")}, and ${categories.length - 2} more areas`
     : categories.join(", ");
 
-  // Check sensitivity using flags
+  // Check sensitivity
   const hasPII = selectedPermissions.some(p => p.hasPII);
   const hasFinancial = selectedPermissions.some(p => p.hasFinancialData);
   const hasCredentials = selectedPermissions.some(p => p.hasPaymentCredentials);
@@ -1383,14 +1400,13 @@ export function generateRoleDescription(selectedPermissions: Permission[]): stri
     sensitivityNote = ` Includes access to ${sensitiveTypes.join(" and ")}.`;
   }
 
-  return `Custom role with ${accessType} access to ${categoryStr}.${sensitivityNote}`;
+  return `For ${audience}. Custom role with ${accessType} access to ${categoryStr}.${sensitivityNote}`;
 }
 
 // Generate complete role details from permissions
 export function generateRoleDetails(selectedPermissions: Permission[]): RoleDetails {
   return {
     description: generateRoleDescription(selectedPermissions),
-    bestFor: generateBestFor(selectedPermissions),
     canDo: generateCanDo(selectedPermissions),
     cannotDo: generateCannotDo(selectedPermissions),
   };

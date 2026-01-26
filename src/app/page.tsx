@@ -147,6 +147,17 @@ function Checkbox({
   );
 }
 
+// Clipboard icon for API name
+function ClipboardIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" clipRule="evenodd" d="M4 6.375C4 6.02982 4.27982 5.75 4.625 5.75H7.375C7.72018 5.75 8 6.02982 8 6.375C8 6.72018 7.72018 7 7.375 7H4.625C4.27982 7 4 6.72018 4 6.375Z" fill="#6C7688"/>
+      <path fillRule="evenodd" clipRule="evenodd" d="M4 8.625C4 8.27982 4.27982 8 4.625 8H7.375C7.72018 8 8 8.27982 8 8.625C8 8.97018 7.72018 9.25 7.375 9.25H4.625C4.27982 9.25 4 8.97018 4 8.625Z" fill="#6C7688"/>
+      <path fillRule="evenodd" clipRule="evenodd" d="M8.43699 1.5C8.21497 0.637386 7.43192 0 6.5 0H5.5C4.56808 0 3.78503 0.637386 3.56301 1.5H3C1.89543 1.5 1 2.39543 1 3.5V10C1 11.1046 1.89543 12 3 12H9C10.1046 12 11 11.1046 11 10V3.5C11 2.39543 10.1046 1.5 9 1.5H8.43699ZM4.9 3.1H7.1V2C7.1 1.66863 6.83137 1.4 6.5 1.4H5.5C5.16863 1.4 4.9 1.66863 4.9 2V3.1ZM8 4.5H4C3.72386 4.5 3.5 4.27614 3.5 4V2.9H3C2.66863 2.9 2.4 3.16863 2.4 3.5V10C2.4 10.3314 2.66863 10.6 3 10.6H9C9.33137 10.6 9.6 10.3314 9.6 10V3.5C9.6 3.16863 9.33137 2.9 9 2.9H8.5V4C8.5 4.27614 8.27614 4.5 8 4.5Z" fill="#6C7688"/>
+    </svg>
+  );
+}
+
 // Shared Permission Card Content component (just the text content, no badge)
 function PermissionCardContent({
   permission,
@@ -173,46 +184,36 @@ function PermissionCardContent({
   const otherGroups = getOtherGroups();
 
   return (
-    <div className="flex-1 min-w-0">
-      {/* Human-readable display name */}
-      <h4 className="text-[12px] font-medium text-[#353A44] leading-4 tracking-[-0.15px]">
-        {permission.displayName}
-      </h4>
-      {/* Description */}
-      <p className="text-[12px] text-[#596171] leading-4 mt-0.5">
-        {permission.description}
-      </p>
-      {/* API name in monospace */}
-      <p className="text-[11px] text-[#596171] font-mono leading-4 mt-[2px]">
-        {permission.apiName}
-      </p>
-      {/* Task categories as tags (only when alphabetical/ungrouped) */}
-      {showTaskCategories && permission.taskCategories.length > 0 && (
-        <div className="flex flex-wrap items-center gap-1 mt-2">
-          <span className="text-[10px] text-[#818DA0]">Task:</span>
-          {permission.taskCategories.map(tc => (
-            <span
-              key={tc}
-              className="text-[10px] px-1.5 py-0.5 bg-white text-[#596171] rounded"
-            >
-              {tc}
-            </span>
-          ))}
+    <div className="flex-1 min-w-0 flex flex-col gap-4">
+      {/* Top section: title, description, API name */}
+      <div className="flex flex-col gap-1">
+        {/* Human-readable display name */}
+        <h4 className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">
+          {permission.displayName}
+        </h4>
+        {/* Description */}
+        <p className="text-[14px] text-[#596171] leading-5">
+          {permission.description}
+        </p>
+        {/* API name in white container with clipboard icon */}
+        <div className="flex items-center gap-1 mt-0.5">
+          <span className="inline-flex items-center gap-1 bg-white px-2 py-0.5 rounded text-[12px] text-[#596171] font-mono leading-4">
+            {permission.apiName}
+            <ClipboardIcon />
+          </span>
         </div>
+      </div>
+      {/* Task categories as plain text */}
+      {showTaskCategories && permission.taskCategories.length > 0 && (
+        <p className="text-[12px] text-[#596171] leading-4">
+          Task: {permission.taskCategories.join(', ')}
+        </p>
       )}
       {/* Show other groups when permission appears in multiple groups */}
       {otherGroups.length > 0 && (
-        <div className="flex flex-wrap items-center gap-1 mt-2">
-          <span className="text-[10px] text-[#818DA0]">Also in:</span>
-          {otherGroups.map(group => (
-            <span
-              key={group}
-              className="text-[10px] px-1.5 py-0.5 bg-white text-[#596171] rounded"
-            >
-              {group}
-            </span>
-          ))}
-        </div>
+        <p className="text-[12px] text-[#596171] leading-4">
+          Also in: {otherGroups.join(', ')}
+        </p>
       )}
     </div>
   );
@@ -425,7 +426,7 @@ function PermissionCard({
     return (
       <div
         onClick={() => !isCheckboxDisabled && onToggle()}
-        className={`flex items-start gap-4 px-4 py-3 bg-[#F5F6F8] rounded transition-all duration-150 ${
+        className={`flex items-start gap-2 p-4 bg-[#F5F6F8] rounded transition-all duration-150 ${
           isCheckboxDisabled ? 'cursor-default' : 'hover:bg-[#EBEEF1] cursor-pointer'
         } ${isExiting ? 'animate-scale-out' : ''}`}
       >
@@ -436,10 +437,8 @@ function PermissionCard({
 
   // Static version for main view
   return (
-    <div className="bg-[#F5F6F8] rounded px-4 py-3">
-      <div className="flex items-start gap-4">
-        {cardContent}
-      </div>
+    <div className="flex items-start gap-2 p-4 bg-[#F5F6F8] rounded">
+      {cardContent}
     </div>
   );
 }

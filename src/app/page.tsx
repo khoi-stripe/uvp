@@ -1252,7 +1252,6 @@ function CustomizeRoleModal({
               <div className="flex-[2] bg-white rounded-lg shadow-[0_2px_5px_0_rgba(48,49,61,0.08),0_1px_1px_0_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 overflow-hidden min-w-0">
                 {/* Permissions header */}
                 <div className="flex items-center gap-2">
-                  <ShieldCheckIcon />
                   <span className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                     Permissions
                   </span>
@@ -1623,7 +1622,6 @@ export default function RolesPermissionsPage() {
           {/* Header */}
           <div className="flex items-center gap-2.5 pb-4 border-b border-[#EBEEF1]">
             <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>Roles</h2>
-            <SearchIcon className="text-[#474E5A]" />
           </div>
 
           {/* Categories */}
@@ -1715,7 +1713,7 @@ export default function RolesPermissionsPage() {
                   {selectedRole.name}
                 </h2>
                 {selectedRole.category === "Custom" && (
-                  <span className="bg-[#675DFF] text-white text-[11px] font-semibold px-2 py-0.5 rounded flex-shrink-0">
+                  <span className="bg-[#EBEEF1] text-[#596171] text-[12px] font-normal px-2 py-0.5 rounded flex-shrink-0">
                     Custom
                   </span>
                 )}
@@ -1827,7 +1825,6 @@ export default function RolesPermissionsPage() {
           <main className="flex-1 flex flex-col gap-4 p-4 bg-white rounded-lg shadow-[0_2px_5px_0_rgba(48,49,61,0.08),0_1px_1px_0_rgba(0,0,0,0.12)] overflow-hidden">
             {/* Header */}
             <div className="flex items-center gap-2">
-              <ShieldCheckIcon />
               <h2 className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>Permissions</h2>
               <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
                 {searchQuery ? `${filteredPermissions.length}/${rolePermissions.length}` : rolePermissions.length}

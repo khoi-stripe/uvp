@@ -1713,7 +1713,7 @@ export default function RolesPermissionsPage() {
                   {selectedRole.name}
                 </h2>
                 {selectedRole.category === "Custom" && (
-                  <span className="bg-[#EBEEF1] text-[#596171] text-[12px] font-normal px-2 py-0.5 rounded flex-shrink-0">
+                  <span className="bg-[#e2fbfe] text-[#045ad0] text-[12px] font-normal px-2 py-0.5 rounded flex-shrink-0">
                     Custom
                   </span>
                 )}

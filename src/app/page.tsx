@@ -426,7 +426,7 @@ function PermissionCard({
     return (
       <div
         onClick={() => !isCheckboxDisabled && onToggle()}
-        className={`flex items-start gap-2 p-4 bg-[#F5F6F8] rounded transition-all duration-150 ${
+        className={`flex items-start gap-4 p-4 bg-[#F5F6F8] rounded transition-all duration-150 ${
           isCheckboxDisabled ? 'cursor-default' : 'hover:bg-[#EBEEF1] cursor-pointer'
         } ${isExiting ? 'animate-scale-out' : ''}`}
       >
@@ -437,7 +437,7 @@ function PermissionCard({
 
   // Static version for main view
   return (
-    <div className="flex items-start gap-2 p-4 bg-[#F5F6F8] rounded">
+    <div className="flex items-start gap-4 p-4 bg-[#F5F6F8] rounded">
       {cardContent}
     </div>
   );

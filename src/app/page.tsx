@@ -324,6 +324,7 @@ function PermissionCard({
   pendingAccess,
   onPendingAccessChange,
   isExiting = false,
+  disabled = false,
 }: {
   permission: Permission;
   showCheckbox?: boolean;
@@ -339,6 +340,7 @@ function PermissionCard({
   pendingAccess?: string;  // For available permissions - tracks access selection before adding
   onPendingAccessChange?: (access: string) => void;
   isExiting?: boolean;
+  disabled?: boolean;  // For required permissions that can't be toggled
 }) {
   // Default to permission's actions if not provided
   const { label: defaultLabel, hasWrite: defaultHasWrite } = getAccessLabel(permission.actions);
@@ -391,12 +393,23 @@ function PermissionCard({
     );
   };
 
+  // Determine if checkbox should be disabled (either because it's a required permission or needs access selection)
+  const checkboxDisabled = disabled || isCheckboxDisabled;
+
   const cardContent = (
     <>
       {showCheckbox && (
         <div className="self-center">
-          {isCheckboxDisabled ? (
+          {isCheckboxDisabled && !disabled ? (
             <Tooltip content="Choose access level first" position="above">
+              <Checkbox
+                checked={isChecked}
+                onChange={() => {}}
+                disabled={true}
+              />
+            </Tooltip>
+          ) : disabled ? (
+            <Tooltip content="Required permission" position="above">
               <Checkbox
                 checked={isChecked}
                 onChange={() => {}}
@@ -425,9 +438,9 @@ function PermissionCard({
   if (showCheckbox && onToggle) {
     return (
       <div
-        onClick={() => !isCheckboxDisabled && onToggle()}
+        onClick={() => !checkboxDisabled && onToggle()}
         className={`flex items-start gap-4 p-4 bg-[#F5F6F8] rounded transition-all duration-150 ${
-          isCheckboxDisabled ? 'cursor-default' : 'hover:bg-[#EBEEF1] cursor-pointer'
+          checkboxDisabled ? 'cursor-default' : 'hover:bg-[#EBEEF1] cursor-pointer'
         } ${isExiting ? 'animate-scale-out' : ''}`}
       >
         {cardContent}
@@ -846,6 +859,12 @@ function CustomizeRoleModal({
         });
       }
       
+      // Ensure dashboard_baseline is always included (it's required)
+      const dashboardBaseline = allPermissions.find(p => p.apiName === "dashboard_baseline");
+      if (dashboardBaseline && !accessMap["dashboard_baseline"]) {
+        accessMap["dashboard_baseline"] = "read";
+      }
+      
       setRoleName(isEditMode ? baseRole.name : `${baseRole.name} (copy)`);
       setIsEditingName(false);
       setCustomDescription(baseRole.customDescription || "");
@@ -976,7 +995,13 @@ function CustomizeRoleModal({
   const groupedAvailable = groupPerms(filteredAvailable);
   const isAlphabetical = groupBy === "alphabetical";
 
+  // Required permission that cannot be removed
+  const REQUIRED_PERMISSION = "dashboard_baseline";
+
   const togglePermission = (apiName: string) => {
+    // Don't allow toggling the required permission
+    if (apiName === REQUIRED_PERMISSION) return;
+    
     // Start exit animation
     setExitingApiName(apiName);
     
@@ -1037,6 +1062,11 @@ function CustomizeRoleModal({
         const roleAccess = p.roleAccess[baseRole.id];
         accessMap[p.apiName] = roleAccess || p.actions;
       });
+    }
+    
+    // Ensure dashboard_baseline is always included (it's required)
+    if (!accessMap[REQUIRED_PERMISSION]) {
+      accessMap[REQUIRED_PERMISSION] = "read";
     }
     
     setPermissionAccess(accessMap);
@@ -1312,6 +1342,7 @@ function CustomizeRoleModal({
                                 onToggle={() => !exitingApiName && togglePermission(perm.apiName)}
                                 currentGroup={group}
                                 groupBy={groupBy}
+                                disabled={perm.apiName === REQUIRED_PERMISSION}
                                 isExiting={exitingApiName === perm.apiName}
                                 currentAccess={permissionAccess[perm.apiName]}
                                 onAccessChange={(access) => updatePermissionAccess(perm.apiName, access)}

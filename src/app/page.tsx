@@ -1595,7 +1595,7 @@ export default function RolesPermissionsPage() {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col gap-8 overflow-hidden">
         {/* Header */}
-        <header className="flex-shrink-0 max-w-[1400px]">
+        <header className="flex-shrink-0 max-w-[1600px]">
           <div className="flex flex-col gap-2">
             {/* Title row */}
             <div className="flex items-center gap-2">
@@ -1615,7 +1615,7 @@ export default function RolesPermissionsPage() {
         </header>
 
         {/* Main content - 3 panels */}
-        <div className="flex flex-1 gap-6 overflow-hidden max-w-[1400px]">
+        <div className="flex flex-1 gap-6 overflow-hidden max-w-[1600px]">
         {/* Left Panel - Roles List */}
         <aside className="w-[240px] overflow-y-auto flex-shrink-0 pt-6 relative">
           {/* Header */}

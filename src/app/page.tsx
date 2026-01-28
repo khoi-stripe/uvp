@@ -1095,12 +1095,12 @@ function CustomizeRoleModal({
         }}
       />
       
-      {/* Modal - full screen with 60px margin */}
+      {/* Modal - full screen with 32px margin */}
       <div 
-        className="relative bg-white rounded-[12px] shadow-[0px_15px_35px_0px_rgba(48,49,61,0.08),0px_5px_15px_0px_rgba(0,0,0,0.12)] flex flex-col overflow-hidden m-[60px]" 
+        className="relative bg-white rounded-[12px] shadow-[0px_15px_35px_0px_rgba(48,49,61,0.08),0px_5px_15px_0px_rgba(0,0,0,0.12)] flex flex-col overflow-hidden m-[32px]" 
         style={{ 
-          width: 'calc(100vw - 120px)', 
-          height: 'calc(100vh - 120px)',
+          width: 'calc(100vw - 64px)', 
+          height: 'calc(100vh - 64px)',
           animation: isClosing ? 'modal-out 150ms ease-out forwards' : 'modal-in 200ms cubic-bezier(0.4, 0, 0.2, 1)'
         }}
       >

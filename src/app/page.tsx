@@ -873,9 +873,12 @@ function AIAssistantDrawer({
   
   return (
     <div 
-      className={`bg-white flex flex-col h-full overflow-hidden rounded-tr-[12px] rounded-br-[12px] transition-all duration-300 ease-in-out ${
+      className={`bg-white flex flex-col h-full overflow-hidden rounded-tr-[12px] rounded-br-[12px] ${
         isOpen ? 'w-[360px] opacity-100' : 'w-0 opacity-0'
       }`}
+      style={{
+        transition: 'width 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)'
+      }}
     >
       {isOpen && (
         <>
@@ -1499,33 +1502,41 @@ function CustomizeRoleModal({
                     )}
                   </div>
 
-                  {/* Controls row */}
-                  <div className="flex items-center gap-2">
-                    {/* Group by dropdown - using shared component */}
-                    <Dropdown
-                      value={groupBy}
-                      onChange={setGroupBy}
-                      options={groupByOptions}
-                    />
-                    {/* Search field - matching main page styling */}
-                    <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
-                      <SearchIcon className="text-[#818DA0]" />
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search"
-                        className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
+                  {/* Controls row - matches two-column layout below */}
+                  <div className="flex gap-4">
+                    {/* Left side controls - matches Current column */}
+                    <div className="flex-1 flex items-center gap-2 min-w-0">
+                      {/* Group by dropdown - using shared component */}
+                      <Dropdown
+                        value={groupBy}
+                        onChange={setGroupBy}
+                        options={groupByOptions}
                       />
-                      {searchQuery && (
-                        <button
-                          onClick={() => setSearchQuery("")}
-                          className="text-[#818DA0] hover:text-[#353A44] transition-colors"
-                        >
-                          ×
-                        </button>
-                      )}
+                      {/* Search field - matching main page styling */}
+                      <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
+                        <SearchIcon className="text-[#818DA0]" />
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="Search"
+                          className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
+                        />
+                        {searchQuery && (
+                          <button
+                            onClick={() => setSearchQuery("")}
+                            className="text-[#818DA0] hover:text-[#353A44] transition-colors"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
                     </div>
+                    {/* Right side spacer - matches Available column, collapses when assistant is open */}
+                    <div 
+                      className={`${isAssistantOpen ? 'w-0 min-w-0' : 'flex-1 min-w-0'}`}
+                      style={{ transition: 'all 400ms cubic-bezier(0.4, 0, 0.2, 1)' }}
+                    />
                   </div>
 
                   {/* Two-column permission lists */}
@@ -1573,9 +1584,12 @@ function CustomizeRoleModal({
                     </div>
 
                     {/* Available permissions - collapses when assistant is open */}
-                    <div className={`flex flex-col gap-2 overflow-hidden transition-all duration-300 ease-in-out ${
-                      isAssistantOpen ? 'w-0 opacity-0 min-w-0' : 'flex-1 opacity-100 min-w-0'
-                    }`}>
+                    <div 
+                      className={`flex flex-col gap-2 overflow-hidden ${
+                        isAssistantOpen ? 'w-0 opacity-0 min-w-0' : 'flex-1 opacity-100 min-w-0'
+                      }`}
+                      style={{ transition: 'width 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)' }}
+                    >
                       <div className="flex items-center gap-2.5">
                         <span className="flex-1 text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Available</span>
                         <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
@@ -2131,31 +2145,39 @@ function CreateRoleModal({
                     )}
                   </div>
 
-                  {/* Controls row */}
-                  <div className="flex items-center gap-2">
-                    <Dropdown
-                      value={groupBy}
-                      onChange={setGroupBy}
-                      options={groupByOptions}
-                    />
-                    <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
-                      <SearchIcon className="text-[#818DA0]" />
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search"
-                        className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
+                  {/* Controls row - matches two-column layout below */}
+                  <div className="flex gap-4">
+                    {/* Left side controls - matches Current column */}
+                    <div className="flex-1 flex items-center gap-2 min-w-0">
+                      <Dropdown
+                        value={groupBy}
+                        onChange={setGroupBy}
+                        options={groupByOptions}
                       />
-                      {searchQuery && (
-                        <button
-                          onClick={() => setSearchQuery("")}
-                          className="text-[#818DA0] hover:text-[#353A44] transition-colors"
-                        >
-                          ×
-                        </button>
-                      )}
+                      <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
+                        <SearchIcon className="text-[#818DA0]" />
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="Search"
+                          className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
+                        />
+                        {searchQuery && (
+                          <button
+                            onClick={() => setSearchQuery("")}
+                            className="text-[#818DA0] hover:text-[#353A44] transition-colors"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
                     </div>
+                    {/* Right side spacer - matches Available column, collapses when assistant is open */}
+                    <div 
+                      className={`${isAssistantOpen ? 'w-0 min-w-0' : 'flex-1 min-w-0'}`}
+                      style={{ transition: 'all 400ms cubic-bezier(0.4, 0, 0.2, 1)' }}
+                    />
                   </div>
 
                   {/* Two-column permission lists */}
@@ -2203,9 +2225,12 @@ function CreateRoleModal({
                     </div>
 
                     {/* Available permissions - collapses when assistant is open */}
-                    <div className={`flex flex-col gap-2 overflow-hidden transition-all duration-300 ease-in-out ${
-                      isAssistantOpen ? 'w-0 opacity-0 min-w-0' : 'flex-1 opacity-100 min-w-0'
-                    }`}>
+                    <div 
+                      className={`flex flex-col gap-2 overflow-hidden ${
+                        isAssistantOpen ? 'w-0 opacity-0 min-w-0' : 'flex-1 opacity-100 min-w-0'
+                      }`}
+                      style={{ transition: 'width 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)' }}
+                    >
                       <div className="flex items-center gap-2.5">
                         <span className="flex-1 text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Available</span>
                         <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">

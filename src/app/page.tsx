@@ -929,7 +929,7 @@ function AIAssistantDrawer({
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
-                src="/waves.svg" 
+                src={`${process.env.NODE_ENV === 'production' ? '/uvp' : ''}/waves.svg`}
                 alt="" 
                 className="w-full h-full"
               />

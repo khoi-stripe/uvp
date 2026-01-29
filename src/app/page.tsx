@@ -2127,7 +2127,6 @@ function CreateRoleModal({
               >
                   {/* Permissions header */}
                   <div className="flex items-center gap-2">
-                    <ShieldCheckIcon />
                     <span className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                       Permissions
                     </span>

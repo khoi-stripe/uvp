@@ -1490,16 +1490,16 @@ function CustomizeRoleModal({
                     <span className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                       Permissions
                     </span>
-                    {/* AI Assistant toggle button - hidden when assistant is open */}
-                    {!isAssistantOpen && (
-                      <button
-                        onClick={() => setIsAssistantOpen(true)}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-medium transition-all duration-200 text-[#353A44] hover:bg-[#F5F6F8] border border-[#D8DEE4] bg-white shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)]"
-                      >
-                        <SparkleIcon />
-                        <span className="leading-5 tracking-[-0.15px]">Assistant</span>
-                      </button>
-                    )}
+                    {/* AI Assistant toggle button - invisible (not removed) when assistant is open to prevent layout shift */}
+                    <button
+                      onClick={() => setIsAssistantOpen(true)}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-medium transition-all duration-200 text-[#353A44] hover:bg-[#F5F6F8] border border-[#D8DEE4] bg-white shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)] ${
+                        isAssistantOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                      }`}
+                    >
+                      <SparkleIcon />
+                      <span className="leading-5 tracking-[-0.15px]">Assistant</span>
+                    </button>
                   </div>
 
                   {/* Controls row - matches two-column layout below */}
@@ -2133,16 +2133,16 @@ function CreateRoleModal({
                     <span className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                       Permissions
                     </span>
-                    {/* AI Assistant toggle button - hidden when assistant is open */}
-                    {!isAssistantOpen && (
-                      <button
-                        onClick={() => setIsAssistantOpen(true)}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-medium transition-all duration-200 text-[#353A44] hover:bg-[#F5F6F8] border border-[#D8DEE4] bg-white shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)]"
-                      >
-                        <SparkleIcon />
-                        <span className="leading-5 tracking-[-0.15px]">Assistant</span>
-                      </button>
-                    )}
+                    {/* AI Assistant toggle button - invisible (not removed) when assistant is open to prevent layout shift */}
+                    <button
+                      onClick={() => setIsAssistantOpen(true)}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-medium transition-all duration-200 text-[#353A44] hover:bg-[#F5F6F8] border border-[#D8DEE4] bg-white shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)] ${
+                        isAssistantOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                      }`}
+                    >
+                      <SparkleIcon />
+                      <span className="leading-5 tracking-[-0.15px]">Assistant</span>
+                    </button>
                   </div>
 
                   {/* Controls row - matches two-column layout below */}
@@ -2540,7 +2540,7 @@ function SandboxView({
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col gap-5 px-8 pb-8 max-w-[1400px] relative">
+        <div className="flex-1 flex flex-col gap-5 px-8 pb-8 relative">
           {/* Top Bar */}
           <div className="bg-white sticky top-0 py-3 flex items-center justify-between z-10">
             {/* Search placeholder */}

@@ -932,7 +932,6 @@ function AIAssistantDrawer({
                 src="/waves.svg" 
                 alt="" 
                 className="w-full h-full"
-                style={{ stroke: '#F5F6F8' }}
               />
             </div>
             

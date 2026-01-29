@@ -1350,8 +1350,8 @@ function CustomizeRoleModal({
           </div>
 
           {/* Main content area */}
-          <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
-            {/* All panels inside offset background */}
+          <div className="flex-1 flex min-h-0 overflow-hidden">
+            {/* Offset background container - role info + permissions */}
             <div className="bg-[#F5F6F8] rounded-[12px] p-2 flex gap-4 flex-1 overflow-hidden">
               {/* Role info column - equal width */}
               <div className="flex-1 flex flex-col gap-4 px-4 py-4 overflow-y-auto min-w-0">
@@ -1480,10 +1480,8 @@ function CustomizeRoleModal({
                 </div>
               </div>
 
-              {/* Permissions module with AI Assistant - spans 2 columns worth */}
-              <div className="flex-[2] flex overflow-hidden min-w-0">
-                {/* Permissions panel */}
-                <div className="flex-1 bg-white rounded-lg shadow-[0_2px_5px_0_rgba(48,49,61,0.08),0_1px_1px_0_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 overflow-hidden min-w-0 transition-all duration-300">
+              {/* Permissions panel */}
+              <div className="flex-1 bg-white rounded-lg shadow-[0_7px_14px_0_rgba(48,49,61,0.08),0_3px_6px_0_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 overflow-hidden min-w-0">
                   {/* Permissions header */}
                   <div className="flex items-center gap-2">
                     <span className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
@@ -1619,13 +1617,13 @@ function CustomizeRoleModal({
                   </div>
                 </div>
 
-                {/* AI Assistant Drawer */}
-                <AIAssistantDrawer 
-                  isOpen={isAssistantOpen} 
-                  onClose={() => setIsAssistantOpen(false)} 
-                />
               </div>
-            </div>
+            
+            {/* AI Assistant Drawer - outside the offset background */}
+            <AIAssistantDrawer 
+              isOpen={isAssistantOpen} 
+              onClose={() => setIsAssistantOpen(false)} 
+            />
           </div>
         </div>
 
@@ -1990,7 +1988,8 @@ function CreateRoleModal({
           </div>
 
           {/* Main content area */}
-          <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
+          <div className="flex-1 flex min-h-0 overflow-hidden">
+            {/* Offset background container */}
             <div className="bg-[#F5F6F8] rounded-[12px] p-2 flex gap-4 flex-1 overflow-hidden">
               {/* Left column - Role info */}
               <div className="flex flex-col gap-6 px-4 py-[13px] w-[340px] flex-shrink-0 overflow-y-auto">
@@ -2112,10 +2111,8 @@ function CreateRoleModal({
                 </div>
               </div>
 
-              {/* Right column - Permissions with AI Assistant */}
-              <div className="flex flex-1 overflow-hidden min-w-0">
-                {/* Permissions panel */}
-                <div className="bg-white rounded-lg shadow-[0px_7px_14px_0px_rgba(48,49,61,0.08),0px_3px_6px_0px_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 flex-1 overflow-hidden min-w-0 transition-all duration-300">
+              {/* Permissions panel */}
+              <div className="bg-white rounded-lg shadow-[0px_7px_14px_0px_rgba(48,49,61,0.08),0px_3px_6px_0px_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 flex-1 overflow-hidden min-w-0">
                   {/* Permissions header */}
                   <div className="flex items-center gap-2">
                     <ShieldCheckIcon />
@@ -2250,13 +2247,13 @@ function CreateRoleModal({
                   </div>
                 </div>
 
-                {/* AI Assistant Drawer */}
-                <AIAssistantDrawer 
-                  isOpen={isAssistantOpen} 
-                  onClose={() => setIsAssistantOpen(false)} 
-                />
               </div>
-            </div>
+            
+            {/* AI Assistant Drawer - outside the offset background */}
+            <AIAssistantDrawer 
+              isOpen={isAssistantOpen} 
+              onClose={() => setIsAssistantOpen(false)} 
+            />
           </div>
         </div>
 

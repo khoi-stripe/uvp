@@ -116,6 +116,10 @@ body {
   animation: fade-in 0.2s ease-out;
 }
 
+.animate-fade-out {
+  animation: fade-out 0.15s ease-out forwards;
+}
+
 .animate-modal-in {
   animation: modal-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }

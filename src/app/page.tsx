@@ -88,6 +88,74 @@ function ShieldCheckIcon() {
   );
 }
 
+function SandboxIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" clipRule="evenodd" d="M7.09793 1.68763C7.36276 1.56405 7.65145 1.5 7.9437 1.5H8.0563C8.34855 1.5 8.63724 1.56405 8.90207 1.68763L14.8458 4.46136C15.5499 4.78996 16 5.49668 16 6.27373V9.76393C16 10.5215 15.572 11.214 14.8944 11.5528L9.63344 14.1833C9.21687 14.3916 8.75753 14.5 8.2918 14.5H7.7082C7.24247 14.5 6.78313 14.3916 6.36656 14.1833L1.10557 11.5528C0.428006 11.214 0 10.5215 0 9.76393V6.27373C0 5.49668 0.45008 4.78996 1.15423 4.46136L7.09793 1.68763ZM14.5 7.08859V9.76393C14.5 9.95332 14.393 10.1264 14.2236 10.2111L8.96262 12.8416C8.89387 12.876 8.82279 12.9049 8.75004 12.9283V9.96357L14.5 7.08859ZM13.9375 5.69279L11.4552 6.93393L8.60002 5.61615V3.20197L13.9375 5.69279ZM7.40002 3.20195L2.06255 5.69277L4.5448 6.93389L7.40002 5.6161V3.20195ZM8.00004 8.66152L10.0807 7.62119L7.99997 6.66085L5.91931 7.62115L8.00004 8.66152ZM1.5 7.08855L7.25004 9.96357V12.9283C7.17726 12.905 7.10616 12.876 7.03738 12.8416L1.77639 10.2111C1.607 10.1264 1.5 9.95332 1.5 9.76393V7.08855Z" fill="#474E5A"/>
+    </svg>
+  );
+}
+
+// AI Assistant sparkle icon with gradient
+function SparkleIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11.4715 2.62411C11.5425 2.59893 11.5984 2.54302 11.6236 2.47196L12.2639 0.665039C12.3032 0.554041 12.4014 0.49854 12.4995 0.498535C12.5977 0.498531 12.6958 0.554032 12.7352 0.665038L13.3754 2.47196C13.4006 2.54302 13.4565 2.59893 13.5276 2.62411L15.3345 3.26436C15.4455 3.30369 15.501 3.40184 15.501 3.5C15.501 3.59816 15.4455 3.69631 15.3345 3.73565L13.5276 4.3759C13.4565 4.40108 13.4006 4.45698 13.3754 4.52805L12.7352 6.33497C12.6958 6.44597 12.5977 6.50147 12.4995 6.50147C12.4014 6.50147 12.3032 6.44596 12.2639 6.33497L11.6236 4.52805C11.5984 4.45698 11.5425 4.40108 11.4715 4.3759L9.66456 3.73565C9.55356 3.69632 9.49805 3.59816 9.49806 3.5C9.49806 3.40184 9.55356 3.30369 9.66456 3.26436L11.4715 2.62411Z" fill="url(#paint0_sparkle)"/>
+      <path fillRule="evenodd" clipRule="evenodd" d="M6.99952 5.49119L6.43977 7.07092C6.21315 7.71049 5.71001 8.21363 5.07044 8.44025L3.49071 9L5.07044 9.55975C5.71001 9.78637 6.21315 10.2895 6.43977 10.9291L6.99952 12.5088L7.55927 10.9291C7.78589 10.2895 8.28903 9.78637 8.9286 9.55975L10.5083 9L8.9286 8.44025C8.28903 8.21363 7.78589 7.71049 7.55927 7.07092L6.99952 5.49119ZM7.70645 2.99511C7.58846 2.6621 7.29398 2.49559 6.99951 2.4956C6.70505 2.4956 6.41058 2.6621 6.29259 2.99511L5.0259 6.56994C4.95036 6.78313 4.78265 6.95084 4.56946 7.02638L0.994626 8.29307C0.66162 8.41106 0.495117 8.70553 0.495117 9C0.495118 9.29447 0.661621 9.58894 0.994628 9.70693L4.56946 10.9736C4.78265 11.0492 4.95036 11.2169 5.0259 11.4301L6.29259 15.0049C6.41058 15.3379 6.70505 15.5044 6.99951 15.5044C7.29398 15.5044 7.58846 15.3379 7.70645 15.0049L8.97314 11.4301C9.04868 11.2169 9.21639 11.0492 9.42958 10.9736L13.0044 9.70693C13.3374 9.58894 13.5039 9.29447 13.5039 9C13.5039 8.70553 13.3374 8.41106 13.0044 8.29307L9.42958 7.02638C9.21639 6.95084 9.04868 6.78313 8.97314 6.56994L7.70645 2.99511Z" fill="url(#paint1_sparkle)"/>
+      <defs>
+        <linearGradient id="paint0_sparkle" x1="-2.24035" y1="18.88" x2="20.1597" y2="-3.52" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#55DDFF"/>
+          <stop offset="0.5" stopColor="#675DFF"/>
+          <stop offset="0.98" stopColor="#28239B"/>
+        </linearGradient>
+        <linearGradient id="paint1_sparkle" x1="-2.24035" y1="18.88" x2="20.1597" y2="-3.52" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#55DDFF"/>
+          <stop offset="0.5" stopColor="#675DFF"/>
+          <stop offset="0.98" stopColor="#28239B"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+// More/overflow icon for assistant header (12x12)
+function AssistantMoreIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 7.25C6.69036 7.25 7.25 6.69036 7.25 6C7.25 5.30964 6.69036 4.75 6 4.75C5.30964 4.75 4.75 5.30964 4.75 6C4.75 6.69036 5.30964 7.25 6 7.25Z" fill="#6C7688"/>
+      <path d="M10.5 7.25C11.1904 7.25 11.75 6.69036 11.75 6C11.75 5.30964 11.1904 4.75 10.5 4.75C9.80964 4.75 9.25 5.30964 9.25 6C9.25 6.69036 9.80964 7.25 10.5 7.25Z" fill="#6C7688"/>
+      <path d="M1.5 7.25C2.19036 7.25 2.75 6.69036 2.75 6C2.75 5.30964 2.19036 4.75 1.5 4.75C0.809644 4.75 0.25 5.30964 0.25 6C0.25 6.69036 0.809644 7.25 1.5 7.25Z" fill="#6C7688"/>
+    </svg>
+  );
+}
+
+// Support/help icon for assistant header (12x12)
+function AssistantSupportIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" clipRule="evenodd" d="M12 6C12 9.31371 9.31371 12 6 12C2.68629 12 0 9.31371 0 6C0 2.68629 2.68629 0 6 0C9.31371 0 12 2.68629 12 6ZM10.875 6C10.875 7.14352 10.4813 8.19508 9.82201 9.02652L9.01962 8.22412C8.79583 8.52744 8.52744 8.79584 8.22412 9.01962L9.02651 9.82201C8.19508 10.4813 7.14352 10.875 6 10.875C4.85652 10.875 3.80499 10.4813 2.97357 9.82208L3.776 9.01965C3.7133 8.97339 3.6521 8.92522 3.59248 8.87524C4.24387 9.42125 5.08354 9.75 6 9.75C8.07107 9.75 9.75 8.07107 9.75 6C9.75 5.06155 9.40528 4.20361 8.83555 3.54591C8.89984 3.62011 8.96126 3.69687 9.01964 3.776L9.82207 2.97357C10.4813 3.80499 10.875 4.85652 10.875 6ZM9.02659 2.17806C8.19514 1.51875 7.14355 1.125 6 1.125C4.85648 1.125 3.80492 1.51872 2.97349 2.17799L3.77592 2.98043C4.39817 2.52135 5.1674 2.25 6 2.25C6.83264 2.25 7.6019 2.52137 8.22416 2.98049L9.02659 2.17806ZM2.98049 8.22417C2.52137 7.60191 2.25 6.83264 2.25 6C2.25 5.1674 2.52134 4.39817 2.98043 3.77592L2.17799 2.97349C1.51872 3.80493 1.125 4.85649 1.125 6C1.125 7.14356 1.51874 8.19515 2.17806 9.0266L2.98049 8.22417ZM8.625 6C8.625 7.44975 7.44975 8.625 6 8.625C4.55025 8.625 3.375 7.44975 3.375 6C3.375 4.55025 4.55025 3.375 6 3.375C7.44975 3.375 8.625 4.55025 8.625 6Z" fill="#6C7688"/>
+    </svg>
+  );
+}
+
+// Cancel/close icon for assistant header (12x12)
+function AssistantCloseIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" clipRule="evenodd" d="M1.24896 1.24896C1.5809 0.917014 2.1191 0.917014 2.45104 1.24896L6 4.79792L9.54896 1.24896C9.88091 0.917014 10.4191 0.917014 10.751 1.24896C11.083 1.5809 11.083 2.1191 10.751 2.45104L7.20208 6L10.751 9.54896C11.083 9.88091 11.083 10.4191 10.751 10.751C10.4191 11.083 9.88091 11.083 9.54896 10.751L6 7.20208L2.45104 10.751C2.1191 11.083 1.5809 11.083 1.24896 10.751C0.917014 10.4191 0.917014 9.88091 1.24896 9.54896L4.79792 6L1.24896 2.45104C0.917014 2.1191 0.917014 1.5809 1.24896 1.24896Z" fill="#6C7688"/>
+    </svg>
+  );
+}
+
+// Send icon for assistant input
+function SendIcon({ disabled = false }: { disabled?: boolean }) {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 1L6 11M6 1L2 5M6 1L10 5" stroke={disabled ? "#99A5B8" : "#6C7688"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
 function ArrowUpDownIcon({ size = 12 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -726,11 +794,13 @@ function RoleMenu({
   onEdit,
   isCustomRole = false,
   onDelete,
+  onTestInSandbox,
 }: { 
   onDuplicate: () => void;
   onEdit?: () => void;
   isCustomRole?: boolean;
   onDelete?: () => void;
+  onTestInSandbox?: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -739,13 +809,13 @@ function RoleMenu({
         // Custom roles: Edit, Duplicate, Test in sandbox, Delete
         ...(onEdit ? [{ label: "Edit", onClick: onEdit }] : []),
         { label: "Duplicate", onClick: onDuplicate },
-        { label: "Test in sandbox", onClick: () => console.log("Test in sandbox") },
+        { label: "Test in sandbox", onClick: () => onTestInSandbox?.() },
         ...(onDelete ? [{ label: "Delete", onClick: onDelete, danger: true }] : []),
       ]
     : [
         // Standard roles: Duplicate and customize (creates copy), Test in sandbox
         { label: "Duplicate and customize", onClick: onDuplicate },
-        { label: "Test in sandbox", onClick: () => console.log("Test in sandbox") },
+        { label: "Test in sandbox", onClick: () => onTestInSandbox?.() },
       ];
 
   return (
@@ -791,6 +861,108 @@ function RoleMenu({
   );
 }
 
+// AI Assistant Drawer Component
+function AIAssistantDrawer({ 
+  isOpen, 
+  onClose 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void;
+}) {
+  const [inputValue, setInputValue] = useState("");
+  
+  return (
+    <div 
+      className={`bg-white flex flex-col h-full overflow-hidden rounded-tr-[12px] rounded-br-[12px] transition-all duration-300 ease-in-out ${
+        isOpen ? 'w-[360px] opacity-100' : 'w-0 opacity-0'
+      }`}
+    >
+      {isOpen && (
+        <>
+          {/* Header - matching Figma exactly */}
+          <div className="flex items-center gap-2.5 px-4 pt-[18px] pb-3 border-b border-[#EBEEF1] shrink-0">
+            <div className="flex items-center gap-2 flex-1 h-9">
+              <SparkleIcon />
+              <span className="text-[16px] font-bold text-[#21252C] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
+                Assistant
+              </span>
+            </div>
+            {/* Actions - 68px wide with 16px gap between icons */}
+            <div className="flex items-center gap-4 w-[68px]">
+              <button className="hover:bg-[#F5F6F8] rounded transition-colors p-0.5">
+                <AssistantMoreIcon />
+              </button>
+              <button className="hover:bg-[#F5F6F8] rounded transition-colors p-0.5">
+                <AssistantSupportIcon />
+              </button>
+              <button 
+                onClick={onClose}
+                className="hover:bg-[#F5F6F8] rounded transition-colors p-0.5"
+              >
+                <AssistantCloseIcon />
+              </button>
+            </div>
+          </div>
+
+          {/* Body - with wave background */}
+          <div className="flex-1 flex flex-col gap-6 p-4 overflow-hidden relative">
+            {/* Wave background from Figma */}
+            <div 
+              className="absolute pointer-events-none"
+              style={{
+                width: '516.214px',
+                height: '526.205px',
+                left: '-39.91px',
+                top: '-230.4px',
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src="/waves.svg" 
+                alt="" 
+                className="w-full h-full"
+                style={{ stroke: '#F5F6F8' }}
+              />
+            </div>
+            
+            {/* Content */}
+            <div className="relative z-10 flex flex-col gap-4 flex-1">
+              <p className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]">
+                Describe how you want to customize this role and I'll add or remove the appropriate permissions.
+              </p>
+            </div>
+          </div>
+
+          {/* Input area */}
+          <div className="flex flex-col gap-3 p-4 shrink-0">
+            <div className="bg-white rounded-[12px] shadow-[0px_0px_35px_0px_rgba(48,49,61,0.08),0px_0px_15px_0px_rgba(0,0,0,0.12)] flex items-start min-h-[40px] overflow-hidden pl-4 pr-2 py-2">
+              <div className="flex-1 flex items-center">
+                <textarea
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Describe the role"
+                  className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none resize-none placeholder:text-[#818DA0] min-h-[68px] py-1"
+                />
+              </div>
+              <div className="flex flex-col h-full items-end justify-end">
+                <button 
+                  className="shrink-0 w-7 h-7 rounded-full bg-[#EBEEF1] flex items-center justify-center hover:bg-[#D8DEE4] transition-colors"
+                  disabled={!inputValue.trim()}
+                >
+                  <SendIcon disabled={!inputValue.trim()} />
+                </button>
+              </div>
+            </div>
+            <p className="text-[12px] text-[#596171] leading-4 text-center">
+              AI may make mistakes. Verify important information.
+            </p>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // Customize Role Modal Component
 function CustomizeRoleModal({
   isOpen,
@@ -800,6 +972,8 @@ function CustomizeRoleModal({
   onUpdate,
   initialGroupBy,
   mode = "create",
+  onTestInSandbox,
+  initialState,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -808,6 +982,8 @@ function CustomizeRoleModal({
   onUpdate?: (role: Role) => void;
   initialGroupBy: GroupByOption;
   mode?: "create" | "edit";
+  onTestInSandbox?: (role: Role, modalState: { roleName: string; customDescription: string; permissionAccess: Record<string, string> }) => void;
+  initialState?: { roleName: string; customDescription: string; permissionAccess: Record<string, string> };
 }) {
   const isEditMode = mode === "edit";
   const allPermissions = getAllPermissions(); // ~50 consolidated permissions
@@ -825,6 +1001,7 @@ function CustomizeRoleModal({
   const [exitingApiName, setExitingApiName] = useState<string | null>(null);
   const [isRiskExpandedModal, setIsRiskExpandedModal] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
   // Handle close with fade-out animation
   const handleClose = () => {
@@ -835,9 +1012,22 @@ function CustomizeRoleModal({
     }, 150); // Match animation duration
   };
 
-  // Reset state when modal opens with new role
+  // Reset state when modal opens with new role (or restore from initialState if returning from sandbox)
   useEffect(() => {
     if (isOpen) {
+      // If we have initialState (returning from sandbox), use it
+      if (initialState) {
+        setRoleName(initialState.roleName);
+        setIsEditingName(false);
+        setCustomDescription(initialState.customDescription);
+        setIsEditingDescription(!!initialState.customDescription);
+        setPermissionAccess(initialState.permissionAccess);
+        setPendingAccess({});
+        setSearchQuery("");
+        setGroupBy(initialGroupBy);
+        return;
+      }
+
       // Build permission access map from base role
       const accessMap: Record<string, string> = {};
       
@@ -874,7 +1064,7 @@ function CustomizeRoleModal({
       setSearchQuery("");
       setGroupBy(initialGroupBy);
     }
-  }, [isOpen, baseRole.id, baseRole.permissionApiNames, baseRole.permissionAccess, baseRole.customDescription, initialGroupBy]);
+  }, [isOpen, baseRole.id, baseRole.permissionApiNames, baseRole.permissionAccess, baseRole.customDescription, initialGroupBy, initialState]);
 
   // Keyboard shortcuts: ESC to close, CMD+Enter to save
   useEffect(() => {
@@ -1146,10 +1336,18 @@ function CustomizeRoleModal({
 
         {/* Content */}
         <div className="flex-1 flex flex-col gap-4 px-8 overflow-hidden">
-          {/* Title */}
-          <h2 className="text-[24px] font-bold text-[#21252C] leading-8 tracking-[0.3px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
-            {isEditMode ? "Edit role" : "Duplicate and customize role"}
-          </h2>
+          {/* Title with Revert button */}
+          <div className="flex items-center gap-4">
+            <h2 className="text-[24px] font-bold text-[#21252C] leading-8 tracking-[0.3px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
+              {isEditMode ? "Edit role" : "Duplicate and customize role"}
+            </h2>
+            <button
+              onClick={handleRevert}
+              className="px-3 py-1 text-[14px] font-medium text-[#353A44] leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md hover:bg-[#F5F6F8] transition-colors bg-white shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)]"
+            >
+              Revert
+            </button>
+          </div>
 
           {/* Main content area */}
           <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
@@ -1165,6 +1363,11 @@ function CustomizeRoleModal({
                         type="text"
                         value={roleName}
                         onChange={(e) => setRoleName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            setIsEditingName(false);
+                          }
+                        }}
                         autoFocus
                         className="flex-1 text-[20px] font-bold text-[#353A44] leading-7 tracking-[0.3px] bg-white border border-[#D8DEE4] rounded-[6px] px-2 py-1 outline-none font-display min-w-0 focus:shadow-[0px_0px_0px_4px_rgba(8,142,249,0.36)] transition-shadow"
                         style={{ fontFeatureSettings: "'lnum', 'pnum'" }}
@@ -1277,129 +1480,150 @@ function CustomizeRoleModal({
                 </div>
               </div>
 
-              {/* Permissions module - spans 2 columns worth */}
-              <div className="flex-[2] bg-white rounded-lg shadow-[0_2px_5px_0_rgba(48,49,61,0.08),0_1px_1px_0_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 overflow-hidden min-w-0">
-                {/* Permissions header */}
-                <div className="flex items-center gap-2">
-                  <span className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
-                    Permissions
-                  </span>
-                </div>
-
-                {/* Controls row */}
-                <div className="flex items-center gap-2">
-                  {/* Group by dropdown - using shared component */}
-                  <Dropdown
-                    value={groupBy}
-                    onChange={setGroupBy}
-                    options={groupByOptions}
-                  />
-                  {/* Search field - matching main page styling */}
-                  <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
-                    <SearchIcon className="text-[#818DA0]" />
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search"
-                      className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
-                    />
-                    {searchQuery && (
+              {/* Permissions module with AI Assistant - spans 2 columns worth */}
+              <div className="flex-[2] flex overflow-hidden min-w-0">
+                {/* Permissions panel */}
+                <div className="flex-1 bg-white rounded-lg shadow-[0_2px_5px_0_rgba(48,49,61,0.08),0_1px_1px_0_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 overflow-hidden min-w-0 transition-all duration-300">
+                  {/* Permissions header */}
+                  <div className="flex items-center gap-2">
+                    <span className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
+                      Permissions
+                    </span>
+                    {/* AI Assistant toggle button - hidden when assistant is open */}
+                    {!isAssistantOpen && (
                       <button
-                        onClick={() => setSearchQuery("")}
-                        className="text-[#818DA0] hover:text-[#353A44] transition-colors"
+                        onClick={() => setIsAssistantOpen(true)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-medium transition-all duration-200 text-[#353A44] hover:bg-[#F5F6F8] border border-[#D8DEE4] bg-white shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)]"
                       >
-                        ×
+                        <SparkleIcon />
+                        <span className="leading-5 tracking-[-0.15px]">Assistant</span>
                       </button>
                     )}
                   </div>
-                </div>
 
-                {/* Two-column permission lists */}
-                <div className="flex-1 flex gap-4 min-h-0 overflow-hidden">
-                  {/* Current permissions */}
-                  <div className="flex-1 flex flex-col gap-2 overflow-hidden min-w-0">
-                    <div className="flex items-center gap-2.5">
-                      <span className="flex-1 text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Current</span>
-                      <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
-                        <AnimatedNumber value={selectedPermissions.length} />
-                      </span>
-                    </div>
-                    <div className="flex-1 overflow-y-auto">
-                      {Object.entries(groupedSelected).sort(([a], [b]) => a.localeCompare(b)).map(([group, perms]) => (
-                        <div key={group || "all"} className={isAlphabetical ? "" : "mb-3"}>
-                          {!isAlphabetical && group && (
-                            <div className="text-[12px] font-semibold text-[#353A44] leading-4 tracking-[-0.024px] mb-2">
-                              {group}
-                            </div>
-                          )}
-                          {perms.map(perm => (
-                            <div key={perm.apiName} className="mb-2">
-                              <PermissionCard
-                                permission={perm}
-                                showCheckbox
-                                isChecked={true}
-                                onToggle={() => !exitingApiName && togglePermission(perm.apiName)}
-                                currentGroup={group}
-                                groupBy={groupBy}
-                                disabled={perm.apiName === REQUIRED_PERMISSION}
-                                isExiting={exitingApiName === perm.apiName}
-                                currentAccess={permissionAccess[perm.apiName]}
-                                onAccessChange={(access) => updatePermissionAccess(perm.apiName, access)}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      ))}
-                      {filteredSelected.length === 0 && (
-                        <div className="text-center py-8 text-[#596171] text-[14px] leading-5 tracking-[-0.15px]">
-                          No permissions selected
-                        </div>
+                  {/* Controls row */}
+                  <div className="flex items-center gap-2">
+                    {/* Group by dropdown - using shared component */}
+                    <Dropdown
+                      value={groupBy}
+                      onChange={setGroupBy}
+                      options={groupByOptions}
+                    />
+                    {/* Search field - matching main page styling */}
+                    <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
+                      <SearchIcon className="text-[#818DA0]" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search"
+                        className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
+                      />
+                      {searchQuery && (
+                        <button
+                          onClick={() => setSearchQuery("")}
+                          className="text-[#818DA0] hover:text-[#353A44] transition-colors"
+                        >
+                          ×
+                        </button>
                       )}
                     </div>
                   </div>
 
-                  {/* Available permissions */}
-                  <div className="flex-1 flex flex-col gap-2 overflow-hidden min-w-0">
-                    <div className="flex items-center gap-2.5">
-                      <span className="flex-1 text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Available</span>
-                      <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
-                        <AnimatedNumber value={availablePermissions.length} />
-                      </span>
+                  {/* Two-column permission lists */}
+                  <div className="flex-1 flex gap-4 min-h-0 overflow-hidden">
+                    {/* Current permissions */}
+                    <div className="flex-1 flex flex-col gap-2 overflow-hidden min-w-0">
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex-1 text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Current</span>
+                        <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
+                          <AnimatedNumber value={selectedPermissions.length} />
+                        </span>
+                      </div>
+                      <div className="flex-1 overflow-y-auto">
+                        {Object.entries(groupedSelected).sort(([a], [b]) => a.localeCompare(b)).map(([group, perms]) => (
+                          <div key={group || "all"} className={isAlphabetical ? "" : "mb-3"}>
+                            {!isAlphabetical && group && (
+                              <div className="text-[12px] font-semibold text-[#353A44] leading-4 tracking-[-0.024px] mb-2">
+                                {group}
+                              </div>
+                            )}
+                            {perms.map(perm => (
+                              <div key={perm.apiName} className="mb-2">
+                                <PermissionCard
+                                  permission={perm}
+                                  showCheckbox
+                                  isChecked={true}
+                                  onToggle={() => !exitingApiName && togglePermission(perm.apiName)}
+                                  currentGroup={group}
+                                  groupBy={groupBy}
+                                  disabled={perm.apiName === REQUIRED_PERMISSION}
+                                  isExiting={exitingApiName === perm.apiName}
+                                  currentAccess={permissionAccess[perm.apiName]}
+                                  onAccessChange={(access) => updatePermissionAccess(perm.apiName, access)}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        ))}
+                        {filteredSelected.length === 0 && (
+                          <div className="text-center py-8 text-[#596171] text-[14px] leading-5 tracking-[-0.15px]">
+                            No permissions selected
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex-1 overflow-y-auto">
-                      {Object.entries(groupedAvailable).sort(([a], [b]) => a.localeCompare(b)).map(([group, perms]) => (
-                        <div key={group || "all"} className={isAlphabetical ? "" : "mb-3"}>
-                          {!isAlphabetical && group && (
-                            <div className="text-[12px] font-semibold text-[#353A44] leading-4 tracking-[-0.024px] mb-2">
-                              {group}
-                            </div>
-                          )}
-                          {perms.map(perm => (
-                            <div key={perm.apiName} className="mb-2">
-                              <PermissionCard
-                                permission={perm}
-                                showCheckbox
-                                isChecked={false}
-                                onToggle={() => !exitingApiName && togglePermission(perm.apiName)}
-                                currentGroup={group}
-                                groupBy={groupBy}
-                                isExiting={exitingApiName === perm.apiName}
-                                pendingAccess={pendingAccess[perm.apiName]}
-                                onPendingAccessChange={(access) => updatePendingAccess(perm.apiName, access)}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      ))}
-                      {filteredAvailable.length === 0 && (
-                        <div className="text-center py-8 text-[#596171] text-[14px] leading-5 tracking-[-0.15px]">
-                          All permissions selected
-                        </div>
-                      )}
+
+                    {/* Available permissions - collapses when assistant is open */}
+                    <div className={`flex flex-col gap-2 overflow-hidden transition-all duration-300 ease-in-out ${
+                      isAssistantOpen ? 'w-0 opacity-0 min-w-0' : 'flex-1 opacity-100 min-w-0'
+                    }`}>
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex-1 text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Available</span>
+                        <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
+                          <AnimatedNumber value={availablePermissions.length} />
+                        </span>
+                      </div>
+                      <div className="flex-1 overflow-y-auto">
+                        {Object.entries(groupedAvailable).sort(([a], [b]) => a.localeCompare(b)).map(([group, perms]) => (
+                          <div key={group || "all"} className={isAlphabetical ? "" : "mb-3"}>
+                            {!isAlphabetical && group && (
+                              <div className="text-[12px] font-semibold text-[#353A44] leading-4 tracking-[-0.024px] mb-2">
+                                {group}
+                              </div>
+                            )}
+                            {perms.map(perm => (
+                              <div key={perm.apiName} className="mb-2">
+                                <PermissionCard
+                                  permission={perm}
+                                  showCheckbox
+                                  isChecked={false}
+                                  onToggle={() => !exitingApiName && togglePermission(perm.apiName)}
+                                  currentGroup={group}
+                                  groupBy={groupBy}
+                                  isExiting={exitingApiName === perm.apiName}
+                                  pendingAccess={pendingAccess[perm.apiName]}
+                                  onPendingAccessChange={(access) => updatePendingAccess(perm.apiName, access)}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        ))}
+                        {filteredAvailable.length === 0 && (
+                          <div className="text-center py-8 text-[#596171] text-[14px] leading-5 tracking-[-0.15px]">
+                            All permissions selected
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                {/* AI Assistant Drawer */}
+                <AIAssistantDrawer 
+                  isOpen={isAssistantOpen} 
+                  onClose={() => setIsAssistantOpen(false)} 
+                />
               </div>
             </div>
           </div>
@@ -1408,11 +1632,658 @@ function CustomizeRoleModal({
         {/* Footer */}
         <div className="flex items-center justify-end gap-2 px-8 py-6">
           <button
-            onClick={handleRevert}
+            onClick={() => {
+              // Create a preview role with current permissions to test
+              const previewRole: Role = {
+                id: isEditMode ? baseRole.id : `custom_${Date.now()}`,
+                name: roleName,
+                category: "Custom",
+                userCount: 0,
+                permissionAccess: { ...permissionAccess },
+                customDescription: customDescription || undefined,
+              };
+              onTestInSandbox?.(previewRole, {
+                roleName,
+                customDescription,
+                permissionAccess: { ...permissionAccess },
+              });
+            }}
             className="flex items-center gap-2 px-3 py-1.5 text-[14px] font-medium text-[#353A44] leading-5 tracking-[-0.15px] hover:bg-[#F5F6F8] border border-[#D8DEE4] rounded-md transition-colors bg-white shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)]"
           >
-            <HistoryIcon />
-            Revert
+            <SandboxIcon />
+            Test in sandbox
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-4 py-1.5 bg-[#675DFF] text-white text-[14px] font-semibold leading-5 tracking-[-0.15px] rounded-md hover:bg-[#5851DB] transition-colors shadow-[0px_1px_1px_0px_rgba(47,14,99,0.32)]"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Create Role Modal Component
+function CreateRoleModal({
+  isOpen,
+  onClose,
+  onSave,
+  initialGroupBy,
+  onTestInSandbox,
+  initialState,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (role: Role) => void;
+  initialGroupBy: GroupByOption;
+  onTestInSandbox?: (role: Role, modalState: { roleName: string; customDescription: string; permissionAccess: Record<string, string>; selectedBaseRole?: Role | null }) => void;
+  initialState?: { roleName: string; customDescription: string; permissionAccess: Record<string, string>; selectedBaseRole?: Role | null };
+}) {
+  const allPermissions = getAllPermissions();
+  const roleNameInputRef = useRef<HTMLInputElement>(null);
+  
+  const [selectedBaseRole, setSelectedBaseRole] = useState<Role | null>(null);
+  const [roleName, setRoleName] = useState("");
+  const [customDescription, setCustomDescription] = useState("");
+  const [permissionAccess, setPermissionAccess] = useState<Record<string, string>>({});
+  const [pendingAccess, setPendingAccess] = useState<Record<string, string>>({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const [groupBy, setGroupBy] = useState<GroupByOption>(initialGroupBy);
+  const [exitingApiName, setExitingApiName] = useState<string | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isBaseRoleDropdownOpen, setIsBaseRoleDropdownOpen] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+
+  // Required permission constant
+  const REQUIRED_PERMISSION = "dashboard_baseline";
+
+  // Handle close with animation
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, 150);
+  };
+
+  // Reset and initialize when modal opens (or restore from initialState if returning from sandbox)
+  useEffect(() => {
+    if (isOpen) {
+      // If we have initialState (returning from sandbox), use it
+      if (initialState) {
+        setSelectedBaseRole(initialState.selectedBaseRole || null);
+        setRoleName(initialState.roleName);
+        setCustomDescription(initialState.customDescription);
+        setPermissionAccess(initialState.permissionAccess);
+        setPendingAccess({});
+        setSearchQuery("");
+        setGroupBy(initialGroupBy);
+        setIsBaseRoleDropdownOpen(false);
+        return;
+      }
+
+      setSelectedBaseRole(null);
+      setRoleName("");
+      setCustomDescription("");
+      // Start with just dashboard_baseline
+      setPermissionAccess({ [REQUIRED_PERMISSION]: "read" });
+      setPendingAccess({});
+      setSearchQuery("");
+      setGroupBy(initialGroupBy);
+      setIsBaseRoleDropdownOpen(false);
+      
+      // Focus the role name input after a short delay
+      setTimeout(() => {
+        roleNameInputRef.current?.focus();
+      }, 100);
+    }
+  }, [isOpen, initialGroupBy, initialState]);
+
+  // When base role is selected, populate permissions and description
+  const handleBaseRoleSelect = (role: Role) => {
+    setSelectedBaseRole(role);
+    setIsBaseRoleDropdownOpen(false);
+    
+    // Build permission access map from selected role
+    const accessMap: Record<string, string> = {};
+    
+    if (role.permissionAccess) {
+      Object.assign(accessMap, role.permissionAccess);
+    } else if (role.permissionApiNames) {
+      role.permissionApiNames.forEach(apiName => {
+        const perm = allPermissions.find(p => p.apiName === apiName);
+        accessMap[apiName] = perm?.actions || "read";
+      });
+    } else {
+      const basePermissions = getPermissionsForRole(role.id);
+      basePermissions.forEach(p => {
+        const roleAccess = p.roleAccess[role.id];
+        accessMap[p.apiName] = roleAccess || p.actions;
+      });
+    }
+    
+    // Ensure dashboard_baseline is always included
+    if (!accessMap[REQUIRED_PERMISSION]) {
+      accessMap[REQUIRED_PERMISSION] = "read";
+    }
+    
+    setPermissionAccess(accessMap);
+    setPendingAccess({});
+    
+    // Set description from role details
+    if (role.details?.description) {
+      setCustomDescription(role.details.description);
+    }
+  };
+
+  // Handle reset
+  const handleReset = () => {
+    setSelectedBaseRole(null);
+    setRoleName("");
+    setCustomDescription("");
+    setPermissionAccess({ [REQUIRED_PERMISSION]: "read" });
+    setPendingAccess({});
+    setSearchQuery("");
+    
+    // Focus the role name input
+    setTimeout(() => {
+      roleNameInputRef.current?.focus();
+    }, 50);
+  };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        handleClose();
+      }
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        handleSave();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, permissionAccess, roleName, customDescription]);
+
+  if (!isOpen) return null;
+
+  const selectedApiNames = Object.keys(permissionAccess);
+  const selectedPermissions = allPermissions.filter(p => selectedApiNames.includes(p.apiName));
+  const availablePermissions = allPermissions.filter(p => !selectedApiNames.includes(p.apiName));
+  
+  // Filter by search
+  const filterBySearch = (perms: Permission[]) => {
+    if (!searchQuery) return perms;
+    const q = searchQuery.toLowerCase();
+    return perms.filter(p => 
+      p.apiName.toLowerCase().includes(q) ||
+      p.displayName.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q) ||
+      p.productCategory.toLowerCase().includes(q) ||
+      p.taskCategories.some(tc => tc.toLowerCase().includes(q))
+    );
+  };
+
+  const filteredSelected = filterBySearch(selectedPermissions);
+  const filteredAvailable = filterBySearch(availablePermissions);
+
+  // Group permissions
+  const groupPerms = (perms: Permission[]) => {
+    if (groupBy === "alphabetical") {
+      return { "": [...perms].sort((a, b) => a.apiName.localeCompare(b.apiName)) };
+    }
+    const groups: Record<string, Permission[]> = {};
+    for (const p of perms) {
+      if (groupBy === "taskCategory") {
+        for (const tc of p.taskCategories) {
+          if (!groups[tc]) groups[tc] = [];
+          groups[tc].push(p);
+        }
+      } else if (groupBy === "sensitivity") {
+        const sensitivityGroups: string[] = [];
+        if (p.hasPII) sensitivityGroups.push("PII");
+        if (p.hasFinancialData) sensitivityGroups.push("Financial Data");
+        if (p.hasPaymentCredentials) sensitivityGroups.push("Payment Credentials");
+        if (sensitivityGroups.length === 0) sensitivityGroups.push("Non-sensitive");
+        for (const sg of sensitivityGroups) {
+          if (!groups[sg]) groups[sg] = [];
+          groups[sg].push(p);
+        }
+      } else if (groupBy === "operationType") {
+        const key = p.operationType;
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(p);
+      } else if (groupBy === "riskLevel") {
+        const key = p.riskLevel;
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(p);
+      } else {
+        const key = p[groupBy];
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(p);
+      }
+    }
+    return groups;
+  };
+
+  const groupedSelected = groupPerms(filteredSelected);
+  const groupedAvailable = groupPerms(filteredAvailable);
+  const isAlphabetical = groupBy === "alphabetical";
+
+  const togglePermission = (apiName: string) => {
+    if (apiName === REQUIRED_PERMISSION) return;
+    
+    setExitingApiName(apiName);
+    
+    setTimeout(() => {
+      setPermissionAccess(prev => {
+        const next = { ...prev };
+        if (apiName in next) {
+          delete next[apiName];
+        } else {
+          const accessLevel = pendingAccess[apiName];
+          const perm = allPermissions.find(p => p.apiName === apiName);
+          next[apiName] = accessLevel || perm?.actions || "read";
+          
+          setPendingAccess(pa => {
+            const newPa = { ...pa };
+            delete newPa[apiName];
+            return newPa;
+          });
+        }
+        return next;
+      });
+      setExitingApiName(null);
+    }, 200);
+  };
+
+  const updatePermissionAccess = (apiName: string, access: string) => {
+    setPermissionAccess(prev => ({
+      ...prev,
+      [apiName]: access
+    }));
+  };
+
+  const updatePendingAccess = (apiName: string, access: string) => {
+    setPendingAccess(prev => ({
+      ...prev,
+      [apiName]: access
+    }));
+  };
+
+  const handleSave = () => {
+    if (!roleName.trim()) {
+      roleNameInputRef.current?.focus();
+      return;
+    }
+    
+    const finalDetails = generateRoleDetails(selectedPermissions);
+    if (customDescription.trim()) {
+      finalDetails.description = customDescription.trim();
+    }
+    
+    const newRole: Role = {
+      id: `custom_${Date.now()}`,
+      name: roleName.trim(),
+      category: "Custom",
+      details: finalDetails,
+      userCount: 0,
+      permissionApiNames: selectedApiNames,
+      permissionAccess: { ...permissionAccess },
+      customDescription: customDescription.trim() || undefined,
+    };
+    
+    onSave(newRole);
+    handleClose();
+  };
+
+  // Generate preview details
+  const previewDetails = generateRoleDetails(selectedPermissions);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div 
+        className={`absolute inset-0 bg-black/50 ${isClosing ? 'animate-fade-out' : 'animate-fade-in'}`}
+        onClick={handleClose}
+      />
+      
+      {/* Modal */}
+      <div 
+        className="relative bg-white rounded-[12px] shadow-[0px_15px_35px_0px_rgba(48,49,61,0.08),0px_5px_15px_0px_rgba(0,0,0,0.12)] flex flex-col overflow-hidden m-[32px]" 
+        style={{ 
+          width: 'calc(100vw - 64px)', 
+          height: 'calc(100vh - 64px)',
+          animation: isClosing ? 'modal-out 150ms ease-out forwards' : 'modal-in 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+        }}
+      >
+        {/* Close button */}
+        <div className="flex items-end justify-end pt-6 px-6">
+          <button 
+            onClick={handleClose}
+            className="p-1 rounded-md hover:bg-[#F5F6F8] transition-colors"
+          >
+            <X className="w-5 h-5 text-[#6C7688]" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 flex flex-col gap-4 px-8 overflow-hidden">
+          {/* Title with Reset button */}
+          <div className="flex items-center gap-4">
+            <h2 className="text-[24px] font-bold text-[#21252C] leading-8 tracking-[0.3px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
+              Create role
+            </h2>
+            <button
+              onClick={handleReset}
+              className="px-3 py-1 text-[14px] font-medium text-[#353A44] leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md hover:bg-[#F5F6F8] transition-colors bg-white shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)]"
+            >
+              Reset
+            </button>
+          </div>
+
+          {/* Main content area */}
+          <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
+            <div className="bg-[#F5F6F8] rounded-[12px] p-2 flex gap-4 flex-1 overflow-hidden">
+              {/* Left column - Role info */}
+              <div className="flex flex-col gap-6 px-4 py-[13px] w-[340px] flex-shrink-0 overflow-y-auto">
+                {/* Start from existing role dropdown */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">
+                    Start from an existing role
+                  </label>
+                  <div className="relative">
+                    <button
+                      onClick={() => setIsBaseRoleDropdownOpen(!isBaseRoleDropdownOpen)}
+                      className="w-full flex items-center justify-between gap-2 px-2 py-1.5 text-[14px] leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md bg-white hover:bg-[#F5F6F8] transition-colors shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)]"
+                    >
+                      <span className={selectedBaseRole ? "text-[#353A44]" : "text-[#818DA0]"}>
+                        {selectedBaseRole ? selectedBaseRole.name : "Choose an option"}
+                      </span>
+                      <ArrowUpDownIcon size={12} />
+                    </button>
+                    
+                    {isBaseRoleDropdownOpen && (
+                      <>
+                        <div 
+                          className="fixed inset-0 z-10" 
+                          onClick={() => setIsBaseRoleDropdownOpen(false)} 
+                        />
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#D8DEE4] rounded-[8px] shadow-[0_15px_35px_rgba(48,49,61,0.08),0_5px_15px_rgba(0,0,0,0.12)] z-20 max-h-[300px] overflow-y-auto p-1">
+                          {allRoles.map((role) => (
+                            <button
+                              key={role.id}
+                              onClick={() => handleBaseRoleSelect(role)}
+                              className={`w-full flex items-center justify-between gap-3 px-2.5 py-1.5 text-[14px] leading-5 tracking-[-0.15px] text-[#353A44] rounded transition-colors ${
+                                selectedBaseRole?.id === role.id ? "bg-[#F5F6F8]" : "hover:bg-[#F5F6F8]"
+                              }`}
+                            >
+                              <span className={selectedBaseRole?.id === role.id ? "font-semibold" : ""}>
+                                {role.name}
+                              </span>
+                              {selectedBaseRole?.id === role.id && <CheckCircleFilledIcon size={12} />}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div className="h-px bg-[#D8DEE4]" />
+
+                {/* Role name input */}
+                <div className="flex flex-col gap-1">
+                  <input
+                    ref={roleNameInputRef}
+                    type="text"
+                    value={roleName}
+                    onChange={(e) => setRoleName(e.target.value)}
+                    placeholder="Role name"
+                    className="w-full px-2 py-1.5 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md bg-white outline-none placeholder:text-[#818DA0] focus:border-[#635BFF] focus:shadow-[0px_0px_0px_4px_rgba(8,142,249,0.36)] transition-shadow"
+                  />
+                </div>
+
+                {/* Description textarea */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">
+                    Description
+                  </label>
+                  <textarea
+                    value={customDescription}
+                    onChange={(e) => setCustomDescription(e.target.value)}
+                    rows={4}
+                    className="w-full px-2 py-1.5 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md bg-white outline-none resize-y placeholder:text-[#818DA0] focus:border-[#635BFF] focus:shadow-[0px_0px_0px_4px_rgba(8,142,249,0.36)] transition-shadow"
+                  />
+                </div>
+
+                {/* Can / Cannot section */}
+                <div className="bg-white rounded-lg p-4">
+                  {/* Can section */}
+                  <div className={previewDetails.canDo.length > 0 ? "pb-4" : ""}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <CheckCircleIcon />
+                      <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Can</span>
+                    </div>
+                    {previewDetails.canDo.length > 0 ? (
+                      <ul className="list-disc pl-4 flex flex-col gap-1">
+                        {previewDetails.canDo.slice(0, 5).map((item, i) => (
+                          <li key={i} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
+                        ))}
+                        {previewDetails.canDo.length > 5 && (
+                          <li className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px] pl-1">+{previewDetails.canDo.length - 5} more</li>
+                        )}
+                      </ul>
+                    ) : (
+                      <div className="flex flex-col gap-2.5 py-1.5">
+                        <div className="h-2 bg-[#EBEEF1] rounded-lg w-full" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Cannot section - only show when user has added permissions beyond just dashboard_baseline */}
+                  {selectedPermissions.length > 1 && previewDetails.cannotDo.length > 0 && (
+                    <>
+                      <div className="h-px bg-[#EBEEF1] my-4" />
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <CancelCircleIcon />
+                          <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Cannot</span>
+                        </div>
+                        <ul className="list-disc pl-4 flex flex-col gap-1">
+                          {previewDetails.cannotDo.slice(0, 5).map((item, i) => (
+                            <li key={i} className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] pl-1">{item}</li>
+                          ))}
+                          {previewDetails.cannotDo.length > 5 && (
+                            <li className="text-[14px] text-[#596171] leading-5 tracking-[-0.15px] pl-1">+{previewDetails.cannotDo.length - 5} more</li>
+                          )}
+                        </ul>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Right column - Permissions with AI Assistant */}
+              <div className="flex flex-1 overflow-hidden min-w-0">
+                {/* Permissions panel */}
+                <div className="bg-white rounded-lg shadow-[0px_7px_14px_0px_rgba(48,49,61,0.08),0px_3px_6px_0px_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 flex-1 overflow-hidden min-w-0 transition-all duration-300">
+                  {/* Permissions header */}
+                  <div className="flex items-center gap-2">
+                    <ShieldCheckIcon />
+                    <span className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
+                      Permissions
+                    </span>
+                    {/* AI Assistant toggle button - hidden when assistant is open */}
+                    {!isAssistantOpen && (
+                      <button
+                        onClick={() => setIsAssistantOpen(true)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-medium transition-all duration-200 text-[#353A44] hover:bg-[#F5F6F8] border border-[#D8DEE4] bg-white shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)]"
+                      >
+                        <SparkleIcon />
+                        <span className="leading-5 tracking-[-0.15px]">Assistant</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Controls row */}
+                  <div className="flex items-center gap-2">
+                    <Dropdown
+                      value={groupBy}
+                      onChange={setGroupBy}
+                      options={groupByOptions}
+                    />
+                    <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
+                      <SearchIcon className="text-[#818DA0]" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search"
+                        className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
+                      />
+                      {searchQuery && (
+                        <button
+                          onClick={() => setSearchQuery("")}
+                          className="text-[#818DA0] hover:text-[#353A44] transition-colors"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Two-column permission lists */}
+                  <div className="flex-1 flex gap-4 min-h-0 overflow-hidden">
+                    {/* Current permissions */}
+                    <div className="flex-1 flex flex-col gap-2 overflow-hidden min-w-0">
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex-1 text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Current</span>
+                        <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
+                          <AnimatedNumber value={selectedPermissions.length} />
+                        </span>
+                      </div>
+                      <div className="flex-1 overflow-y-auto">
+                        {Object.entries(groupedSelected).sort(([a], [b]) => a.localeCompare(b)).map(([group, perms]) => (
+                          <div key={group || "all"} className={isAlphabetical ? "" : "mb-3"}>
+                            {!isAlphabetical && group && (
+                              <div className="text-[12px] font-semibold text-[#353A44] leading-4 tracking-[-0.024px] mb-2">
+                                {group}
+                              </div>
+                            )}
+                            {perms.map(perm => (
+                              <div key={perm.apiName} className="mb-2">
+                                <PermissionCard
+                                  permission={perm}
+                                  showCheckbox
+                                  isChecked={true}
+                                  onToggle={() => !exitingApiName && togglePermission(perm.apiName)}
+                                  currentGroup={group}
+                                  groupBy={groupBy}
+                                  disabled={perm.apiName === REQUIRED_PERMISSION}
+                                  isExiting={exitingApiName === perm.apiName}
+                                  currentAccess={permissionAccess[perm.apiName]}
+                                  onAccessChange={(access) => updatePermissionAccess(perm.apiName, access)}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        ))}
+                        {filteredSelected.length === 0 && (
+                          <div className="text-center py-8 text-[#596171] text-[14px] leading-5 tracking-[-0.15px]">
+                            No permissions selected
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Available permissions - collapses when assistant is open */}
+                    <div className={`flex flex-col gap-2 overflow-hidden transition-all duration-300 ease-in-out ${
+                      isAssistantOpen ? 'w-0 opacity-0 min-w-0' : 'flex-1 opacity-100 min-w-0'
+                    }`}>
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex-1 text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">Available</span>
+                        <span className="bg-[#F5F6F8] text-[12px] text-[#596171] leading-4 min-w-[16px] px-1 rounded-full text-center">
+                          <AnimatedNumber value={availablePermissions.length} />
+                        </span>
+                      </div>
+                      <div className="flex-1 overflow-y-auto">
+                        {Object.entries(groupedAvailable).sort(([a], [b]) => a.localeCompare(b)).map(([group, perms]) => (
+                          <div key={group || "all"} className={isAlphabetical ? "" : "mb-3"}>
+                            {!isAlphabetical && group && (
+                              <div className="text-[12px] font-semibold text-[#353A44] leading-4 tracking-[-0.024px] mb-2">
+                                {group}
+                              </div>
+                            )}
+                            {perms.map(perm => (
+                              <div key={perm.apiName} className="mb-2">
+                                <PermissionCard
+                                  permission={perm}
+                                  showCheckbox
+                                  isChecked={false}
+                                  onToggle={() => !exitingApiName && togglePermission(perm.apiName)}
+                                  currentGroup={group}
+                                  groupBy={groupBy}
+                                  isExiting={exitingApiName === perm.apiName}
+                                  pendingAccess={pendingAccess[perm.apiName]}
+                                  onPendingAccessChange={(access) => updatePendingAccess(perm.apiName, access)}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        ))}
+                        {filteredAvailable.length === 0 && (
+                          <div className="text-center py-8 text-[#596171] text-[14px] leading-5 tracking-[-0.15px]">
+                            All permissions selected
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* AI Assistant Drawer */}
+                <AIAssistantDrawer 
+                  isOpen={isAssistantOpen} 
+                  onClose={() => setIsAssistantOpen(false)} 
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-2 px-8 py-6">
+          <button
+            onClick={() => {
+              // Create a preview role with current permissions to test
+              const previewRole: Role = {
+                id: `custom_${Date.now()}`,
+                name: roleName || "New Role",
+                category: "Custom",
+                userCount: 0,
+                permissionAccess: { ...permissionAccess },
+                customDescription: customDescription || undefined,
+              };
+              onTestInSandbox?.(previewRole, {
+                roleName,
+                customDescription,
+                permissionAccess: { ...permissionAccess },
+                selectedBaseRole,
+              });
+            }}
+            className="flex items-center gap-2 px-3 py-1.5 text-[14px] font-medium text-[#353A44] leading-5 tracking-[-0.15px] hover:bg-[#F5F6F8] border border-[#D8DEE4] rounded-md transition-colors bg-white shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)]"
+          >
+            <SandboxIcon />
+            Test in sandbox
           </button>
           <button
             onClick={handleSave}
@@ -1514,6 +2385,306 @@ function SideNav() {
   );
 }
 
+// Sandbox View Component
+function SandboxView({
+  role,
+  allRoles,
+  unsavedRole,
+  onRoleChange,
+  onExit,
+}: {
+  role: Role;
+  allRoles: Role[];
+  unsavedRole?: Role | null;
+  onRoleChange: (role: Role) => void;
+  onExit: () => void;
+}) {
+  const [isRoleSelectorOpen, setIsRoleSelectorOpen] = useState(false);
+  const [roleSearchQuery, setRoleSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const selectedRoleRef = useRef<HTMLButtonElement>(null);
+
+  // Group roles by category
+  const standardRoles = allRoles.filter(r => r.category !== "Custom");
+  const customRoles = allRoles.filter(r => r.category === "Custom");
+
+  // Filter roles by search query
+  const filteredStandardRoles = standardRoles.filter(r => 
+    r.name.toLowerCase().includes(roleSearchQuery.toLowerCase())
+  );
+  const filteredCustomRoles = customRoles.filter(r => 
+    r.name.toLowerCase().includes(roleSearchQuery.toLowerCase())
+  );
+  // Show unsaved role section if there's an unsaved role and it matches search
+  const showUnsavedRole = unsavedRole && unsavedRole.name.toLowerCase().includes(roleSearchQuery.toLowerCase());
+
+  // Focus search input and scroll to selected when dropdown opens
+  useEffect(() => {
+    if (isRoleSelectorOpen) {
+      // Focus search input
+      if (searchInputRef.current) {
+        searchInputRef.current.focus();
+      }
+      // Scroll to selected item after a brief delay to allow DOM to render
+      setTimeout(() => {
+        if (selectedRoleRef.current) {
+          selectedRoleRef.current.scrollIntoView({ block: "center" });
+        }
+      }, 0);
+    }
+    if (!isRoleSelectorOpen) {
+      setRoleSearchQuery("");
+    }
+  }, [isRoleSelectorOpen]);
+
+  return (
+    <div className="min-h-screen bg-[#0e3359] flex flex-col">
+      {/* Sandbox Header Banner */}
+      <div className="h-[56px] flex items-center px-5 py-3">
+        <span className="text-white text-[14px] font-semibold leading-5 tracking-[-0.15px]">
+          Sandbox
+        </span>
+        <div className="flex-1 flex justify-center">
+          <span className="text-white text-[14px] leading-5 tracking-[-0.15px]">
+            You're testing{" "}
+            <span className="font-semibold">{role.name}</span>
+            {" "}role in a sandbox. Changes you make here won't affect your live account.
+          </span>
+        </div>
+      </div>
+
+      {/* Main Content Container */}
+      <div className="flex-1 bg-white rounded-t-[12px] shadow-[0px_15px_35px_rgba(48,49,61,0.08),0px_5px_15px_rgba(0,0,0,0.12)] overflow-hidden flex">
+        {/* Left Sidebar */}
+        <div className="w-[240px] border-r border-[rgba(0,39,77,0.08)] flex flex-col justify-between px-5 py-4">
+          <div className="flex flex-col gap-[42px]">
+            {/* Account Switcher */}
+            <div className="flex items-center gap-2 h-9">
+              <div className="w-6 h-6 rounded bg-[#58BA27] flex items-center justify-center">
+                <span className="text-white text-[10px] font-bold">A</span>
+              </div>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-1">
+                  <span className="text-[12px] font-semibold text-[#353A44] leading-4">Acme US</span>
+                  <ChevronDown className="w-3 h-3 text-[#474E5A]" />
+                </div>
+                <span className="text-[12px] text-[#596171] leading-4">Acme, Inc.</span>
+              </div>
+            </div>
+
+            {/* Placeholder Nav Items */}
+            <div className="flex flex-col gap-6">
+              {/* Nav group 1 */}
+              <div className="flex flex-col gap-1.5">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-2 h-6">
+                    <div className="w-6 h-6 rounded bg-[#EBEEF1]" />
+                    <div className="h-2 bg-[#EBEEF1] rounded-full w-[93px]" />
+                  </div>
+                ))}
+              </div>
+
+              {/* Nav group 2 with section header */}
+              <div className="flex flex-col gap-1.5">
+                <div className="h-6 flex items-center py-1.5">
+                  <div className="h-2 bg-[#EBEEF1] rounded-full w-[93px]" />
+                </div>
+                <div className="flex items-center gap-2 h-6">
+                  <div className="w-6 h-6 rounded bg-[#EBEEF1]" />
+                  <div className="h-2 bg-[#EBEEF1] rounded-full w-[93px]" />
+                </div>
+              </div>
+
+              {/* Nav group 3 with section header */}
+              <div className="flex flex-col gap-1.5">
+                <div className="h-6 flex items-center py-1.5">
+                  <div className="h-2 bg-[#EBEEF1] rounded-full w-[93px]" />
+                </div>
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-2 h-6">
+                    <div className="w-6 h-6 rounded bg-[#EBEEF1]" />
+                    <div className="h-2 bg-[#EBEEF1] rounded-full w-[93px]" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom nav item */}
+          <div className="flex items-center gap-2 h-6">
+            <div className="w-6 h-6 rounded bg-[#EBEEF1]" />
+            <div className="h-2 bg-[#EBEEF1] rounded-full w-[93px]" />
+          </div>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col gap-5 px-8 pb-8 max-w-[1400px] relative">
+          {/* Top Bar */}
+          <div className="bg-white sticky top-0 py-3 flex items-center justify-between z-10">
+            {/* Search placeholder */}
+            <div className="h-9 w-[360px] bg-[#F5F6F8] rounded-lg opacity-80" />
+            {/* Right icons placeholder */}
+            <div className="flex items-center gap-4">
+              <div className="h-2 bg-[#EBEEF1] rounded-full w-[93px]" />
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="w-4 h-4 rounded-full bg-[#EBEEF1]" />
+              ))}
+            </div>
+          </div>
+
+          {/* Grey Placeholder Content */}
+          <div className="flex-1 bg-[#F5F6F8] rounded-[12px]" />
+        </div>
+
+        {/* Floating Controller */}
+        <div className="fixed bottom-8 right-8 w-[288px] bg-white border border-[rgba(0,39,77,0.08)] rounded-[12px] shadow-[0px_15px_35px_rgba(48,49,61,0.08),0px_5px_15px_rgba(0,0,0,0.12)] z-50">
+          {/* Header */}
+          <div className="px-3 py-2">
+            <span className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">
+              Test roles and permissions
+            </span>
+          </div>
+
+          {/* Content */}
+          <div className="px-3 pb-4 flex flex-col gap-2">
+            {/* Role Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setIsRoleSelectorOpen(!isRoleSelectorOpen)}
+                className="w-full flex items-center justify-between px-2 py-1.5 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] border border-[#D8DEE4] rounded-md bg-white hover:bg-[#F5F6F8] transition-colors shadow-[0px_1px_1px_0px_rgba(33,37,44,0.16)]"
+              >
+                <span>{role.name}</span>
+                <ArrowUpDownIcon size={12} />
+              </button>
+
+              {isRoleSelectorOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-10" 
+                    onClick={() => setIsRoleSelectorOpen(false)} 
+                  />
+                  <div className="absolute bottom-full left-0 right-0 mb-1 bg-white border border-[#D8DEE4] rounded-[8px] shadow-[0_15px_35px_rgba(48,49,61,0.08),0_5px_15px_rgba(0,0,0,0.12)] z-20 max-h-[400px] overflow-hidden flex flex-col">
+                    {/* Search Input */}
+                    <div className="border-b border-[#D8DEE4] px-1 pt-1 pb-[5px]">
+                      <div className="flex items-center gap-1.5 px-1.5 py-1 min-h-[28px]">
+                        <SearchIcon className="text-[#474E5A] flex-shrink-0" />
+                        <input
+                          ref={searchInputRef}
+                          type="text"
+                          value={roleSearchQuery}
+                          onChange={(e) => setRoleSearchQuery(e.target.value)}
+                          placeholder="Search roles..."
+                          className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] outline-none placeholder:text-[#818DA0] bg-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Scrollable Content */}
+                    <div className="overflow-y-auto flex-1">
+                      {/* Unsaved Role Section */}
+                      {showUnsavedRole && unsavedRole && (
+                        <div className="p-1 border-b border-[#D8DEE4]">
+                          <div className="px-2.5 py-1.5">
+                            <span className="text-[12px] font-bold text-[#353A44] leading-5">
+                              Unsaved
+                            </span>
+                          </div>
+                          <button
+                            ref={role.id === unsavedRole.id ? selectedRoleRef : undefined}
+                            onClick={() => {
+                              onRoleChange(unsavedRole);
+                              setIsRoleSelectorOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between gap-3 px-2.5 py-1.5 text-[14px] leading-5 tracking-[-0.15px] text-[#353A44] rounded-[6px] transition-colors ${
+                              role.id === unsavedRole.id ? "bg-[#F5F6F8]" : "hover:bg-[#F5F6F8]"
+                            }`}
+                          >
+                            <span>{unsavedRole.name || "New Role"}</span>
+                            {role.id === unsavedRole.id && <CheckCircleFilledIcon size={12} />}
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Standard Roles Section */}
+                      {filteredStandardRoles.length > 0 && (
+                        <div className={`p-1 ${filteredCustomRoles.length > 0 ? "border-b border-[#D8DEE4]" : ""}`}>
+                          <div className="px-2.5 py-1.5">
+                            <span className="text-[12px] font-bold text-[#353A44] leading-5">
+                              Standard roles
+                            </span>
+                          </div>
+                          {filteredStandardRoles.map((r) => (
+                            <button
+                              key={r.id}
+                              ref={role.id === r.id ? selectedRoleRef : undefined}
+                              onClick={() => {
+                                onRoleChange(r);
+                                setIsRoleSelectorOpen(false);
+                              }}
+                              className={`w-full flex items-center justify-between gap-3 px-2.5 py-1.5 text-[14px] leading-5 tracking-[-0.15px] text-[#353A44] rounded-[6px] transition-colors ${
+                                role.id === r.id ? "bg-[#F5F6F8]" : "hover:bg-[#F5F6F8]"
+                              }`}
+                            >
+                              <span>{r.name}</span>
+                              {role.id === r.id && <CheckCircleFilledIcon size={12} />}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Custom Roles Section */}
+                      {filteredCustomRoles.length > 0 && (
+                        <div className="p-1">
+                          <div className="px-2.5 py-1.5">
+                            <span className="text-[12px] font-bold text-[#353A44] leading-5">
+                              Custom roles
+                            </span>
+                          </div>
+                          {filteredCustomRoles.map((r) => (
+                            <button
+                              key={r.id}
+                              ref={role.id === r.id ? selectedRoleRef : undefined}
+                              onClick={() => {
+                                onRoleChange(r);
+                                setIsRoleSelectorOpen(false);
+                              }}
+                              className={`w-full flex items-center justify-between gap-3 px-2.5 py-1.5 text-[14px] leading-5 tracking-[-0.15px] text-[#353A44] rounded-[6px] transition-colors ${
+                                role.id === r.id ? "bg-[#F5F6F8]" : "hover:bg-[#F5F6F8]"
+                              }`}
+                            >
+                              <span>{r.name}</span>
+                              {role.id === r.id && <CheckCircleFilledIcon size={12} />}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* No results */}
+                      {!showUnsavedRole && filteredStandardRoles.length === 0 && filteredCustomRoles.length === 0 && (
+                        <div className="p-4 text-center text-[14px] text-[#596171]">
+                          No roles found
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Return to live account button */}
+            <button
+              onClick={onExit}
+              className="w-full py-1.5 px-3 text-[14px] font-medium text-white leading-5 tracking-[-0.15px] bg-[#635BFF] hover:bg-[#5851DB] rounded-md transition-colors shadow-[0px_1px_1px_0px_rgba(47,14,99,0.32)]"
+            >
+              Return to live account
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function RolesPermissionsPage() {
   const [selectedRole, setSelectedRole] = useState<Role>(allRoles[0]);
   // Only one category can be expanded at a time (accordion behavior)
@@ -1526,7 +2697,29 @@ export default function RolesPermissionsPage() {
   // Custom roles state with localStorage persistence
   const [customRoles, setCustomRoles] = useState<Role[]>([]);
   const [isCustomizeModalOpen, setIsCustomizeModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
+  
+  // Sandbox mode state - tracks source modal to return to and original unsaved role
+  const [sandboxMode, setSandboxMode] = useState<{ 
+    active: boolean; 
+    role: Role | null;
+    unsavedRole?: Role | null; // Original unsaved role for comparison
+    sourceModal?: "customize" | "create" | "menu";
+    // Preserve modal state when going to sandbox so changes aren't lost
+    modalState?: {
+      roleName: string;
+      customDescription: string;
+      permissionAccess: Record<string, string>;
+      selectedBaseRole?: Role | null; // For create modal
+    };
+  }>({
+    active: false,
+    role: null,
+    unsavedRole: null,
+    sourceModal: undefined,
+    modalState: undefined
+  });
 
   // Load custom roles from localStorage on mount
   useEffect(() => {
@@ -1613,6 +2806,39 @@ export default function RolesPermissionsPage() {
     ? [...filteredPermissions].sort((a, b) => a.apiName.localeCompare(b.apiName))
     : null;
 
+  // Render sandbox view if active
+  if (sandboxMode.active && sandboxMode.role) {
+    return (
+      <SandboxView
+        role={sandboxMode.role}
+        allRoles={combinedAllRoles}
+        unsavedRole={sandboxMode.unsavedRole}
+        onRoleChange={(role) => setSandboxMode({ ...sandboxMode, role })}
+        onExit={() => {
+          const sourceModal = sandboxMode.sourceModal;
+          const modalState = sandboxMode.modalState;
+          
+          // Keep sourceModal and modalState so the modal can restore its state
+          setSandboxMode({ 
+            active: false, 
+            role: null, 
+            unsavedRole: null, 
+            sourceModal: sourceModal, // Keep this so modal knows to use initialState
+            modalState: modalState // Preserve modal state for restoration
+          });
+          
+          // Return to the modal they came from
+          if (sourceModal === "customize") {
+            setIsCustomizeModalOpen(true);
+          } else if (sourceModal === "create") {
+            setIsCreateModalOpen(true);
+          }
+          // If sourceModal is "menu" or undefined, just return to the main view
+        }}
+      />
+    );
+  }
+
   return (
     <div className="h-screen flex bg-white">
       {/* Side Navigation - full height */}
@@ -1633,7 +2859,10 @@ export default function RolesPermissionsPage() {
               <h1 className="flex-1 text-[28px] font-bold text-[#353A44] leading-9 tracking-[0.38px] font-display" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
                 Roles and permissions
               </h1>
-              <button className="px-3 py-1.5 bg-[#635BFF] text-white text-sm font-semibold rounded-md hover:bg-[#5851DB] transition-colors shadow-[0_1px_1px_rgba(47,14,99,0.32)]">
+              <button 
+                onClick={() => setIsCreateModalOpen(true)}
+                className="px-3 py-1.5 bg-[#635BFF] text-white text-sm font-semibold rounded-md hover:bg-[#5851DB] transition-colors shadow-[0_1px_1px_rgba(47,14,99,0.32)]"
+              >
                 Add role
               </button>
             </div>
@@ -1764,6 +2993,7 @@ export default function RolesPermissionsPage() {
                   } : undefined}
                   isCustomRole={selectedRole.category === "Custom"}
                   onDelete={handleDeleteCustomRole}
+                  onTestInSandbox={() => setSandboxMode({ active: true, role: selectedRole, unsavedRole: null, sourceModal: "menu" })}
                 />
               </div>
               {/* Description */}
@@ -1936,12 +3166,64 @@ export default function RolesPermissionsPage() {
       {/* Customize Role Modal */}
       <CustomizeRoleModal
         isOpen={isCustomizeModalOpen}
-        onClose={() => setIsCustomizeModalOpen(false)}
+        onClose={() => {
+          setIsCustomizeModalOpen(false);
+          // Clear sandbox modal state when closing the modal (done editing)
+          setSandboxMode(prev => ({ ...prev, sourceModal: undefined, modalState: undefined }));
+        }}
         baseRole={selectedRole}
-        onSave={handleSaveCustomRole}
-        onUpdate={handleUpdateCustomRole}
+        onSave={(role) => {
+          handleSaveCustomRole(role);
+          // Clear sandbox modal state after saving
+          setSandboxMode(prev => ({ ...prev, sourceModal: undefined, modalState: undefined }));
+        }}
+        onUpdate={(role) => {
+          handleUpdateCustomRole(role);
+          // Clear sandbox modal state after updating
+          setSandboxMode(prev => ({ ...prev, sourceModal: undefined, modalState: undefined }));
+        }}
         initialGroupBy={groupBy}
         mode={modalMode}
+        onTestInSandbox={(previewRole, modalState) => {
+          setIsCustomizeModalOpen(false);
+          setSandboxMode({ 
+            active: true, 
+            role: previewRole, 
+            unsavedRole: previewRole, 
+            sourceModal: "customize",
+            modalState 
+          });
+        }}
+        initialState={sandboxMode.sourceModal === "customize" ? sandboxMode.modalState : undefined}
+      />
+
+      {/* Create Role Modal */}
+      <CreateRoleModal
+        isOpen={isCreateModalOpen}
+        onClose={() => {
+          setIsCreateModalOpen(false);
+          // Clear sandbox modal state when closing the modal (done editing)
+          setSandboxMode(prev => ({ ...prev, sourceModal: undefined, modalState: undefined }));
+        }}
+        onSave={(newRole) => {
+          handleSaveCustomRole(newRole);
+          setSelectedRole(newRole);
+          setExpandedCategory("Custom");
+          // Clear sandbox modal state after saving
+          setSandboxMode(prev => ({ ...prev, sourceModal: undefined, modalState: undefined }));
+        }}
+        initialGroupBy={groupBy}
+        onTestInSandbox={(previewRole, modalState) => {
+          setIsCreateModalOpen(false);
+          setSandboxMode({ 
+            active: true, 
+            role: previewRole, 
+            unsavedRole: previewRole, 
+            sourceModal: "create",
+            modalState 
+          });
+        }}
+        initialState={sandboxMode.sourceModal === "create" ? sandboxMode.modalState : undefined}
       />
     </div>
   );

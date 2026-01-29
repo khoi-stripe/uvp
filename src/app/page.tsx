@@ -1356,7 +1356,7 @@ function CustomizeRoleModal({
           <div className="flex-1 flex min-h-0 overflow-hidden">
             {/* Offset background container - role info + permissions */}
             <div className="bg-[#F5F6F8] rounded-[12px] p-2 flex gap-4 flex-1 overflow-hidden">
-              {/* Role info column - equal width */}
+              {/* Role info column - 1/3 width */}
               <div className="flex-1 flex flex-col gap-4 px-4 py-4 overflow-y-auto min-w-0">
                 {/* Role name header */}
                 <div className="flex flex-col gap-1">
@@ -1483,8 +1483,11 @@ function CustomizeRoleModal({
                 </div>
               </div>
 
-              {/* Permissions panel */}
-              <div className="flex-1 bg-white rounded-lg shadow-[0_7px_14px_0_rgba(48,49,61,0.08),0_3px_6px_0_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 overflow-hidden min-w-0">
+              {/* Permissions panel - 2/3 when assistant closed, 1/2 when open */}
+              <div 
+                className={`${isAssistantOpen ? 'flex-1' : 'flex-[2]'} bg-white rounded-lg shadow-[0_7px_14px_0_rgba(48,49,61,0.08),0_3px_6px_0_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 overflow-hidden min-w-0`}
+                style={{ transition: 'flex 400ms cubic-bezier(0.4, 0, 0.2, 1)' }}
+              >
                   {/* Permissions header */}
                   <div className="flex items-center gap-2">
                     <span className="flex-1 text-[16px] font-bold text-[#353A44] leading-6 tracking-[-0.31px]" style={{ fontFeatureSettings: "'lnum', 'pnum'" }}>
@@ -1502,41 +1505,33 @@ function CustomizeRoleModal({
                     </button>
                   </div>
 
-                  {/* Controls row - matches two-column layout below */}
-                  <div className="flex gap-4">
-                    {/* Left side controls - matches Current column */}
-                    <div className="flex-1 flex items-center gap-2 min-w-0">
-                      {/* Group by dropdown - using shared component */}
-                      <Dropdown
-                        value={groupBy}
-                        onChange={setGroupBy}
-                        options={groupByOptions}
-                      />
-                      {/* Search field - matching main page styling */}
-                      <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
-                        <SearchIcon className="text-[#818DA0]" />
-                        <input
-                          type="text"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          placeholder="Search"
-                          className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
-                        />
-                        {searchQuery && (
-                          <button
-                            onClick={() => setSearchQuery("")}
-                            className="text-[#818DA0] hover:text-[#353A44] transition-colors"
-                          >
-                            ×
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    {/* Right side spacer - matches Available column, collapses when assistant is open */}
-                    <div 
-                      className={`${isAssistantOpen ? 'w-0 min-w-0' : 'flex-1 min-w-0'}`}
-                      style={{ transition: 'all 400ms cubic-bezier(0.4, 0, 0.2, 1)' }}
+                  {/* Controls row - full width */}
+                  <div className="flex items-center gap-2">
+                    {/* Group by dropdown */}
+                    <Dropdown
+                      value={groupBy}
+                      onChange={setGroupBy}
+                      options={groupByOptions}
                     />
+                    {/* Search field - spans full width */}
+                    <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
+                      <SearchIcon className="text-[#818DA0]" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search"
+                        className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
+                      />
+                      {searchQuery && (
+                        <button
+                          onClick={() => setSearchQuery("")}
+                          className="text-[#818DA0] hover:text-[#353A44] transition-colors"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Two-column permission lists */}
@@ -2005,8 +2000,8 @@ function CreateRoleModal({
           <div className="flex-1 flex min-h-0 overflow-hidden">
             {/* Offset background container */}
             <div className="bg-[#F5F6F8] rounded-[12px] p-2 flex gap-4 flex-1 overflow-hidden">
-              {/* Left column - Role info */}
-              <div className="flex flex-col gap-6 px-4 py-[13px] w-[340px] flex-shrink-0 overflow-y-auto">
+              {/* Left column - Role info (1/3 width) */}
+              <div className="flex-1 flex flex-col gap-6 px-4 py-[13px] overflow-y-auto min-w-0">
                 {/* Start from existing role dropdown */}
                 <div className="flex flex-col gap-2">
                   <label className="text-[14px] font-semibold text-[#353A44] leading-5 tracking-[-0.15px]">
@@ -2125,8 +2120,11 @@ function CreateRoleModal({
                 </div>
               </div>
 
-              {/* Permissions panel */}
-              <div className="bg-white rounded-lg shadow-[0px_7px_14px_0px_rgba(48,49,61,0.08),0px_3px_6px_0px_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 flex-1 overflow-hidden min-w-0">
+              {/* Permissions panel - 2/3 when assistant closed, 1/2 when open */}
+              <div 
+                className={`${isAssistantOpen ? 'flex-1' : 'flex-[2]'} bg-white rounded-lg shadow-[0px_7px_14px_0px_rgba(48,49,61,0.08),0px_3px_6px_0px_rgba(0,0,0,0.12)] p-4 flex flex-col gap-4 overflow-hidden min-w-0`}
+                style={{ transition: 'flex 400ms cubic-bezier(0.4, 0, 0.2, 1)' }}
+              >
                   {/* Permissions header */}
                   <div className="flex items-center gap-2">
                     <ShieldCheckIcon />
@@ -2145,39 +2143,32 @@ function CreateRoleModal({
                     </button>
                   </div>
 
-                  {/* Controls row - matches two-column layout below */}
-                  <div className="flex gap-4">
-                    {/* Left side controls - matches Current column */}
-                    <div className="flex-1 flex items-center gap-2 min-w-0">
-                      <Dropdown
-                        value={groupBy}
-                        onChange={setGroupBy}
-                        options={groupByOptions}
-                      />
-                      <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
-                        <SearchIcon className="text-[#818DA0]" />
-                        <input
-                          type="text"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          placeholder="Search"
-                          className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
-                        />
-                        {searchQuery && (
-                          <button
-                            onClick={() => setSearchQuery("")}
-                            className="text-[#818DA0] hover:text-[#353A44] transition-colors"
-                          >
-                            ×
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    {/* Right side spacer - matches Available column, collapses when assistant is open */}
-                    <div 
-                      className={`${isAssistantOpen ? 'w-0 min-w-0' : 'flex-1 min-w-0'}`}
-                      style={{ transition: 'all 400ms cubic-bezier(0.4, 0, 0.2, 1)' }}
+                  {/* Controls row - full width */}
+                  <div className="flex items-center gap-2">
+                    <Dropdown
+                      value={groupBy}
+                      onChange={setGroupBy}
+                      options={groupByOptions}
                     />
+                    {/* Search field - spans full width */}
+                    <div className="flex-1 flex items-center gap-2 border border-[#D8DEE4] rounded-md px-2 py-1 min-h-[28px] bg-white focus-within:border-[#635BFF] transition-colors">
+                      <SearchIcon className="text-[#818DA0]" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search"
+                        className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none placeholder:text-[#818DA0]"
+                      />
+                      {searchQuery && (
+                        <button
+                          onClick={() => setSearchQuery("")}
+                          className="text-[#818DA0] hover:text-[#353A44] transition-colors"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Two-column permission lists */}

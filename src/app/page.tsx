@@ -870,6 +870,14 @@ function AIAssistantDrawer({
   onClose: () => void;
 }) {
   const [inputValue, setInputValue] = useState("");
+  const [submittedMessage, setSubmittedMessage] = useState<string | null>(null);
+
+  const handleSubmit = () => {
+    if (inputValue.trim()) {
+      setSubmittedMessage(inputValue.trim());
+      setInputValue("");
+    }
+  };
   
   return (
     <div 
@@ -929,10 +937,29 @@ function AIAssistantDrawer({
             </div>
             
             {/* Content */}
-            <div className="relative z-10 flex flex-col gap-4 flex-1">
-              <p className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]">
-                Describe how you want to customize this role and I'll add or remove the appropriate permissions.
-              </p>
+            <div className="relative z-10 flex flex-col gap-4 flex-1 overflow-y-auto">
+              {!submittedMessage ? (
+                <p className="text-[14px] text-[#353A44] leading-5 tracking-[-0.15px]">
+                  Describe how you want to customize this role and I'll add or remove the appropriate permissions.
+                </p>
+              ) : (
+                <>
+                  {/* User message */}
+                  <div className="flex justify-end">
+                    <div className="bg-[#635BFF] text-white rounded-[12px] rounded-br-[4px] px-3 py-2 max-w-[85%]">
+                      <p className="text-[14px] leading-5 tracking-[-0.15px]">{submittedMessage}</p>
+                    </div>
+                  </div>
+                  {/* Assistant response */}
+                  <div className="flex justify-start">
+                    <div className="bg-[#F5F6F8] text-[#353A44] rounded-[12px] rounded-bl-[4px] px-3 py-2 max-w-[85%]">
+                      <p className="text-[14px] leading-5 tracking-[-0.15px]">
+                        Stripe Assistant has not been implemented for this prototype.
+                      </p>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -943,12 +970,19 @@ function AIAssistantDrawer({
                 <textarea
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSubmit();
+                    }
+                  }}
                   placeholder="Describe the role"
                   className="flex-1 text-[14px] text-[#353A44] leading-5 tracking-[-0.15px] bg-transparent outline-none resize-none placeholder:text-[#818DA0] min-h-[68px] py-1"
                 />
               </div>
               <div className="flex flex-col h-full items-end justify-end">
                 <button 
+                  onClick={handleSubmit}
                   className="shrink-0 w-7 h-7 rounded-full bg-[#EBEEF1] flex items-center justify-center hover:bg-[#D8DEE4] transition-colors"
                   disabled={!inputValue.trim()}
                 >
